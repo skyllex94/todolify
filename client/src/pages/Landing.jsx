@@ -59,7 +59,7 @@ function Landing() {
 
               <div className="dark:text-gray-300  font-semibold">
                 🔥🌟
-                <span classNameName="pl-2">
+                <span className="pl-2">
                   Secure encryption without a need for registration.
                 </span>
               </div>
