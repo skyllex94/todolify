@@ -1,39 +1,39 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { toggleCompleted, deleteTask } from "../redux/todoSlice";
+import { toggleTask, deleteTask } from "../redux/categorySlice";
 // UI Element Imports
 import { GrFormClose } from "react-icons/gr";
 
-const TodoItem = ({ id, task, category, completed }) => {
+const TaskItem = ({ categoryId, id, task, done }) => {
   const dispatch = useDispatch();
 
   const handleCheckboxClick = () => {
-    dispatch(toggleCompleted({ id, completed: !completed }));
+    dispatch(toggleTask({ categoryId, id, done: !done }));
   };
 
   const handleDelete = () => {
-    dispatch(deleteTask({ id }));
+    dispatch(deleteTask({ categoryId, id }));
   };
 
   return (
-    <li className={`list-group-item ${completed && "list-group-item-success"}`}>
+    <li className={`list-group-item ${done && "list-group-item-success"}`}>
       <div className="flex items-center mb-1">
         <input
           type="checkbox"
           className="mx-3"
           onClick={handleCheckboxClick}
-          defaultChecked={completed}
+          defaultChecked={done}
         />
-        {task}, {category}
+        {task}
         <button
-          class="ml-3 p-1 border hover:border-blue-500 rounded-full"
+          className="ml-3 p-1 border hover:border-blue-500 rounded-full"
           onClick={handleDelete}
         >
-          <GrFormClose color="white" />
+          <GrFormClose />
         </button>
       </div>
     </li>
   );
 };
 
-export default TodoItem;
+export default TaskItem;

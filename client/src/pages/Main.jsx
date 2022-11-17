@@ -1,6 +1,5 @@
-import AddTodoForm from "../components/AddTodoForm";
 import Header from "./Header";
-import DailyTodoList from "../components/DailyTodoList";
+import TodoList from "../components/TodoList";
 
 function Main() {
   return (
@@ -189,8 +188,8 @@ function Main() {
               </div>
             </div>
           </div>
-          <AddTodoForm />
-          <DailyTodoList />
+
+          <TodoList />
         </div>
       </div>
     </div>

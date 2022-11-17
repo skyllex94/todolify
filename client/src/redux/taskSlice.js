@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
-export const todoSlice = createSlice({
+export const taskSlice = createSlice({
   name: "todos",
   initialState: [
-    { id: 1, task: "Work on boxes", completed: false },
-    { id: 2, task: "Repackage and label", completed: false },
+    { id: 1, task: "Redux-Thunk", category: "Coding", completed: false },
+    { id: 2, task: "Label Packages", category: "Business", completed: false },
+    { id: 3, task: "Learning Redux", category: "Coding", completed: false },
   ],
   reducers: {
     addTask: (state, action) => {
@@ -17,7 +18,7 @@ export const todoSlice = createSlice({
       };
       state.push(todo);
     },
-    toggleCompleted: (state, action) => {
+    toggleTask: (state, action) => {
       // const index = state.findIndex((todo) => todo.id === action.payload.id);
       // state[index].completed = action.payload.completed;
 
@@ -34,5 +35,5 @@ export const todoSlice = createSlice({
   },
 });
 
-export const { addTask, toggleCompleted, deleteTask } = todoSlice.actions;
-export default todoSlice.reducer;
+export const { addTask, toggleTask, deleteTask } = taskSlice.actions;
+export default taskSlice.reducer;

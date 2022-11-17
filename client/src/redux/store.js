@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import todoSlice from "./todoSlice";
+import categorySlice from "./categorySlice";
+import taskSlice from "./taskSlice";
 
 export default configureStore({
   reducer: {
-    todos: todoSlice,
+    todos: taskSlice,
+    category: categorySlice,
   },
 });
