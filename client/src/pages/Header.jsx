@@ -26,7 +26,7 @@ function Header() {
                   Todolify
                 </Link>
                 <label
-                  for="hbr"
+                  htmlFor="hbr"
                   className="peer-checked:hamburger block relative z-20 p-6 -mr-6 cursor-pointer lg:hidden"
                 >
                   <div

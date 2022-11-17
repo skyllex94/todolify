@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "./Header";
 // HTTP Requests
 import axios from "axios";
+import image from "../assets/reg.jpg";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -40,7 +41,13 @@ function Register() {
       <Header />
       <div className="pt-40">
         <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
-          <div className="hidden lg:block lg:w-1/2 bg-cover"></div>
+          <div className="hidden lg:block lg:w-1/2 bg-cover mt-10 ml-6 flex justify-center items-center">
+            <img
+              src={image}
+              alt="registration"
+              className="object-contain h-110 w-full"
+            />
+          </div>
           <div className="w-full p-8 lg:w-1/2">
             <h2 className="text-2xl font-semibold text-gray-700 text-center">
               Brand

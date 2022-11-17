@@ -1,4 +1,6 @@
+import AddTodoForm from "../components/AddTodoForm";
 import Header from "./Header";
+import DailyTodoList from "../components/DailyTodoList";
 
 function Main() {
   return (
@@ -43,7 +45,7 @@ function Main() {
               <ul className="pt-2 pb-4 space-y-1 text-sm">
                 <li className="rounded-sm">
                   <a
-                    href="#"
+                    href="#!"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -65,7 +67,7 @@ function Main() {
                 </li>
                 <li className="rounded-sm">
                   <a
-                    href="#"
+                    href="#!"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -87,7 +89,7 @@ function Main() {
                 </li>
                 <li className="rounded-sm">
                   <a
-                    href="#"
+                    href="#!"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -109,7 +111,7 @@ function Main() {
                 </li>
                 <li className="rounded-sm">
                   <a
-                    href="#"
+                    href="#!"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -136,7 +138,7 @@ function Main() {
                 </li>
                 <li className="rounded-sm">
                   <a
-                    href="#"
+                    href="#!"
                     className="flex items-center p-2 space-x-3 rounded-md"
                   >
                     <svg
@@ -187,6 +189,8 @@ function Main() {
               </div>
             </div>
           </div>
+          <AddTodoForm />
+          <DailyTodoList />
         </div>
       </div>
     </div>
