@@ -48,11 +48,10 @@ export const categorySlice = createSlice({
       const categoryIndex = state.findIndex(
         (curr) => curr.id === action.payload.categoryId
       );
-
-      console.log(state[categoryIndex]);
-      return state[categoryIndex].tasks.filter(
-        (curr) => curr.id !== action.payload.id
+      const index = state[categoryIndex].tasks.findIndex(
+        (curr) => curr.id === action.payload.id
       );
+      state[categoryIndex].tasks.splice(index, 1);
     },
   },
 });

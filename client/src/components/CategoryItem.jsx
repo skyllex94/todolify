@@ -10,6 +10,7 @@ function CategoryItem({ categoryId, category, tasks }) {
         <HiCode className="mr-2" />
         {category}
       </div>
+
       <div className="items-center mb-1">
         {tasks.map((curr, index) => {
           const { id, task, done } = curr;
