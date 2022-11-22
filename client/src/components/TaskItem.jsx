@@ -17,16 +17,18 @@ const TaskItem = ({ categoryId, id, task, done }) => {
 
   return (
     <li className={`list-group-item ${done && "list-group-item-success"}`}>
-      <div className="flex items-center mb-1">
-        <input
-          type="checkbox"
-          className="mx-3"
-          onClick={handleCheckboxClick}
-          defaultChecked={done}
-        />
-        {task}
+      <div className="flex items-center mb-1 justify-between group">
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            className="mx-3"
+            onClick={handleCheckboxClick}
+            defaultChecked={done}
+          />
+          {task}
+        </div>
         <button
-          className="ml-3 p-1 border hover:border-blue-500 rounded-full"
+          className="ml-3 p-1 hidden group-hover:block rounded-full"
           onClick={handleDelete}
         >
           <GrFormClose />
