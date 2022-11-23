@@ -6,14 +6,13 @@ const TodoList = () => {
   const categories = useSelector((state) => state.category);
 
   return (
-    <div class="flex ml-5">
-      <div class="rounded-lg shadow-lg bg-white max-w-sm">
-        <div class="p-4">
-          <ul className="list-group ml-3 mb-2 pt-5">
+    <div className="flex ml-5">
+      <div className="rounded-lg shadow-lg bg-white max-w-sm">
+        <div className="p-4">
+          <ul className="list-group mb-2 pt-5">
             {categories.map((curr, index) => (
-              <div className="brackets px-5">
+              <div className="brackets min-w-[90%] pr-5" key={index}>
                 <CategoryItem
-                  key={index}
                   categoryId={curr.id}
                   category={curr.category}
                   tasks={curr.tasks}

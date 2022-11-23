@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 // HTTP Requests
 import axios from "axios";
 import image from "../assets/reg.jpg";
+// Redux
+import { useDispatch } from "react-redux";
+import { storeJWT } from "../redux/authSlice";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -12,6 +15,8 @@ function Register() {
     password: "",
     repeat_password: "",
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { name, email, password, repeat_password } = formData;
 
@@ -30,6 +35,15 @@ function Register() {
         // Making a post request (need to await since it's a Promise)
         const res = await axios.post("/users", body);
         console.log(res.data);
+
+        try {
+          // Store the jsonwebtoken in redux store for route validation
+          dispatch(storeJWT({ jwt: res.data }));
+          // Reroute to main page
+          navigate("/user");
+        } catch (error) {
+          console.error(error.message);
+        }
       } catch (err) {
         console.error(err.response.data);
       }

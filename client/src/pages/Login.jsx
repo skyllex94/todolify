@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import axios from "axios";
+// Redux
+import { useDispatch } from "react-redux";
+import { storeJWT } from "../redux/authSlice";
 
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { email, password } = formData;
 
@@ -21,6 +26,13 @@ function Login() {
       // Request to server to check if use exists in DB and get back token
       const res = await axios.post("/user", formData);
       console.log(res.data);
+      // Take in the jwt returned from post req and set in redux store
+      try {
+        dispatch(storeJWT({ jwt: res.data }));
+      } catch (err) {
+        console.error(err.message);
+      }
+      navigate("/user");
     } catch (err) {
       console.log(err.message);
     }

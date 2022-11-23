@@ -1,8 +1,21 @@
 import Header from "./Header";
 import TodoList from "../components/TodoList";
-import DoneTasks from "../components/DoneTasks";
+import { useNavigate } from "react-router-dom";
+// Redux
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function Main() {
+  // Fetch the JWT from Redux
+  const jwt = useSelector((state) => state.auth.jwt);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(jwt);
+    // If there's no JWT, then navigate back to landing page
+    if (!jwt) navigate("/");
+  }, [jwt, navigate]);
+
   return (
     <div>
       <Header />
