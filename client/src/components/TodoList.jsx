@@ -1,8 +1,24 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import CategoryItem from "./CategoryItem";
+// Axios
+import axios from "axios";
 
 const TodoList = () => {
+  const catss = [];
+  const loadAsyncData = async () => {
+    try {
+      const res = await axios.get("/user/637f9337db5851a564a0afff");
+      console.log(res.data.categories);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  useEffect(() => {
+    loadAsyncData();
+  }, []);
+
   const categories = useSelector((state) => state.category);
 
   return (

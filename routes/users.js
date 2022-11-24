@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 // User schema (model) for posting data in the DB
 const User = require("../schemas/UserSchema");
+const TodoSchema = require("../schemas/TodoSchema");
 
 // @route   POST /users
 // @desc    Register User
@@ -61,6 +62,28 @@ router.post(
           id: user.id,
         },
       };
+
+      // Create the initial todoList configuration for the new user
+      try {
+        const userTodoList = new TodoSchema({
+          user_id: user.id,
+          categories: [
+            {
+              category: "Mundane",
+              tasks: [
+                {
+                  task: "Wash laudry",
+                  done: false,
+                },
+              ],
+            },
+          ],
+        });
+        console.log(userTodoList);
+        await userTodoList.save();
+      } catch (error) {
+        console.log(error.message);
+      }
 
       // Create the jsonwebtoken / 3rd paramether could be object of expiresIn
       jwt.sign(payload, config.get("jwtSecret"), {}, (err, token) => {

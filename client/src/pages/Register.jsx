@@ -40,7 +40,7 @@ function Register() {
           // Store the jsonwebtoken in redux store for route validation
           dispatch(storeJWT({ jwt: res.data }));
           // Reroute to main page
-          navigate("/user");
+          navigate(`/user/${res.data.id}`);
         } catch (error) {
           console.error(error.message);
         }

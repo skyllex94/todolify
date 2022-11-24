@@ -9,18 +9,14 @@ const TodoSchema = new mongoose.Schema({
     {
       id: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        unique: true,
       },
       category: {
         type: String,
-        required: true,
       },
       tasks: [
         {
           id: {
             type: mongoose.Schema.Types.ObjectId,
-            unique: true,
           },
           task: {
             type: String,
