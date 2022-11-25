@@ -5,7 +5,6 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 // Redux Store
-
 import { useSelector } from "react-redux";
 
 function App() {

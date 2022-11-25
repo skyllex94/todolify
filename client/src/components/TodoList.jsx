@@ -2,22 +2,15 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import CategoryItem from "./CategoryItem";
 // Axios
-import axios from "axios";
 
-const TodoList = () => {
-  const catss = [];
-  const loadAsyncData = async () => {
-    try {
-      const res = await axios.get("/user/637f9337db5851a564a0afff");
-      console.log(res.data.categories);
-    } catch (err) {
-      console.log(err.message);
-    }
+const TodoList = ({ userTodoList }) => {
+  const jwt = useSelector((state) => state.auth.jwt);
+
+  const fetctedTodoList = async function getTodoList() {
+    return await userTodoList;
   };
 
-  useEffect(() => {
-    loadAsyncData();
-  }, []);
+  console.log(userTodoList);
 
   const categories = useSelector((state) => state.category);
 
@@ -26,15 +19,16 @@ const TodoList = () => {
       <div className="rounded-lg shadow-lg bg-white max-w-sm">
         <div className="p-4">
           <ul className="list-group mb-2 pt-5">
-            {categories.map((curr, index) => (
-              <div className="brackets min-w-[90%] pr-5" key={index}>
-                <CategoryItem
-                  categoryId={curr.id}
-                  category={curr.category}
-                  tasks={curr.tasks}
-                />
-              </div>
-            ))}
+            {userTodoList &&
+              userTodoList.map((curr, index) => (
+                <div className="brackets min-w-[90%] px-5" key={index}>
+                  <CategoryItem
+                    categoryId={curr._id}
+                    category={curr.category}
+                    tasks={curr.tasks}
+                  />
+                </div>
+              ))}
           </ul>
         </div>
       </div>

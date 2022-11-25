@@ -3,18 +3,57 @@ import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 // Redux
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Main() {
   // Fetch the JWT from Redux
   const jwt = useSelector((state) => state.auth.jwt);
+  const user = decodeJWT(jwt.token);
   const navigate = useNavigate();
 
+  const [loadedTodoList, setLoadedTodoList] = useState(false);
+  const [todoListObj, setTodoListObj] = useState(null);
+
+  // Async function triggered when page loaded to call a GET request
+  // to specific user & fetch the todoList object of that user
+  const getUserTodoList = async () => {
+    const { id } = user.user;
+    try {
+      const todoList = await axios.get(`/user/${id}`);
+      setTodoListObj(todoList.data);
+      setLoadedTodoList(true);
+    } catch (error) {
+      return error.message;
+    }
+  };
+
+  // Trigger async func on page load
   useEffect(() => {
-    console.log(jwt);
+    getUserTodoList();
+  }, []);
+
+  useEffect(() => {
     // If there's no JWT, then navigate back to landing page
     if (!jwt) navigate("/");
   }, [jwt, navigate]);
+
+  // Decode the fetched JWT to get the user id in order to take his todos
+  function decodeJWT(token) {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+
+    return JSON.parse(jsonPayload);
+  }
 
   return (
     <div>
@@ -176,7 +215,7 @@ function Main() {
           </div>
         </div>
         <div className="container mx-auto mt-12">
-          <TodoList />
+          {loadedTodoList && <TodoList userTodoList={todoListObj} />}
         </div>
       </div>
     </div>

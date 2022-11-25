@@ -8,7 +8,7 @@ const User = require("../schemas/UserSchema");
 // @route   GET TODOS /userr
 // @desc    Fetch all todos for the authorized user
 // @access  Private
-router.get("/:id", mwAuth, async (req, res) => {
+router.get("/:id", async (req, res) => {
   // Validate request and check if it returns errors
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
