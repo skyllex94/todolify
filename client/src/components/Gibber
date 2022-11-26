@@ -1,0 +1,9 @@
+// <input
+//   type="text"
+//   autoFocus
+//   placeholder="Add Task..."
+//   value={category}
+//   onChange={(event) => setCategory(event.target.value)}
+//   // onBlur={() => setEnableAddTask(false)}
+//   className="text-black-500 ml-3 h-12 focus:outline-none pl-10 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
+// />;

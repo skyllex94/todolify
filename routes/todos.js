@@ -1,3 +1,4 @@
+const { response } = require("express");
 const express = require("express");
 const { validationResult } = require("express-validator");
 const router = express.Router();
@@ -5,7 +6,7 @@ const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
 const User = require("../schemas/UserSchema");
 
-// @route   GET TODOS /userr
+// @route   GET TODOS /user/:id
 // @desc    Fetch all todos for the authorized user
 // @access  Private
 router.get("/:id", async (req, res) => {
@@ -34,6 +35,19 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     console.log("Error in fetching TodoList...");
   }
+});
+
+// @route   POST /user/:id
+// @desc    Add category to an auth user
+// @access  Private
+router.post("/:id", async (req, res) => {
+  // Find the todo list of the logged user
+  const userTodoList = await Todos.findOne({ user_id: req.params.id });
+  console.log(userTodoList);
+  const newCategory = { category: req.body, tasks: [] };
+  console.log(newCategory);
+  userTodoList.categories.push(newCategory);
+  return res.send(newCategory);
 });
 
 module.exports = router;

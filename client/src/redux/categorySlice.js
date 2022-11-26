@@ -1,5 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+
+// Not used for now since async fetching the todo list wt state through Main and passing to TodoList
+export const getTodosAsync = createAsyncThunk(
+  "todos/getTodosAsync",
+  async (id) => {
+    const resp = await axios.get(`/user/${id}`);
+    if (resp.ok) {
+      const todos = await resp.json();
+      return { todos };
+    }
+  }
+);
+
+export const addCategoryAsync = createAsyncThunk(
+  "category/addCategoryAsync",
+  async (payload) => {
+    try {
+      console.log(payload);
+      return await axios.post(`/user/${payload.user_id}`, {
+        category: payload.category,
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
 
 export const categorySlice = createSlice({
   name: "category",
@@ -52,6 +79,11 @@ export const categorySlice = createSlice({
         (curr) => curr.id === action.payload.id
       );
       state[categoryIndex].tasks.splice(index, 1);
+    },
+  },
+  extraReducers: {
+    [getTodosAsync.fulfilled]: (state, action) => {
+      return action.payload.todos;
     },
   },
 });

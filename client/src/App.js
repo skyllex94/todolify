@@ -16,7 +16,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/user" element={jwt ? <Main /> : <Login />} />
+          <Route path="/user/:id" element={jwt ? <Main /> : <Login />} />
           <Route path="/login" element={jwt ? <Main /> : <Login />} />
           <Route path="/register" element={jwt ? <Main /> : <Register />} />
         </Routes>

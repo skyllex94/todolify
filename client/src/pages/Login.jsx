@@ -5,6 +5,7 @@ import axios from "axios";
 // Redux
 import { useDispatch } from "react-redux";
 import { storeJWT } from "../redux/authSlice";
+import { decodeJWT } from "../utils/functions";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -23,16 +24,18 @@ function Login() {
     e.preventDefault();
 
     try {
-      // Request to server to check if use exists in DB and get back token
+      // Request to server to check if use exists in DB and send token
       const res = await axios.post("/user", formData);
-      console.log(res.data);
+
       // Take in the jwt returned from post req and set in redux store
       try {
         dispatch(storeJWT({ jwt: res.data }));
       } catch (err) {
         console.error(err.message);
       }
-      navigate("/user");
+      const user = decodeJWT(res.data.token);
+      const { id } = user.user;
+      navigate(`/user/${id}`);
     } catch (err) {
       console.log(err.message);
     }
