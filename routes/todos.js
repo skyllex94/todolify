@@ -43,11 +43,15 @@ router.get("/:id", async (req, res) => {
 router.post("/:id", async (req, res) => {
   // Find the todo list of the logged user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });
-  console.log(userTodoList);
-  const newCategory = { category: req.body, tasks: [] };
-  console.log(newCategory);
+  // Create the object for the new category
+  const newCategory = {
+    category: req.body.category,
+    tasks: [],
+  };
+  // Push the new category to the current array of categories
   userTodoList.categories.push(newCategory);
-  return res.send(newCategory);
+  // Send the new category to MongoDB and store it
+  await userTodoList.save(newCategory);
 });
 
 module.exports = router;

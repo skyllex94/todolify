@@ -3,6 +3,7 @@ import CategoryItem from "./CategoryItem";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync } from "../redux/categorySlice";
+import axios from "axios";
 
 const TodoList = ({ userTodoList, user_id }) => {
   // const jwt = useSelector((state) => state.auth.jwt);
@@ -11,20 +12,37 @@ const TodoList = ({ userTodoList, user_id }) => {
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
   const [categoryInput, setCategoryInput] = useState(false);
+  const [todoList, setTodoList] = useState(userTodoList);
 
-  const addCategory = (e) => {
+  const addCategory = async (e) => {
     e.preventDefault();
     console.log(user_id);
     if (category) dispatch(addCategoryAsync({ user_id, category }));
     setCategory("");
+    const todoList = await axios.get(`/user/${user_id}`);
+    console.log(todoList.data);
   };
+
+  const getUserTodoList = async (user_id) => {
+    try {
+      const todoList = await axios.get(`/user/${user_id}`);
+      // setTodoList(todoList.data);
+      console.log(todoList.data);
+    } catch (error) {
+      return error.message;
+    }
+  };
+
+  // useEffect(() => {
+  //   getUserTodoList(user_id);
+  // }, [dispatch]);
 
   return (
     <div className="flex ml-5">
       <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
         <ul className="list-group mb-2 pt-5 ">
-          {userTodoList &&
-            userTodoList.map((curr, index) => (
+          {todoList &&
+            todoList.map((curr, index) => (
               <div className="brackets min-w-[93%]" key={index}>
                 <CategoryItem
                   categoryId={curr._id}

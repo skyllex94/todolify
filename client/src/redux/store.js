@@ -9,4 +9,8 @@ export default configureStore({
     category: categorySlice,
     auth: authSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
