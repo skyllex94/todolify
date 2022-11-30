@@ -1,17 +1,15 @@
 import React from "react";
 // UI Elements
 import { HiCode } from "react-icons/hi";
-import { AiOutlinePlus } from "react-icons/ai";
+
 // Redux Store
-import { useDispatch } from "react-redux";
+
 // Components
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
 import AddTaskForm from "./AddTaskForm";
 
 function CategoryItem({ categoryId, category, tasks }) {
-  const dispatch = useDispatch();
-
   return (
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">

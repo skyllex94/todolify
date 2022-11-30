@@ -11,31 +11,32 @@ const TodoList = ({ userTodoList, user_id }) => {
 
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
-  const [categoryInput, setCategoryInput] = useState(false);
+  // const [, setCategoryInput] = useState(false)
   const [todoList, setTodoList] = useState(userTodoList);
+  const [stateChange, setStateChange] = useState("");
 
-  const addCategory = async (e) => {
+  const addCategory = (e) => {
     e.preventDefault();
     console.log(user_id);
     if (category) dispatch(addCategoryAsync({ user_id, category }));
     setCategory("");
-    const todoList = await axios.get(`/user/${user_id}`);
-    console.log(todoList.data);
+    setStateChange(category);
+    // getUserTodoList(user_id);
   };
 
-  const getUserTodoList = async (user_id) => {
+  async function getUserTodoList(id) {
     try {
-      const todoList = await axios.get(`/user/${user_id}`);
-      // setTodoList(todoList.data);
-      console.log(todoList.data);
+      const fetchedTodoList = await axios.get(`/user/${id}`);
+      console.log(fetchedTodoList.data);
+      setTodoList(fetchedTodoList.data);
     } catch (error) {
       return error.message;
     }
-  };
+  }
 
   // useEffect(() => {
   //   getUserTodoList(user_id);
-  // }, [dispatch]);
+  // }, [addCategory, stateChange, user_id]);
 
   return (
     <div className="flex ml-5">
@@ -53,19 +54,13 @@ const TodoList = ({ userTodoList, user_id }) => {
             ))}
 
           <form onSubmit={addCategory} className="flex items-center mb-5">
-            <button
-              onClick={addCategory}
-              className="bg-transparent ml-4 text-red-700 font-semibold hover:text-black py-2 px-2"
-            >
-              <AiOutlinePlus />
-            </button>
             <input
               type="text"
               autoFocus
               placeholder="Add Category..."
               value={category}
               onChange={(event) => setCategory(event.target.value)}
-              onBlur={() => setCategoryInput(false)}
+              // onBlur={() => setCategoryInput(false)}
               className="text-black-500 ml-3 h-12 focus:outline-none pl-5 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
             />
           </form>
