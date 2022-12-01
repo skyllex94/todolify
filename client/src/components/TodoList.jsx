@@ -6,37 +6,36 @@ import { addCategoryAsync } from "../redux/categorySlice";
 import axios from "axios";
 
 const TodoList = ({ userTodoList, user_id }) => {
-  // const jwt = useSelector((state) => state.auth.jwt);
-  // const categories = useSelector((state) => state.category);
-
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
-  // const [, setCategoryInput] = useState(false)
   const [todoList, setTodoList] = useState(userTodoList);
-  const [stateChange, setStateChange] = useState("");
+  const [onSubmit, setOnSubmit] = useState(null);
 
   const addCategory = (e) => {
     e.preventDefault();
-    console.log(user_id);
     if (category) dispatch(addCategoryAsync({ user_id, category }));
     setCategory("");
-    setStateChange(category);
-    // getUserTodoList(user_id);
+    setOnSubmit(category);
   };
 
   async function getUserTodoList(id) {
     try {
       const fetchedTodoList = await axios.get(`/user/${id}`);
-      console.log(fetchedTodoList.data);
+      console.log("fetchedTodoList:", fetchedTodoList);
+      // Set the current todoList with the new updated one from adding a category
       setTodoList(fetchedTodoList.data);
     } catch (error) {
       return error.message;
     }
   }
 
-  // useEffect(() => {
-  //   getUserTodoList(user_id);
-  // }, [addCategory, stateChange, user_id]);
+  // Updating the UI each time there is an onSubmit, in order to fetch the array of categories
+  useEffect(() => {
+    // Async func for doing a GET req and fetching categories
+    getUserTodoList(user_id);
+    // Having an additional setState do do another re-render in order to get the last element
+    setOnSubmit("additional re-render");
+  }, [onSubmit, user_id]);
 
   return (
     <div className="flex ml-5">
@@ -46,6 +45,7 @@ const TodoList = ({ userTodoList, user_id }) => {
             todoList.map((curr, index) => (
               <div className="brackets min-w-[93%]" key={index}>
                 <CategoryItem
+                  user_id={user_id}
                   categoryId={curr._id}
                   category={curr.category}
                   tasks={curr.tasks}
@@ -54,6 +54,9 @@ const TodoList = ({ userTodoList, user_id }) => {
             ))}
 
           <form onSubmit={addCategory} className="flex items-center mb-5">
+            <button className="bg-transparent ml-4 text-red-700 font-semibold hover:text-black py-2 px-2">
+              <AiOutlinePlus />
+            </button>
             <input
               type="text"
               autoFocus

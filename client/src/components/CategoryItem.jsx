@@ -1,15 +1,12 @@
 import React from "react";
 // UI Elements
 import { HiCode } from "react-icons/hi";
-
-// Redux Store
-
 // Components
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
 import AddTaskForm from "./AddTaskForm";
 
-function CategoryItem({ categoryId, category, tasks }) {
+function CategoryItem({ user_id, categoryId, category, tasks }) {
   return (
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">
@@ -34,7 +31,11 @@ function CategoryItem({ categoryId, category, tasks }) {
             />
           );
         })}
-        <AddTaskForm categoryId={categoryId} category={category} />
+        <AddTaskForm
+          user_id={user_id}
+          categoryId={categoryId}
+          category={category}
+        />
       </div>
     </ul>
   );

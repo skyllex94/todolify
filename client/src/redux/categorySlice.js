@@ -18,13 +18,26 @@ export const addCategoryAsync = createAsyncThunk(
   "category/addCategoryAsync",
   async (payload) => {
     try {
-      console.log(payload);
-      return await axios.post(`/user/${payload.user_id}`, {
+      await axios.post(`/user/${payload.user_id}`, {
         category: payload.category,
       });
     } catch (err) {
       console.log(err.message);
     }
+  }
+);
+
+export const addTaskAsync = createAsyncThunk(
+  "category/addTaskAsync",
+  // payload => {user_id, categoryId, task}
+  async (payload) => {
+    try {
+      await axios.post(`/user/${payload.user_id}`, {
+        categoryId: payload.categoryId,
+        category: payload.category,
+        task: payload.task,
+      });
+    } catch (error) {}
   }
 );
 
@@ -83,7 +96,7 @@ export const categorySlice = createSlice({
   },
   extraReducers: {
     [getTodosAsync.fulfilled]: (state, action) => {
-      return action.payload.todos;
+      return action.payload.category;
     },
   },
 });

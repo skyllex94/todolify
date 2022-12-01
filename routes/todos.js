@@ -24,11 +24,6 @@ router.get("/:id", async (req, res) => {
     const populateCategories = userTodoList.categories;
 
     res.send(populateCategories);
-    // const fetchTodoList = {
-    //   user: user.id,
-    //   categories: req.body.categories,
-    // };
-    // console.log(updatedTodos);
 
     // const todos = await updatedTodos.save();
     // res.json(todos);
@@ -43,15 +38,39 @@ router.get("/:id", async (req, res) => {
 router.post("/:id", async (req, res) => {
   // Find the todo list of the logged user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });
-  // Create the object for the new category
-  const newCategory = {
-    category: req.body.category,
-    tasks: [],
-  };
-  // Push the new category to the current array of categories
-  userTodoList.categories.push(newCategory);
-  // Send the new category to MongoDB and store it
-  await userTodoList.save(newCategory);
+
+  if (req.body.categoryId) {
+    // const index = userTodoList.categories.findIndex(
+    //   (curr) => curr._id === req.body.categoryId
+
+    // );
+    console.log("req.body.categoryId:", req.body.categoryId);
+
+    const eer = userTodoList.categories.findIndex(
+      (curr) => curr._id === "6388893bf1d4cfc44be08f7f"
+    );
+    console.log(eer);
+    // console.log(userTodoList.categories[1]);
+    const newTask = {
+      task: req.body.task,
+      done: false,
+    };
+
+    // userTodoList.categories[index].tasks.push(newTask)
+
+    // userTodoList.categories.[category].push(newTask);
+    // await userTodoList.categories.category.save(newTask);
+  } else {
+    // Create the object for the new category
+    const newCategory = {
+      category: req.body.category,
+      tasks: [],
+    };
+    // Push the new category to the current array of categories
+    userTodoList.categories.push(newCategory);
+    // Send the new category to MongoDB and store it
+    await userTodoList.save(newCategory);
+  }
 });
 
 module.exports = router;
