@@ -10,12 +10,6 @@ const User = require("../schemas/UserSchema");
 // @desc    Fetch all todos for the authorized user
 // @access  Private
 router.get("/:id", async (req, res) => {
-  // Validate request and check if it returns errors
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   return res.status(400).json({ errors: errors.array() });
-  // }
-
   try {
     // Fetch the userTodoList by finding the user_id in the Todo Collection
     const userTodoList = await Todos.findOne({ user_id: req.params.id });
@@ -39,28 +33,25 @@ router.post("/:id", async (req, res) => {
   // Find the todo list of the logged user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });
 
+  // If task inputted in any category, it will trigger this part
   if (req.body.categoryId) {
-    // const index = userTodoList.categories.findIndex(
-    //   (curr) => curr._id === req.body.categoryId
-
-    // );
-    console.log("req.body.categoryId:", req.body.categoryId);
-
-    const eer = userTodoList.categories.findIndex(
-      (curr) => curr._id === "6388893bf1d4cfc44be08f7f"
+    // Find the index of the Category in which to input the task comparing ids
+    const categoryIndex = userTodoList.categories.findIndex(
+      (curr) => curr._id.valueOf() === req.body.categoryId
     );
-    console.log(eer);
-    // console.log(userTodoList.categories[1]);
+    // The new task object with it info inside, id is auto-generated
     const newTask = {
       task: req.body.task,
       done: false,
     };
 
-    // userTodoList.categories[index].tasks.push(newTask)
-
-    // userTodoList.categories.[category].push(newTask);
-    // await userTodoList.categories.category.save(newTask);
-  } else {
+    // Push the new task to the existing array of task for the correct category
+    const taskToDB = userTodoList.categories[categoryIndex].tasks.push(newTask);
+    // Send the new task to MongoDB
+    await userTodoList.save(taskToDB);
+  }
+  // If category added it will trigger the else
+  else {
     // Create the object for the new category
     const newCategory = {
       category: req.body.category,

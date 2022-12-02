@@ -34,10 +34,11 @@ export const addTaskAsync = createAsyncThunk(
     try {
       await axios.post(`/user/${payload.user_id}`, {
         categoryId: payload.categoryId,
-        category: payload.category,
         task: payload.task,
       });
-    } catch (error) {}
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 );
 
@@ -63,15 +64,19 @@ export const categorySlice = createSlice({
       const category = { category: action.payload.categoryName };
       state.push(category);
     },
-    addTask: (state, action) => {
-      // Action contains -> category name, task object
-      const task = { id: uuidv4(), task: action.payload.task, done: false };
+    addTaskToUI: (state, action) => {
+      // Action contains -> category name, task name
+      const task = {
+        task: action.payload.task,
+        done: false,
+      };
       // Find the index of the category to input task into
       const index = state.findIndex(
         (curr) => curr.id === action.payload.categoryId
       );
       // Push task to the tasks array of correct category
-      state[index].tasks.push(task);
+      // state[index].tasks.push(task);
+      console.log(index);
     },
     toggleTask: (state, action) => {
       // Action contains -> categoryId, task.id, task.done
@@ -94,13 +99,8 @@ export const categorySlice = createSlice({
       state[categoryIndex].tasks.splice(index, 1);
     },
   },
-  extraReducers: {
-    [getTodosAsync.fulfilled]: (state, action) => {
-      return action.payload.category;
-    },
-  },
 });
 
-export const { addCategory, addTask, toggleTask, deleteTask } =
+export const { addCategory, addTask, toggleTask, deleteTask, addTaskToUI } =
   categorySlice.actions;
 export default categorySlice.reducer;

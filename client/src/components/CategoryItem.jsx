@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // UI Elements
 import { HiCode } from "react-icons/hi";
 // Components
@@ -7,6 +7,8 @@ import TaskItem from "./TaskItem";
 import AddTaskForm from "./AddTaskForm";
 
 function CategoryItem({ user_id, categoryId, category, tasks }) {
+  const [taskList, setTaskList] = useState(tasks);
+
   return (
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">
@@ -19,18 +21,19 @@ function CategoryItem({ user_id, categoryId, category, tasks }) {
       </div>
 
       <div className="items-center my-1">
-        {tasks.map((curr, index) => {
-          const { id, task, done } = curr;
-          return (
-            <TaskItem
-              key={index}
-              categoryId={categoryId}
-              id={id}
-              task={task}
-              done={done}
-            />
-          );
-        })}
+        {taskList &&
+          taskList.map((curr, index) => {
+            const { id, task, done } = curr;
+            return (
+              <TaskItem
+                key={index}
+                categoryId={categoryId}
+                id={id}
+                task={task}
+                done={done}
+              />
+            );
+          })}
         <AddTaskForm
           user_id={user_id}
           categoryId={categoryId}
