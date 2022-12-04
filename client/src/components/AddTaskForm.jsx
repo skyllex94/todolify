@@ -11,7 +11,7 @@ const AddTaskForm = ({ user_id, categoryId, category }) => {
     event.preventDefault();
     if (task) {
       dispatch(addTaskAsync({ user_id, categoryId, category, task }));
-      dispatch(addTaskToUI({ categoryId, task }));
+      // dispatch(addTaskToUI({ categoryId, task }));
     }
     setTask("");
   };

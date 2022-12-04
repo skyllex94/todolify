@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
@@ -32,10 +32,25 @@ export const addTaskAsync = createAsyncThunk(
   // payload => {user_id, categoryId, task}
   async (payload) => {
     try {
-      await axios.post(`/user/${payload.user_id}`, {
+      const resp = axios.post(`/user/${payload.user_id}`, {
         categoryId: payload.categoryId,
         task: payload.task,
       });
+
+      // const resp = await fetch(`/user/${payload.user_id}`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     categoryId: payload.categoryId,
+      //     task: payload.task,
+      //   }),
+      // });
+
+      console.log("tasky:", resp);
+
+      return await resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -44,21 +59,7 @@ export const addTaskAsync = createAsyncThunk(
 
 export const categorySlice = createSlice({
   name: "category",
-  initialState: [
-    {
-      id: uuidv4(),
-      category: "Coding",
-      tasks: [
-        { id: 1, task: "Redux-Thunk", done: false },
-        { id: 3, task: "Learning Redux", category: "Coding", done: false },
-      ],
-    },
-    {
-      id: uuidv4(),
-      category: "Business",
-      tasks: [{ id: 2, task: "Label FBA", category: "Business", done: false }],
-    },
-  ],
+  initialState: ["hiiiii"],
   reducers: {
     addCategory: (state, action) => {
       const category = { category: action.payload.categoryName };
@@ -76,7 +77,7 @@ export const categorySlice = createSlice({
       );
       // Push task to the tasks array of correct category
       // state[index].tasks.push(task);
-      console.log(index);
+      console.log(current(state));
     },
     toggleTask: (state, action) => {
       // Action contains -> categoryId, task.id, task.done
@@ -98,6 +99,20 @@ export const categorySlice = createSlice({
       );
       state[categoryIndex].tasks.splice(index, 1);
     },
+  },
+  extraReducers: (builder) => {
+    // builder.addCase(addCategoryAsync.fulfilled, (state, action) => {
+    //   console.log(...state, action);
+    // });
+    builder.addCase(addTaskAsync.fulfilled, (state, action) => {
+      // state.entities.push(action.payload)
+      // console.log("STATE:", current(state));
+      // console.log("PAYLOAD:", action.payload);
+    });
+
+    // builder.addCase(addTaskAsync.pending, (state, action) => {
+    //   console.log(state, action.payload);
+    // });
   },
 });
 

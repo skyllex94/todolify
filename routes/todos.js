@@ -33,6 +33,7 @@ router.post("/:id", async (req, res) => {
   // Find the todo list of the logged user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });
 
+  let resp;
   // If task inputted in any category, it will trigger this part
   if (req.body.categoryId) {
     // Find the index of the Category in which to input the task comparing ids
@@ -48,7 +49,7 @@ router.post("/:id", async (req, res) => {
     // Push the new task to the existing array of task for the correct category
     const taskToDB = userTodoList.categories[categoryIndex].tasks.push(newTask);
     // Send the new task to MongoDB
-    await userTodoList.save(taskToDB);
+    resp = await userTodoList.save(taskToDB);
   }
   // If category added it will trigger the else
   else {
@@ -60,8 +61,10 @@ router.post("/:id", async (req, res) => {
     // Push the new category to the current array of categories
     userTodoList.categories.push(newCategory);
     // Send the new category to MongoDB and store it
-    await userTodoList.save(newCategory);
+    resp = await userTodoList.save(newCategory);
   }
+
+  res.send(resp);
 });
 
 module.exports = router;
