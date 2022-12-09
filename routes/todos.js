@@ -17,6 +17,7 @@ router.get("/:id", async (req, res) => {
 
     const populateCategories = userTodoList.categories;
 
+    console.log(populateCategories);
     res.send(populateCategories);
 
     // const todos = await updatedTodos.save();
@@ -46,10 +47,20 @@ router.post("/:id", async (req, res) => {
       done: false,
     };
 
+    console.log(newTask);
+
     // Push the new task to the existing array of task for the correct category
     const taskToDB = userTodoList.categories[categoryIndex].tasks.push(newTask);
+    console.log(taskToDB);
     // Send the new task to MongoDB
     resp = await userTodoList.save(taskToDB);
+    // Return the object wt all info to update UI
+    // const objToBeReturned = {
+    //   user_id: req.params.id,
+    //   categoryIndex,
+    //   task: req.body.task,
+    // };
+    // resp = objToBeReturned;
   }
   // If category added it will trigger the else
   else {

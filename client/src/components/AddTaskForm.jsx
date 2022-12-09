@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTaskAsync, addTaskToUI } from "../redux/categorySlice";
+import { addTaskAsync } from "../redux/categorySlice";
 
 const AddTaskForm = ({ user_id, categoryId, category }) => {
   const [task, setTask] = useState("");
@@ -11,7 +11,6 @@ const AddTaskForm = ({ user_id, categoryId, category }) => {
     event.preventDefault();
     if (task) {
       dispatch(addTaskAsync({ user_id, categoryId, category, task }));
-      // dispatch(addTaskToUI({ categoryId, task }));
     }
     setTask("");
   };

@@ -2,10 +2,11 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 // Redux
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { decodeJWT } from "../utils/functions";
+import { getTodosAsync } from "../redux/categorySlice";
 
 function Main() {
   // Fetch the JWT from Redux
@@ -13,25 +14,26 @@ function Main() {
   const user = decodeJWT(jwt.token);
   const { id } = user.user;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [loadedTodoList, setLoadedTodoList] = useState(false);
   const [todoListObj, setTodoListObj] = useState(null);
 
   // Async function triggered when page loaded to call a GET request
   // to specific user & fetch the todoList object of that user
-  const getUserTodoList = async () => {
-    try {
-      const todoList = await axios.get(`/user/${id}`);
-      setTodoListObj(todoList.data);
+  const getUserTodoList = async (id) => {
+    // Trigger async GET request to the server, who fetch the data from MongoDB
+    const respFromDB = await dispatch(getTodosAsync(id));
+    if (respFromDB) {
       setLoadedTodoList(true);
-    } catch (error) {
-      return error.message;
+      // Set state do it can be used and mapped over
+      setTodoListObj(respFromDB);
     }
   };
 
   // Trigger async func on page load
   useEffect(() => {
-    getUserTodoList();
+    getUserTodoList(id);
   }, []);
 
   useEffect(() => {
@@ -200,7 +202,7 @@ function Main() {
         </div>
         <div className="container mx-auto mt-12">
           {loadedTodoList && (
-            <TodoList userTodoList={todoListObj} user_id={id} />
+            <TodoList userTodoList={todoListObj.payload} user_id={id} />
           )}
         </div>
       </div>

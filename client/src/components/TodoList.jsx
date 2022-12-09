@@ -3,13 +3,14 @@ import CategoryItem from "./CategoryItem";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync } from "../redux/categorySlice";
-import axios from "axios";
 
 const TodoList = ({ userTodoList, user_id }) => {
   const dispatch = useDispatch();
   const [category, setCategory] = useState("");
   const [todoList, setTodoList] = useState(userTodoList);
   const [onSubmit, setOnSubmit] = useState(null);
+
+  const [loadedTodos, setLoadedTodos] = useState(false);
 
   const addCategory = (e) => {
     e.preventDefault();
@@ -18,21 +19,24 @@ const TodoList = ({ userTodoList, user_id }) => {
     setOnSubmit(category);
   };
 
-  async function getUserTodoList(id) {
-    try {
-      const fetchedTodoList = await axios.get(`/user/${id}`);
-      console.log("fetchedTodoList:", fetchedTodoList);
-      // Set the current todoList with the new updated one from adding a category
-      setTodoList(fetchedTodoList.data);
-    } catch (error) {
-      return error.message;
-    }
-  }
+  // async function getUserTodoList(id) {
+  //   try {
+  //     const fetchedTodoList = await axios.get(`/user/${id}`);
+  //     console.log("fetchedTodoList:", fetchedTodoList);
+  //     // Set the current todoList with the new updated one from adding a category
+  //     setTodoList(fetchedTodoList.data);
+  //   } catch (error) {
+  //     return error.message;
+  //   }
+  // }
 
   // Updating the UI each time there is an onSubmit, in order to fetch the array of categories
+
   useEffect(() => {
     // Async func for doing a GET req and fetching categories
-    getUserTodoList(user_id);
+    // getUserTodoList(user_id);
+    if (userTodoList) setLoadedTodos(true);
+    console.log(todoList);
     // Having an additional setState do do another re-render in order to get the last element
     setOnSubmit("additional re-render");
   }, [onSubmit, user_id]);
@@ -41,7 +45,7 @@ const TodoList = ({ userTodoList, user_id }) => {
     <div className="flex ml-5">
       <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
         <ul className="list-group mb-2 pt-5 ">
-          {todoList &&
+          {loadedTodos &&
             todoList.map((curr, index) => (
               <div className="brackets min-w-[93%]" key={index}>
                 <CategoryItem
