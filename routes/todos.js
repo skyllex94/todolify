@@ -49,18 +49,24 @@ router.post("/:id", async (req, res) => {
 
     console.log(newTask);
 
-    // Push the new task to the existing array of task for the correct category
-    const taskToDB = userTodoList.categories[categoryIndex].tasks.push(newTask);
-    console.log(taskToDB);
+    // Push the new task to the existing array of task for the correct category / returned array length
+    const taskToDBList =
+      userTodoList.categories[categoryIndex].tasks.push(newTask);
+    console.log(taskToDBList);
     // Send the new task to MongoDB
-    resp = await userTodoList.save(taskToDB);
+    await userTodoList.save(taskToDBList);
+    // Fetch the newly created task_id from the DB
+    const task_id =
+      userTodoList.categories[categoryIndex].tasks[taskToDBList - 1]._id;
+    // console.log(payload, task_id.valueOf());
     // Return the object wt all info to update UI
-    // const objToBeReturned = {
-    //   user_id: req.params.id,
-    //   categoryIndex,
-    //   task: req.body.task,
-    // };
-    // resp = objToBeReturned;
+    const taskToBeReturned = {
+      task_id: task_id.valueOf(),
+      task: req.body.task,
+      done: false,
+    };
+    // console.log(taskToBeReturned);
+    resp = taskToBeReturned;
   }
   // If category added it will trigger the else
   else {
@@ -69,10 +75,20 @@ router.post("/:id", async (req, res) => {
       category: req.body.category,
       tasks: [],
     };
-    // Push the new category to the current array of categories
-    userTodoList.categories.push(newCategory);
+    // Push the new category to the current array of categories / returns length of the array
+    const arrLength = userTodoList.categories.push(newCategory);
     // Send the new category to MongoDB and store it
-    resp = await userTodoList.save(newCategory);
+    await userTodoList.save(newCategory);
+    // Fetch category id from newly created DB obj
+    const category_id = userTodoList.categories[arrLength - 1]._id.valueOf();
+    console.log(category_id);
+    const categoryToReturn = {
+      category_id,
+      category: req.body.category,
+      tasks: [],
+    };
+    console.log(categoryToReturn);
+    resp = categoryToReturn;
   }
 
   res.send(resp);

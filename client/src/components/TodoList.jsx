@@ -6,17 +6,25 @@ import { addCategoryAsync } from "../redux/categorySlice";
 
 const TodoList = ({ userTodoList, user_id }) => {
   const dispatch = useDispatch();
-  const [category, setCategory] = useState("");
+  const [addCategoryValue, setAddCategoryValue] = useState("");
+
   const [todoList, setTodoList] = useState(userTodoList);
   const [onSubmit, setOnSubmit] = useState(null);
 
   const [loadedTodos, setLoadedTodos] = useState(false);
 
-  const addCategory = (e) => {
+  const addCategory = async (e) => {
     e.preventDefault();
-    if (category) dispatch(addCategoryAsync({ user_id, category }));
-    setCategory("");
-    setOnSubmit(category);
+    if (addCategoryValue) {
+      const categoryObjFromDB = await dispatch(
+        addCategoryAsync({ user_id, category: addCategoryValue })
+      );
+      console.log(categoryObjFromDB);
+      setTodoList((prevState) => [...todoList, categoryObjFromDB.payload.data]);
+    }
+
+    setAddCategoryValue("");
+    setOnSubmit(addCategoryValue);
   };
 
   // async function getUserTodoList(id) {
@@ -32,14 +40,14 @@ const TodoList = ({ userTodoList, user_id }) => {
 
   // Updating the UI each time there is an onSubmit, in order to fetch the array of categories
 
-  useEffect(() => {
-    // Async func for doing a GET req and fetching categories
-    // getUserTodoList(user_id);
-    if (userTodoList) setLoadedTodos(true);
-    console.log(todoList);
-    // Having an additional setState do do another re-render in order to get the last element
-    setOnSubmit("additional re-render");
-  }, [onSubmit, user_id]);
+  // useEffect(() => {
+  // Async func for doing a GET req and fetching categories
+  // getUserTodoList(user_id);
+  // if (userTodoList) setLoadedTodos(true);
+  // console.log(todoList);
+  // Having an additional setState do do another re-render in order to get the last element
+  //   setOnSubmit("additional re-render");
+  // }, [onSubmit, user_id]);
 
   return (
     <div className="flex ml-5">
@@ -65,8 +73,8 @@ const TodoList = ({ userTodoList, user_id }) => {
               type="text"
               autoFocus
               placeholder="Add Category..."
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
+              value={addCategoryValue}
+              onChange={(event) => setAddCategoryValue(event.target.value)}
               // onBlur={() => setCategoryInput(false)}
               className="text-black-500 ml-3 h-12 focus:outline-none pl-5 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
             />

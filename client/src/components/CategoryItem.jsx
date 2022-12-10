@@ -4,26 +4,35 @@ import { HiCode } from "react-icons/hi";
 // Components
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
-import AddTaskForm from "./AddTaskForm";
 import { useDispatch } from "react-redux";
 import { addTaskAsync } from "../redux/categorySlice";
 
 function CategoryItem({ user_id, categoryId, category, tasks }) {
   const [taskList, setTaskList] = useState(tasks);
 
-  const [task, setTask] = useState("");
+  const [addTaskValue, setAddTaskValue] = useState("");
   const [enableAddTask, setEnableAddTask] = useState(false);
   const dispatch = useDispatch();
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    if (task) {
-      const result = await dispatch(
-        addTaskAsync({ user_id, categoryId, category, task })
-      );
-      // setTaskList(result.payload.data.categories);
+    if (addTaskValue) {
+      try {
+        // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
+        const taskObjFromDB = await dispatch(
+          addTaskAsync({ user_id, categoryId, category, task: addTaskValue })
+        );
+        if (taskObjFromDB) {
+          const { task_id, task, done } = taskObjFromDB.payload.data;
+          const taskToAdd = { task_id, task, done };
+          // If resp is okay, add the new task to the list
+          setTaskList((prevState) => [...taskList, taskToAdd]);
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
     }
-    setTask("");
+    setAddTaskValue("");
   };
 
   return (
@@ -73,8 +82,10 @@ function CategoryItem({ user_id, categoryId, category, tasks }) {
                         type="text"
                         autoFocus
                         placeholder="Add Task..."
-                        value={task}
-                        onChange={(event) => setTask(event.target.value)}
+                        value={addTaskValue}
+                        onChange={(event) =>
+                          setAddTaskValue(event.target.value)
+                        }
                         onBlur={() => setEnableAddTask(false)}
                         className="text-black-500 ml-3 h-12 focus:outline-none pl-10 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
                       />
