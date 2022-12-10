@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { toggleTask, deleteTask } from "../redux/categorySlice";
+import { toggleTask, deleteTaskAsync } from "../redux/categorySlice";
 // UI Element Imports
 import { GrFormClose } from "react-icons/gr";
 
@@ -12,7 +12,7 @@ const TaskItem = ({ categoryId, id, task, done }) => {
   };
 
   const handleDelete = () => {
-    dispatch(deleteTask({ categoryId, id }));
+    dispatch(deleteTaskAsync({ categoryId, id }));
   };
 
   return (

@@ -23,10 +23,8 @@ function CategoryItem({ user_id, categoryId, category, tasks }) {
           addTaskAsync({ user_id, categoryId, category, task: addTaskValue })
         );
         if (taskObjFromDB) {
-          const { task_id, task, done } = taskObjFromDB.payload.data;
-          const taskToAdd = { task_id, task, done };
-          // If resp is okay, add the new task to the list
-          setTaskList((prevState) => [...taskList, taskToAdd]);
+          // If response is okay, add the new task to the category
+          setTaskList((prevState) => [...taskList, taskObjFromDB.payload.data]);
         }
       } catch (err) {
         console.log(err.message);

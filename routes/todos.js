@@ -27,6 +27,28 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// @route   DELETE /user/:id
+// @desc    DELETE category OR certain task in an auth user
+// @access  Private
+router.delete("/:id/:item_id", async (req, res) => {
+  // Find the todos of the logged user
+  const userTodoList = await Todos.findOne({ user_id: req.params.id });
+  console.log(userTodoList.categories[137]);
+
+  const categoryIndex = userTodoList.categories.findIndex(
+    (curr) => curr._id.valueOf() === req.params.item_id
+  );
+
+  const id = req.params.item_id;
+  const deleteCategoryFromDB = await Todos.deleteOne({
+    category: "newlyINPUTED",
+  });
+
+  console.log(categoryIndex);
+  console.log(deleteCategoryFromDB);
+  res.send(deleteCategoryFromDB);
+});
+
 // @route   POST /user/:id
 // @desc    Add category to an auth user
 // @access  Private
@@ -47,12 +69,9 @@ router.post("/:id", async (req, res) => {
       done: false,
     };
 
-    console.log(newTask);
-
     // Push the new task to the existing array of task for the correct category / returned array length
     const taskToDBList =
       userTodoList.categories[categoryIndex].tasks.push(newTask);
-    console.log(taskToDBList);
     // Send the new task to MongoDB
     await userTodoList.save(taskToDBList);
     // Fetch the newly created task_id from the DB

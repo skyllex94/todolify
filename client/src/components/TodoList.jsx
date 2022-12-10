@@ -2,29 +2,50 @@ import React, { useEffect, useState } from "react";
 import CategoryItem from "./CategoryItem";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
-import { addCategoryAsync } from "../redux/categorySlice";
+import { addCategoryAsync, deleteCategoryAsync } from "../redux/categorySlice";
+import { GrFormClose } from "react-icons/gr";
 
 const TodoList = ({ userTodoList, user_id }) => {
   const dispatch = useDispatch();
   const [addCategoryValue, setAddCategoryValue] = useState("");
 
   const [todoList, setTodoList] = useState(userTodoList);
-  const [onSubmit, setOnSubmit] = useState(null);
-
-  const [loadedTodos, setLoadedTodos] = useState(false);
+  // TODO: Including a todo loader gif
+  const [loadedTodos, setLoadedTodos] = useState(todoList ? true : false);
 
   const addCategory = async (e) => {
     e.preventDefault();
     if (addCategoryValue) {
-      const categoryObjFromDB = await dispatch(
-        addCategoryAsync({ user_id, category: addCategoryValue })
-      );
-      console.log(categoryObjFromDB);
-      setTodoList((prevState) => [...todoList, categoryObjFromDB.payload.data]);
+      try {
+        // If adding is successful, server will return category obj, including the newly created category id
+        const categoryObjFromDB = await dispatch(
+          addCategoryAsync({ user_id, category: addCategoryValue })
+        );
+        console.log(categoryObjFromDB);
+        // Push the new category to the current todo list
+        setTodoList((prevState) => [
+          ...todoList,
+          categoryObjFromDB.payload.data,
+        ]);
+      } catch (err) {
+        console.log(err.message);
+      }
     }
-
     setAddCategoryValue("");
-    setOnSubmit(addCategoryValue);
+  };
+
+  const deleteCategory = async (e, categoryId) => {
+    e.preventDefault();
+    console.log("YEahhh");
+    try {
+      const deletedCategory = await dispatch(
+        deleteCategoryAsync({ user_id, categoryId })
+      );
+
+      console.log(deletedCategory);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   // async function getUserTodoList(id) {
@@ -55,13 +76,22 @@ const TodoList = ({ userTodoList, user_id }) => {
         <ul className="list-group mb-2 pt-5 ">
           {loadedTodos &&
             todoList.map((curr, index) => (
-              <div className="brackets min-w-[93%]" key={index}>
-                <CategoryItem
-                  user_id={user_id}
-                  categoryId={curr._id}
-                  category={curr.category}
-                  tasks={curr.tasks}
-                />
+              <div>
+                <div className="brackets min-w-[93%]" key={index}>
+                  <CategoryItem
+                    user_id={user_id}
+                    categoryId={curr._id}
+                    category={curr.category}
+                    tasks={curr.tasks}
+                  />
+                  <button
+                    key={index + "button"}
+                    className="ml-3 p-1 group-hover:block rounded-full"
+                    onClick={(e) => deleteCategory(e, curr._id)}
+                  >
+                    <GrFormClose />
+                  </button>
+                </div>
               </div>
             ))}
 

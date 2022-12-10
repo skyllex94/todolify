@@ -51,6 +51,43 @@ export const addTaskAsync = createAsyncThunk(
   }
 );
 
+export const deleteCategoryAsync = createAsyncThunk(
+  "category/deleteCategoryAsync",
+  // payload => {user_id, categoryId}
+  async (payload) => {
+    try {
+      const resp = await axios.delete(
+        `/user/${payload.user_id}/${payload.categoryId}`
+      );
+
+      // Returns new task obj wt included id from DB
+      return await resp;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
+
+export const deleteTaskAsync = createAsyncThunk(
+  "category/deleteTaskAsync",
+  // payload => {categoryId, id}
+  async (payload) => {
+    try {
+      const resp = await axios.delete(`/user/${payload.user_id}`, {
+        data: {
+          categoryId: payload.categoryId,
+          task_id: payload.id,
+        },
+      });
+
+      // Returns new task obj wt included id from DB
+      return await resp;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
+
 export const categorySlice = createSlice({
   name: "category",
   initialState: [],
@@ -95,26 +132,27 @@ export const categorySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(addCategoryAsync.fulfilled, (state, action) => {
-      return action.payload;
-    });
+    // Fetch all of the todo list from the DB and return it to the UI for displaying
     builder.addCase(getTodosAsync.fulfilled, (state, action) => {
       return action.payload;
     });
+    // Add category and return it to be displayed
+    builder.addCase(addCategoryAsync.fulfilled, (state, action) => {
+      return action.payload;
+    });
+    // Add task and return it to be displayed
     builder.addCase(addTaskAsync.fulfilled, (state, action) => {
-      // state[action.payload.categoryIndex].tasks.push(action.payload.task);
-
-      // state.entities.push(action.payload)
-      // Cannot load the state, but able to pass in the payload
-      console.log("STATE:", current(state));
-      console.log("PAYLOAD:", action.payload);
       console.log(current(state));
       return action.payload;
     });
-
-    // builder.addCase(addTaskAsync.pending, (state, action) => {
-    //   console.log(state, action.payload);
-    // });
+    // Delete a category
+    builder.addCase(deleteCategoryAsync.fulfilled, (state, action) => {
+      console.log(action.payload);
+    });
+    // Delete a task
+    builder.addCase(deleteTaskAsync.fulfilled, (state, action) => {
+      console.log(action.payload);
+    });
   },
 });
 
