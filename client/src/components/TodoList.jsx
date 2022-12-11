@@ -76,8 +76,8 @@ const TodoList = ({ userTodoList, user_id }) => {
         <ul className="list-group mb-2 pt-5 ">
           {loadedTodos &&
             todoList.map((curr, index) => (
-              <div>
-                <div className="brackets min-w-[93%]" key={index}>
+              <div key={index}>
+                <div className="brackets min-w-[93%]">
                   <CategoryItem
                     user_id={user_id}
                     categoryId={curr._id}

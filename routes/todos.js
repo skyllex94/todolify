@@ -33,20 +33,23 @@ router.get("/:id", async (req, res) => {
 router.delete("/:id/:item_id", async (req, res) => {
   // Find the todos of the logged user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });
-  console.log(userTodoList.categories[137]);
 
-  const categoryIndex = userTodoList.categories.findIndex(
-    (curr) => curr._id.valueOf() === req.params.item_id
-  );
+  // const categoryIndex = userTodoList.categories.findIndex(
+  //   (curr) => curr._id.valueOf() === req.params.item_id
+  // );
 
   const id = req.params.item_id;
-  const deleteCategoryFromDB = await Todos.deleteOne({
-    category: "newlyINPUTED",
-  });
+  // const deleteCategoryFromDB = await Todos.deleteOne({
+  //   category: "newlyINPUTED",
+  // });
 
-  console.log(categoryIndex);
-  console.log(deleteCategoryFromDB);
-  res.send(deleteCategoryFromDB);
+  // Works on deleting the entire document
+  // const resp = await Todos.findByIdAndDelete("637f9337db5851a564a0b001");
+  const show = await Todos.find({ user_id: req.params.id });
+  // const resp = await Todos.categories.findByIdAndDelete(id);
+  console.log(show[0].categories);
+  // console.log(deleteCategoryFromDB);
+  res.send(` ${show}`);
 });
 
 // @route   POST /user/:id
