@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 // UI Elements
 import { HiCode } from "react-icons/hi";
 // Components
@@ -20,8 +20,9 @@ function CategoryItem({ user_id, categoryId, category, tasks }) {
       try {
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
         const taskObjFromDB = await dispatch(
-          addTaskAsync({ user_id, categoryId, category, task: addTaskValue })
+          addTaskAsync({ user_id, categoryId, task: addTaskValue })
         );
+        console.log(taskObjFromDB);
         if (taskObjFromDB) {
           // If response is okay, add the new task to the category
           setTaskList((prevState) => [...taskList, taskObjFromDB.payload.data]);

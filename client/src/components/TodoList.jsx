@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CategoryItem from "./CategoryItem";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
@@ -11,7 +11,7 @@ const TodoList = ({ userTodoList, user_id }) => {
 
   const [todoList, setTodoList] = useState(userTodoList);
   // TODO: Including a todo loader gif
-  const [loadedTodos, setLoadedTodos] = useState(todoList ? true : false);
+  const [loadedTodos] = useState(todoList ? true : false);
 
   const addCategory = async (e) => {
     e.preventDefault();
@@ -36,13 +36,19 @@ const TodoList = ({ userTodoList, user_id }) => {
 
   const deleteCategory = async (e, categoryId) => {
     e.preventDefault();
-    console.log("YEahhh");
+
     try {
       const deletedCategory = await dispatch(
         deleteCategoryAsync({ user_id, categoryId })
       );
 
-      console.log(deletedCategory);
+      const deletedCategoryId = deletedCategory.payload.data;
+      // Remove the category
+      if (deletedCategoryId) {
+        setTodoList((prevState) =>
+          prevState.filter((curr) => curr._id !== deletedCategoryId)
+        );
+      }
     } catch (err) {
       console.log(err.message);
     }
@@ -87,7 +93,12 @@ const TodoList = ({ userTodoList, user_id }) => {
                   <button
                     key={index + "button"}
                     className="ml-3 p-1 group-hover:block rounded-full"
-                    onClick={(e) => deleteCategory(e, curr._id)}
+                    onClick={(e) => {
+                      const confirmBox = window.confirm(
+                        "Do you really want to delete this category?"
+                      );
+                      if (confirmBox) deleteCategory(e, curr._id);
+                    }}
                   >
                     <GrFormClose />
                   </button>

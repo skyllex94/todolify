@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { decodeJWT } from "../utils/functions";
 import { getTodosAsync } from "../redux/categorySlice";
 
 function Main() {
   // Fetch the JWT from Redux
   const jwt = useSelector((state) => state.auth.jwt);
-  const user = decodeJWT(jwt.token);
+  const localJWT = JSON.parse(window.localStorage.getItem("jwt"));
+  const user = decodeJWT(localJWT);
   const { id } = user.user;
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -38,8 +38,8 @@ function Main() {
 
   useEffect(() => {
     // If there's no JWT, then navigate back to landing page
-    if (!jwt) navigate("/");
-  }, [jwt, navigate]);
+    // if (!jwt && !localJWT) navigate("/");
+  }, [jwt, navigate, localJWT]);
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import axios from "axios";
@@ -17,6 +17,11 @@ function Login() {
 
   const { email, password } = formData;
 
+  useEffect(() => {
+    const fetchJWT = JSON.parse(window.localStorage.getItem("jwt"));
+    if (fetchJWT) navigate("/user/:id");
+  }, []);
+
   const onChange = (event, keyName) =>
     setFormData({ ...formData, [keyName]: event.target.value });
 
@@ -29,7 +34,12 @@ function Login() {
 
       // Take in the jwt returned from post req and set in redux store
       try {
-        dispatch(storeJWT({ jwt: res.data }));
+        const jwt = dispatch(storeJWT({ jwt: res.data }));
+        console.log(jwt);
+        window.localStorage.setItem(
+          "jwt",
+          JSON.stringify(jwt.payload.jwt.token)
+        );
       } catch (err) {
         console.error(err.message);
       }
