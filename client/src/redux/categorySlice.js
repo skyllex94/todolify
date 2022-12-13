@@ -38,7 +38,6 @@ export const addTaskAsync = createAsyncThunk(
   // payload => {user_id, categoryId, task}
   async (payload) => {
     try {
-      console.log(payload.categoryId);
       const resp = axios.post(
         `/user/${payload.user_id}/${payload.categoryId}`,
         {
@@ -73,15 +72,13 @@ export const deleteCategoryAsync = createAsyncThunk(
 
 export const deleteTaskAsync = createAsyncThunk(
   "category/deleteTaskAsync",
-  // payload => {categoryId, id}
+  // payload => {user_id, category_id, id}
   async (payload) => {
+    console.log("payload:", payload.user_id, payload.category_id, payload.id);
     try {
-      const resp = await axios.delete(`/user/${payload.user_id}`, {
-        data: {
-          categoryId: payload.categoryId,
-          task_id: payload.id,
-        },
-      });
+      const resp = await axios.delete(
+        `/user/${payload.user_id}/${payload.category_id}/${payload.id}`
+      );
 
       // Returns new task obj wt included id from DB
       return await resp;

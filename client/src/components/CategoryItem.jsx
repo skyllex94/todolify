@@ -42,18 +42,20 @@ function CategoryItem({ user_id, categoryId, category, tasks }) {
           {category}
         </div>
 
-        <DoneTasks tasks={tasks} />
+        <DoneTasks tasks={taskList} />
       </div>
 
       <div className="items-center my-1">
         {taskList &&
           taskList.map((curr, index) => {
-            const { id, task, done } = curr;
+            const { _id, task, done } = curr;
+
             return (
               <TaskItem
                 key={index}
-                categoryId={categoryId}
-                id={id}
+                user_id={user_id}
+                category_id={categoryId}
+                id={_id}
                 task={task}
                 done={done}
               />

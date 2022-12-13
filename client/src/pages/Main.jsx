@@ -2,17 +2,12 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 // Redux
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { decodeJWT } from "../utils/functions";
 import { getTodosAsync } from "../redux/categorySlice";
 
-function Main() {
-  // Fetch the JWT from Redux
-  const jwt = useSelector((state) => state.auth.jwt);
-  const localJWT = JSON.parse(window.localStorage.getItem("jwt"));
-  const user = decodeJWT(localJWT);
-  const { id } = user.user;
+function Main({ user_id }) {
+  const id = user_id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -31,15 +26,27 @@ function Main() {
     }
   };
 
+  // URl change if comming from a different route
+  const urlValidation = () => {
+    const currentUrl = window.location.href;
+    const pathArray = currentUrl.split("/");
+    const pathToCompare = pathArray.slice(3);
+    if (pathToCompare[1] !== user_id) {
+      const url = `/user/${user_id}`;
+      window.history.pushState({}, "", url);
+    }
+  };
+
   // Trigger async func on page load
   useEffect(() => {
     getUserTodoList(id);
+    urlValidation();
   }, []);
 
   useEffect(() => {
-    // If there's no JWT, then navigate back to landing page
-    // if (!jwt && !localJWT) navigate("/");
-  }, [jwt, navigate, localJWT]);
+    // If there's no JWT passed from App.js, then navigate back to landing page
+    if (!user_id) navigate("/");
+  }, [navigate, user_id]);
 
   return (
     <div>

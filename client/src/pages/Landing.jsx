@@ -5,7 +5,7 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Header from "./Header";
 
-function Landing() {
+function Landing({ user_id }) {
   return (
     <div>
       <Header />
@@ -34,7 +34,7 @@ function Landing() {
               </span>
               <div className="grid grid-cols-3 space-x-4 md:space-x-6 md:flex md:justify-center lg:justify-start">
                 <Link
-                  to="/user/:id"
+                  to={`user/${user_id}`}
                   className="p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-full duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-600/20 dark:hover:border-cyan-300/30"
                 >
                   <div className="flex justify-center space-x-3">

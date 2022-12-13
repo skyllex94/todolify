@@ -33,16 +33,11 @@ function Login() {
       const res = await axios.post("/user", formData);
 
       // Take in the jwt returned from post req and set in redux store
-      try {
-        const jwt = dispatch(storeJWT({ jwt: res.data }));
-        console.log(jwt);
-        window.localStorage.setItem(
-          "jwt",
-          JSON.stringify(jwt.payload.jwt.token)
-        );
-      } catch (err) {
-        console.error(err.message);
-      }
+
+      const jwt = dispatch(storeJWT({ jwt: res.data }));
+      console.log(jwt);
+      window.localStorage.setItem("jwt", JSON.stringify(jwt.payload.jwt.token));
+
       const user = decodeJWT(res.data.token);
       const { id } = user.user;
       navigate(`/user/${id}`);
