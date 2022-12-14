@@ -7,6 +7,7 @@ import image from "../assets/reg.jpg";
 // Redux
 import { useDispatch } from "react-redux";
 import { storeJWT } from "../redux/authSlice";
+import { decodeJWT } from "../utils/functions";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -38,9 +39,16 @@ function Register() {
 
         try {
           // Store the jsonwebtoken in redux store for route validation
-          dispatch(storeJWT({ jwt: res.data }));
-          // Reroute to main page
-          navigate(`/user/${res.data.id}`);
+          const jwt = dispatch(storeJWT({ jwt: res.data }));
+          console.log(jwt);
+          window.localStorage.setItem(
+            "jwt",
+            JSON.stringify(jwt.payload.jwt.token)
+          );
+
+          const user = decodeJWT(res.data.token);
+          const { id } = user.user;
+          navigate(`/user/${id}`);
         } catch (error) {
           console.error(error.message);
         }

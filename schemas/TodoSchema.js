@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 const CategoriesSchema = require("./CategoriesSchema");
 
 const TodoSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-  },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",

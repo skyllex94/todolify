@@ -27,8 +27,6 @@ const TodoList = ({ userTodoList, user_id }) => {
           ...todoList,
           categoryObjFromDB.payload.data,
         ]);
-        console.log("categoryObjFromDB:", categoryObjFromDB.payload.data);
-        console.log("todoList:", todoList);
       } catch (err) {
         console.log(err.message);
       }
