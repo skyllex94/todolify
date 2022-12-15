@@ -72,12 +72,22 @@ export const deleteCategoryAsync = createAsyncThunk(
 
 export const deleteTaskAsync = createAsyncThunk(
   "category/deleteTaskAsync",
-  // payload => {user_id, category_id, id}
+  // payload => {user_id, category_index, id}
   async (payload) => {
-    console.log("payload:", payload.user_id, payload.category_id, payload.id);
+    console.log(
+      "payload:",
+      payload.user_id,
+      payload.category_index,
+      payload.category_id,
+      payload.id
+    );
+
+    const index = payload.category_id;
+    console.log(typeof index);
+
     try {
       const resp = await axios.delete(
-        `/user/${payload.user_id}/${payload.category_id}/${payload.id}`
+        `/user/${payload.user_id}/${index}/${payload.id}`
       );
 
       // Returns new task obj wt included id from DB

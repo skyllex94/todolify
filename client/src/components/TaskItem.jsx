@@ -4,7 +4,7 @@ import { toggleTask, deleteTaskAsync } from "../redux/categorySlice";
 // UI Element Imports
 import { GrFormClose } from "react-icons/gr";
 
-const TaskItem = ({ user_id, category_id, id, task, done }) => {
+const TaskItem = ({ user_id, category_id, category_index, id, task, done }) => {
   const dispatch = useDispatch();
 
   const handleCheckboxClick = () => {
@@ -12,7 +12,7 @@ const TaskItem = ({ user_id, category_id, id, task, done }) => {
   };
 
   const handleDelete = () => {
-    dispatch(deleteTaskAsync({ user_id, category_id, id }));
+    dispatch(deleteTaskAsync({ user_id, category_index, category_id, id }));
   };
 
   return (

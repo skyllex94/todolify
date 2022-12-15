@@ -7,7 +7,7 @@ import TaskItem from "./TaskItem";
 import { useDispatch } from "react-redux";
 import { addTaskAsync } from "../redux/categorySlice";
 
-function CategoryItem({ user_id, categoryId, category, tasks }) {
+function CategoryItem({ user_id, categoryId, categoryIndex, category, tasks }) {
   const [taskList, setTaskList] = useState(tasks);
 
   const [addTaskValue, setAddTaskValue] = useState("");
@@ -54,6 +54,7 @@ function CategoryItem({ user_id, categoryId, category, tasks }) {
               <TaskItem
                 key={index}
                 user_id={user_id}
+                category_index={categoryIndex}
                 category_id={categoryId}
                 id={_id}
                 task={task}

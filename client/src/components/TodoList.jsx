@@ -87,6 +87,7 @@ const TodoList = ({ userTodoList, user_id }) => {
                   <CategoryItem
                     user_id={user_id}
                     categoryId={curr._id}
+                    categoryIndex={index}
                     category={curr.category}
                     tasks={curr.tasks}
                   />

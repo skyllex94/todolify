@@ -143,28 +143,28 @@ router.delete("/:id/:item_id", async (req, res) => {
   // const id = req.params.item_id.toString();
 });
 
-// @route   DELETE DELETE /user/:user_id/:category_id/id
+// @route   DELETE DELETE /user/:user_id/:category_index/:id
 // @desc    DELETE task from a category
 // @access  Private
-router.delete("/:user_id/:category_id/:id", async (req, res) => {
+router.delete("/:user_id/:index/:id", async (req, res) => {
   // Define the user_id and category_id and prep them for the DB query
   const user_id = mongoose.Types.ObjectId(req.params.user_id);
-  const category_id = mongoose.Types.ObjectId(req.params.category_id);
+  const category_index = mongoose.Types.ObjectId(req.params.index);
   const taskToDelete = mongoose.Types.ObjectId(req.params.id);
 
   // DB query for finding matching user_id, going in the categories and removing the selected category by id
-  const deleteTask = await Todos.deleteOne(
-    {
-      "categories.tasks._id": taskToDelete,
-    },
-    (err, result) => {
-      if (err) {
-        // handle error
-      } else {
-        return result.deletedCount;
-      }
-    }
-  );
+  // const deleteTask = await Todos.deleteOne(
+  //   {
+  //     "categories.tasks._id": taskToDelete,
+  //   },
+  //   (err, result) => {
+  //     if (err) {
+  //       // handle error
+  //     } else {
+  //       return result.deletedCount;
+  //     }
+  //   }
+  // );
   // {
   //   $pull: {
   //     "categories.tasks": {
@@ -173,29 +173,22 @@ router.delete("/:user_id/:category_id/:id", async (req, res) => {
   //   },
   // }
 
-  // const deleteTask = await Todos.findOne(
-  //   { user_id },
-  //   { "categories.tasks._id": taskToDelete }
-  //   // {
-  //   //   $pull: {
-  //   //     tasks: {
-  //   //       _id: taskToDelete,
-  //   //     },
-  //   //   },
-  //   // }
-  // );
+  // const key = "categories." + category_index + ".tasks";
+  // console.log(typeof key);
+  const deletedTask = await Todos.updateOne(
+    { user_id },
+    {
+      $pull: {
+        "categories.[index].tasks": {
+          _id: taskToDelete,
+        },
+      },
+    }
+  );
 
-  // const chatgtp = await Todos.findOne(
-  //   { user_id: taskToDelete }
-
-  //   // (error, result) => {
-  //   //   // Handle any errors and process the result
-  //   // }
-  // );
-
-  console.log(deleteTask);
+  console.log("deletedTask", deletedTask);
   // Return back the id of the category removed
-  res.send(deleteTask);
+  res.send(deletedTask);
 });
 
 module.exports = router;
