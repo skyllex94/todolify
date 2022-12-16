@@ -6,8 +6,16 @@ import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
 import { useDispatch } from "react-redux";
 import { addTaskAsync } from "../redux/categorySlice";
+import DeleteCategory from "./DeleteCategory";
 
-function CategoryItem({ user_id, categoryId, categoryIndex, category, tasks }) {
+function CategoryItem({
+  user_id,
+  category_id,
+  categoryIndex,
+  category,
+  tasks,
+  setTodoList,
+}) {
   const [taskList, setTaskList] = useState(tasks);
 
   const [addTaskValue, setAddTaskValue] = useState("");
@@ -19,14 +27,13 @@ function CategoryItem({ user_id, categoryId, categoryIndex, category, tasks }) {
     if (addTaskValue) {
       try {
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
-        const taskObjFromDB = await dispatch(
-          addTaskAsync({ user_id, categoryId, task: addTaskValue })
-        );
-        console.log(taskObjFromDB);
-        if (taskObjFromDB) {
-          // If response is okay, add the new task to the category
-          setTaskList((prevState) => [...taskList, taskObjFromDB.payload.data]);
-        }
+        dispatch(addTaskAsync({ user_id, category_id, task: addTaskValue }));
+
+        // console.log(taskObjFromDB);
+        // if (taskObjFromDB) {
+        //   // If response is okay, add the new task to the category
+        //   setTaskList((prevState) => [...taskList, taskObjFromDB.payload.data]);
+        // }
       } catch (err) {
         console.log(err.message);
       }
@@ -42,7 +49,14 @@ function CategoryItem({ user_id, categoryId, categoryIndex, category, tasks }) {
           {category}
         </div>
 
-        <DoneTasks tasks={taskList} />
+        <div className="wrapper-right-elements flex inline">
+          <DeleteCategory
+            user_id={user_id}
+            id={category_id}
+            setTodoList={setTodoList}
+          />
+          <DoneTasks tasks={taskList} />
+        </div>
       </div>
 
       <div className="items-center my-1">
@@ -51,15 +65,19 @@ function CategoryItem({ user_id, categoryId, categoryIndex, category, tasks }) {
             const { _id, task, done } = curr;
 
             return (
-              <TaskItem
+              <div
+                className="flex items-center mb-1 justify-between group"
                 key={index}
-                user_id={user_id}
-                category_index={categoryIndex}
-                category_id={categoryId}
-                id={_id}
-                task={task}
-                done={done}
-              />
+              >
+                <TaskItem
+                  user_id={user_id}
+                  category_id={category_id}
+                  id={_id}
+                  task={task}
+                  done={done}
+                  setTaskList={setTaskList}
+                />
+              </div>
             );
           })}
         <form onSubmit={onSubmit} className="form-inline mt-3 mb-3">

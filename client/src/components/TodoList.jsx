@@ -4,6 +4,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync, deleteCategoryAsync } from "../redux/categorySlice";
 import { GrFormClose } from "react-icons/gr";
+import DeleteCategory from "./DeleteCategory";
 
 const TodoList = ({ userTodoList, user_id }) => {
   const dispatch = useDispatch();
@@ -82,27 +83,19 @@ const TodoList = ({ userTodoList, user_id }) => {
         <ul className="list-group mb-2 pt-5 ">
           {loadedTodos &&
             todoList.map((curr, index) => (
-              <div key={index}>
+              <div
+                key={index}
+                className="flex inline items-center mb-1 justify-between"
+              >
                 <div className="brackets min-w-[93%]">
                   <CategoryItem
                     user_id={user_id}
-                    categoryId={curr._id}
+                    category_id={curr._id}
                     categoryIndex={index}
                     category={curr.category}
                     tasks={curr.tasks}
+                    setTodoList={setTodoList}
                   />
-                  <button
-                    key={index + "button"}
-                    className="ml-3 p-1 group-hover:block rounded-full"
-                    onClick={(e) => {
-                      const confirmBox = window.confirm(
-                        "Do you really want to delete this category?"
-                      );
-                      if (confirmBox) deleteCategory(e, curr._id);
-                    }}
-                  >
-                    <GrFormClose />
-                  </button>
                 </div>
               </div>
             ))}

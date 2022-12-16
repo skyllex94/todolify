@@ -1,40 +1,37 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { toggleTask, deleteTaskAsync } from "../redux/categorySlice";
-// UI Element Imports
-import { GrFormClose } from "react-icons/gr";
+import { toggleCompleteTaskAsync } from "../redux/categorySlice";
+import DeleteTask from "./DeleteTask";
 
-const TaskItem = ({ user_id, category_id, category_index, id, task, done }) => {
+const TaskItem = ({ user_id, category_id, id, task, done, setTaskList }) => {
   const dispatch = useDispatch();
 
-  const handleCheckboxClick = () => {
-    dispatch(toggleTask({ category_id, id, done: !done }));
-  };
-
-  const handleDelete = () => {
-    dispatch(deleteTaskAsync({ user_id, category_index, category_id, id }));
+  const toggleCompletedTask = async () => {
+    const resp = await dispatch(
+      toggleCompleteTaskAsync({ user_id, category_id, id })
+    );
+    console.log("resp:", resp);
   };
 
   return (
-    <li className={`list-group-item ${done && "list-group-item-success"}`}>
-      <div className="flex items-center mb-1 justify-between group">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            className="mx-3"
-            onClick={handleCheckboxClick}
-            defaultChecked={done}
-          />
-          {task}
-        </div>
-        <button
-          className="ml-3 p-1 hidden group-hover:block rounded-full"
-          onClick={handleDelete}
-        >
-          <GrFormClose />
-        </button>
+    <React.Fragment>
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          className="mx-3"
+          onClick={toggleCompletedTask}
+          defaultChecked={done}
+        />
+        {task}
       </div>
-    </li>
+
+      <DeleteTask
+        user_id={user_id}
+        category_id={category_id}
+        id={id}
+        setTaskList={setTaskList}
+      />
+    </React.Fragment>
   );
 };
 

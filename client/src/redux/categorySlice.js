@@ -35,11 +35,11 @@ export const addCategoryAsync = createAsyncThunk(
 
 export const addTaskAsync = createAsyncThunk(
   "category/addTaskAsync",
-  // payload => {user_id, categoryId, task}
+  // payload => {user_id, category_id, task - meaning the name of the task}
   async (payload) => {
     try {
       const resp = axios.post(
-        `/user/${payload.user_id}/${payload.categoryId}`,
+        `/user/${payload.user_id}/${payload.category_id}`,
         {
           task: payload.task,
         }
@@ -53,8 +53,26 @@ export const addTaskAsync = createAsyncThunk(
   }
 );
 
+export const toggleCompleteTaskAsync = createAsyncThunk(
+  "toggleCompleteTaskAsync",
+  async (payload) => {
+    // payload => {user_id, category_id, id}
+    try {
+      console.log("payload", payload.user_id, payload.category_id, payload.id);
+      const resp = await axios.patch(`/user/${payload.user_id}`, {
+        category_id: payload.category_id,
+        id: payload.id,
+      });
+
+      return await resp;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
+
 export const deleteCategoryAsync = createAsyncThunk(
-  "category/deleteCategoryAsync",
+  "deleteCategoryAsync",
   // payload => {user_id, categoryId}
   async (payload) => {
     try {
@@ -72,25 +90,16 @@ export const deleteCategoryAsync = createAsyncThunk(
 
 export const deleteTaskAsync = createAsyncThunk(
   "category/deleteTaskAsync",
-  // payload => {user_id, category_index, id}
+  // payload => {user_id, category_id, id}
   async (payload) => {
-    console.log(
-      "payload:",
-      payload.user_id,
-      payload.category_index,
-      payload.category_id,
-      payload.id
-    );
-
-    const index = payload.category_id;
-    console.log(typeof index);
+    console.log("payload:", payload.user_id, payload.category_id, payload.id);
 
     try {
       const resp = await axios.delete(
-        `/user/${payload.user_id}/${index}/${payload.id}`
+        `/user/${payload.user_id}/${payload.category_id}/${payload.id}`
       );
 
-      // Returns new task obj wt included id from DB
+      // Returns the id of the task that was deleted
       return await resp;
     } catch (err) {
       console.log(err.message);
@@ -139,6 +148,17 @@ export const categorySlice = createSlice({
     // Add task and return it to be displayed
     builder.addCase(addTaskAsync.fulfilled, (state, action) => {
       console.log(current(state));
+      // return action.payload;
+      console.log(action.payload.data);
+      state[action.payload.data.categoryIndex].tasks.push(
+        action.payload.data.newTask
+      );
+    });
+    builder.addCase(toggleCompleteTaskAsync.fulfilled, (state, action) => {
+      // const index = state.findIndex(
+      // 	(todo) => todo.id === action.payload.todo.id
+      // );
+      // state[index].completed = action.payload.todo.completed;
       return action.payload;
     });
     // Delete a category

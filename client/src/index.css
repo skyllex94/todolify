@@ -28,7 +28,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
+/* Squire brackets for the categories */
 .brackets {
   background-image: linear-gradient(#ffb1bb, #ffb1bb),
     linear-gradient(#ffb1bb, #ffb1bb), linear-gradient(#ffb1bb, #ffb1bb),
