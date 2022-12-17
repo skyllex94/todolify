@@ -1,14 +1,29 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { toggleCompleteTaskAsync } from "../redux/categorySlice";
+import { toggleCompletedTaskAsync } from "../redux/categorySlice";
 import DeleteTask from "./DeleteTask";
 
-const TaskItem = ({ user_id, category_id, id, task, done, setTaskList }) => {
+const TaskItem = ({
+  user_id,
+  category_id,
+  category_index,
+  id,
+  task,
+  task_index,
+  done,
+  setTaskList,
+}) => {
   const dispatch = useDispatch();
 
   const toggleCompletedTask = async () => {
     const resp = await dispatch(
-      toggleCompleteTaskAsync({ user_id, category_id, id })
+      toggleCompletedTaskAsync({
+        user_id,
+        category_id,
+        category_index,
+        id,
+        task_index,
+      })
     );
     console.log("resp:", resp);
   };

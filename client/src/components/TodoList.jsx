@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import CategoryItem from "./CategoryItem";
 import { AiOutlinePlus } from "react-icons/ai";
-import { useDispatch } from "react-redux";
-import { addCategoryAsync, deleteCategoryAsync } from "../redux/categorySlice";
-import { GrFormClose } from "react-icons/gr";
-import DeleteCategory from "./DeleteCategory";
+import { useDispatch, useSelector } from "react-redux";
+import { addCategoryAsync } from "../redux/categorySlice";
 
-const TodoList = ({ userTodoList, user_id }) => {
+const TodoList = ({ user_id }) => {
   const dispatch = useDispatch();
   const [addCategoryValue, setAddCategoryValue] = useState("");
 
-  const [todoList, setTodoList] = useState(userTodoList);
+  // Redux state for user todo list
+  const state = useSelector((state) => state.category);
+  const [todoList, setTodoList] = useState(state);
   // TODO: Including a todo loader gif
   const [loadedTodos] = useState(todoList ? true : false);
 
@@ -35,48 +35,6 @@ const TodoList = ({ userTodoList, user_id }) => {
     setAddCategoryValue("");
   };
 
-  const deleteCategory = async (e, categoryId) => {
-    e.preventDefault();
-
-    try {
-      const deletedCategory = await dispatch(
-        deleteCategoryAsync({ user_id, categoryId })
-      );
-
-      const deletedCategoryId = deletedCategory.payload.data;
-      // Remove the category
-      if (deletedCategoryId) {
-        setTodoList((prevState) =>
-          prevState.filter((curr) => curr._id !== deletedCategoryId)
-        );
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  // async function getUserTodoList(id) {
-  //   try {
-  //     const fetchedTodoList = await axios.get(`/user/${id}`);
-  //     console.log("fetchedTodoList:", fetchedTodoList);
-  //     // Set the current todoList with the new updated one from adding a category
-  //     setTodoList(fetchedTodoList.data);
-  //   } catch (error) {
-  //     return error.message;
-  //   }
-  // }
-
-  // Updating the UI each time there is an onSubmit, in order to fetch the array of categories
-
-  // useEffect(() => {
-  // Async func for doing a GET req and fetching categories
-  // getUserTodoList(user_id);
-  // if (userTodoList) setLoadedTodos(true);
-  // console.log(todoList);
-  // Having an additional setState do do another re-render in order to get the last element
-  //   setOnSubmit("additional re-render");
-  // }, [onSubmit, user_id]);
-
   return (
     <div className="flex ml-5">
       <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
@@ -91,7 +49,7 @@ const TodoList = ({ userTodoList, user_id }) => {
                   <CategoryItem
                     user_id={user_id}
                     category_id={curr._id}
-                    categoryIndex={index}
+                    category_index={index}
                     category={curr.category}
                     tasks={curr.tasks}
                     setTodoList={setTodoList}

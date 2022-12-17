@@ -100,10 +100,27 @@ router.post("/:id/:category_id", async (req, res) => {
 // @desc    TOGGLE a task's checkbox and persist it
 // @access  Private
 router.patch("/:user_id", async (req, res) => {
+  const user_id = req.params.user_id;
   console.log("cat_id", req.body.category_id);
-  console.log("id", req.body.id);
+  const categoryIndex = req.body.category_index;
+  const task_id = req.body.id;
+  const taskIndex = req.body.task_index;
 
-  res.send(req.params.user_id);
+  // Concatenate the key before the query, so there's no errors when creating it
+  const keyValue = "categories." + categoryIndex + ".tasks" + taskIndex;
+
+  const updateToggleTask = await Todos.updateOne(
+    { user_id },
+    {
+      $set: {
+        [keyValue]: {
+          done: true,
+        },
+      },
+    }
+  );
+
+  res.send(updateToggleTask);
 });
 
 // @route   DELETE /user/:user_id/:category_id
@@ -154,7 +171,7 @@ router.delete("/:id/:category_id", async (req, res) => {
   // const id = req.params.item_id.toString();
 });
 
-// @route   DELETE DELETE /user/:user_id/:category_index/:id
+// @route   DELETE /user/:user_id/:category_index/:id
 // @desc    DELETE task from a category
 // @access  Private
 router.delete("/:user_id/:category_id/:id", async (req, res) => {
@@ -186,24 +203,10 @@ router.delete("/:user_id/:category_id/:id", async (req, res) => {
   );
 
   // Return back the deleted task's id
-  res.send(taskToDelete);
-  // Additional tryouts and queries
-
-  // const selectedCategory = await Todos.findById(category_index);
-  // console.log("selectedCategory:", selectedCategory);
-
-  // const categoryIndex = Todos.findIndex(
-  //   (curr) => curr.categories._id.valueOf() === category_index
-  // );
-
-  // const hey = Todos.aggregate([
-  //   {
-  //     $project: {
-  //       index: { $indexOfArray: ["$categories._id", category_index] },
-  //     },
-  //   },
-  // ]);
-  // console.log("hey", hey);
+  res.send({
+    taskToDeleteId: taskToDelete,
+    category_id: req.params.category_id,
+  });
 });
 
 module.exports = router;

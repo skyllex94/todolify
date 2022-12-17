@@ -53,14 +53,16 @@ export const addTaskAsync = createAsyncThunk(
   }
 );
 
-export const toggleCompleteTaskAsync = createAsyncThunk(
-  "toggleCompleteTaskAsync",
+export const toggleCompletedTaskAsync = createAsyncThunk(
+  "toggleCompletedTaskAsync",
   async (payload) => {
     // payload => {user_id, category_id, id}
     try {
       console.log("payload", payload.user_id, payload.category_id, payload.id);
       const resp = await axios.patch(`/user/${payload.user_id}`, {
         category_id: payload.category_id,
+        category_index: payload.category_index,
+        task_index: payload.task_index,
         id: payload.id,
       });
 
@@ -92,7 +94,7 @@ export const deleteTaskAsync = createAsyncThunk(
   "category/deleteTaskAsync",
   // payload => {user_id, category_id, id}
   async (payload) => {
-    console.log("payload:", payload.user_id, payload.category_id, payload.id);
+    // console.log("payload:", payload.user_id, payload.category_id, payload.id);
 
     try {
       const resp = await axios.delete(
@@ -139,22 +141,21 @@ export const categorySlice = createSlice({
   extraReducers: (builder) => {
     // Fetch all of the todo list from the DB and return it to the UI for displaying
     builder.addCase(getTodosAsync.fulfilled, (state, action) => {
+      // Fething the state wt the data from the DB for current user
       return action.payload;
     });
-    // Add category and return it to be displayed
+    // Add category to the user
     builder.addCase(addCategoryAsync.fulfilled, (state, action) => {
-      return action.payload;
+      const newCategory = action.payload.data;
+      state.push(newCategory);
     });
-    // Add task and return it to be displayed
+    // Add task to its category
     builder.addCase(addTaskAsync.fulfilled, (state, action) => {
-      console.log(current(state));
-      // return action.payload;
-      console.log(action.payload.data);
-      state[action.payload.data.categoryIndex].tasks.push(
-        action.payload.data.newTask
-      );
+      // Returns {newTaskObj, categoryIndex}
+      const catIndex = action.payload.data.categoryIndex;
+      state[catIndex].tasks.push(action.payload.data.newTaskObj);
     });
-    builder.addCase(toggleCompleteTaskAsync.fulfilled, (state, action) => {
+    builder.addCase(toggleCompletedTaskAsync.fulfilled, (state, action) => {
       // const index = state.findIndex(
       // 	(todo) => todo.id === action.payload.todo.id
       // );
@@ -163,11 +164,21 @@ export const categorySlice = createSlice({
     });
     // Delete a category
     builder.addCase(deleteCategoryAsync.fulfilled, (state, action) => {
-      console.log(action.payload);
+      // Find category index and delete it from the state
+      const categoryIndex = state.findIndex(
+        (curr) => curr._id === action.payload.data
+      );
+      state.splice(categoryIndex, 1);
     });
     // Delete a task
     builder.addCase(deleteTaskAsync.fulfilled, (state, action) => {
-      console.log(action.payload);
+      const categoryIndex = state.findIndex(
+        (curr) => curr._id === action.payload.data.category_id
+      );
+      const taskIndex = state[categoryIndex].tasks.findIndex(
+        (curr) => curr._id === action.payload.data.taskToDeleteId
+      );
+      state[categoryIndex].tasks.splice(taskIndex, 1);
     });
   },
 });

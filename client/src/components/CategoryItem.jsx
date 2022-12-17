@@ -11,7 +11,7 @@ import DeleteCategory from "./DeleteCategory";
 function CategoryItem({
   user_id,
   category_id,
-  categoryIndex,
+  category_index,
   category,
   tasks,
   setTodoList,
@@ -27,13 +27,15 @@ function CategoryItem({
     if (addTaskValue) {
       try {
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
-        dispatch(addTaskAsync({ user_id, category_id, task: addTaskValue }));
+        const taskObjFromDB = await dispatch(
+          addTaskAsync({ user_id, category_id, task: addTaskValue })
+        );
+        const newTask = taskObjFromDB.payload.data.newTaskObj;
 
-        // console.log(taskObjFromDB);
-        // if (taskObjFromDB) {
-        //   // If response is okay, add the new task to the category
-        //   setTaskList((prevState) => [...taskList, taskObjFromDB.payload.data]);
-        // }
+        if (taskObjFromDB) {
+          // If response is okay, add the new task to the category
+          setTaskList((prevState) => [...taskList, newTask]);
+        }
       } catch (err) {
         console.log(err.message);
       }
@@ -72,8 +74,10 @@ function CategoryItem({
                 <TaskItem
                   user_id={user_id}
                   category_id={category_id}
+                  category_index={category_index}
                   id={_id}
                   task={task}
+                  task_index={index}
                   done={done}
                   setTaskList={setTaskList}
                 />

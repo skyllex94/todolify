@@ -12,7 +12,7 @@ function DeleteTask({ user_id, category_id, id, setTaskList }) {
         deleteTaskAsync({ user_id, category_id, id })
       );
 
-      const deletedTaskId = deletedTask.payload.data;
+      const deletedTaskId = deletedTask.payload.data.taskToDeleteId;
 
       // Remove task from the state wt filter
       if (deletedTaskId) {
