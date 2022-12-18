@@ -4,7 +4,7 @@ import { HiCode } from "react-icons/hi";
 // Components
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTaskAsync } from "../redux/categorySlice";
 import DeleteCategory from "./DeleteCategory";
 
@@ -14,28 +14,19 @@ function CategoryItem({
   category_index,
   category,
   tasks,
-  setTodoList,
 }) {
-  const [taskList, setTaskList] = useState(tasks);
-
   const [addTaskValue, setAddTaskValue] = useState("");
   const [enableAddTask, setEnableAddTask] = useState(false);
   const dispatch = useDispatch();
+  const state = useSelector((state) => state.category[2]);
+  console.log(state);
 
   const onSubmit = async (event) => {
     event.preventDefault();
     if (addTaskValue) {
       try {
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
-        const taskObjFromDB = await dispatch(
-          addTaskAsync({ user_id, category_id, task: addTaskValue })
-        );
-        const newTask = taskObjFromDB.payload.data.newTaskObj;
-
-        if (taskObjFromDB) {
-          // If response is okay, add the new task to the category
-          setTaskList((prevState) => [...taskList, newTask]);
-        }
+        dispatch(addTaskAsync({ user_id, category_id, task: addTaskValue }));
       } catch (err) {
         console.log(err.message);
       }
@@ -52,18 +43,14 @@ function CategoryItem({
         </div>
 
         <div className="wrapper-right-elements flex inline">
-          <DeleteCategory
-            user_id={user_id}
-            id={category_id}
-            setTodoList={setTodoList}
-          />
-          <DoneTasks tasks={taskList} />
+          <DeleteCategory user_id={user_id} id={category_id} />
+          <DoneTasks tasks={tasks} />
         </div>
       </div>
 
       <div className="items-center my-1">
-        {taskList &&
-          taskList.map((curr, index) => {
+        {tasks &&
+          tasks.map((curr, index) => {
             const { _id, task, done } = curr;
 
             return (
@@ -79,7 +66,6 @@ function CategoryItem({
                   task={task}
                   task_index={index}
                   done={done}
-                  setTaskList={setTaskList}
                 />
               </div>
             );

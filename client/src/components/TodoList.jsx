@@ -8,9 +8,8 @@ const TodoList = ({ user_id }) => {
   const dispatch = useDispatch();
   const [addCategoryValue, setAddCategoryValue] = useState("");
 
-  // Redux state for user todo list
-  const state = useSelector((state) => state.category);
-  const [todoList, setTodoList] = useState(state);
+  // Redux state for todo list of auth user
+  const todoList = useSelector((state) => state.category);
   // TODO: Including a todo loader gif
   const [loadedTodos] = useState(todoList ? true : false);
 
@@ -18,16 +17,8 @@ const TodoList = ({ user_id }) => {
     e.preventDefault();
     if (addCategoryValue) {
       try {
-        // If adding is successful, server will return category obj, including the newly created category id
-        const categoryObjFromDB = await dispatch(
-          addCategoryAsync({ user_id, category: addCategoryValue })
-        );
-        console.log(categoryObjFromDB);
-        // Push the new category to the current todo list
-        setTodoList((prevState) => [
-          ...todoList,
-          categoryObjFromDB.payload.data,
-        ]);
+        // Add the new category and update the state to include it
+        dispatch(addCategoryAsync({ user_id, category: addCategoryValue }));
       } catch (err) {
         console.log(err.message);
       }
@@ -52,7 +43,6 @@ const TodoList = ({ user_id }) => {
                     category_index={index}
                     category={curr.category}
                     tasks={curr.tasks}
-                    setTodoList={setTodoList}
                   />
                 </div>
               </div>

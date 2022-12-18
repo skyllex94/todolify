@@ -56,14 +56,12 @@ export const addTaskAsync = createAsyncThunk(
 export const toggleCompletedTaskAsync = createAsyncThunk(
   "toggleCompletedTaskAsync",
   async (payload) => {
-    // payload => {user_id, category_id, id}
+    // payload => {user_id, category_index, done, task_index}
     try {
-      console.log("payload", payload.user_id, payload.category_id, payload.id);
       const resp = await axios.patch(`/user/${payload.user_id}`, {
-        category_id: payload.category_id,
         category_index: payload.category_index,
         task_index: payload.task_index,
-        id: payload.id,
+        done: payload.done,
       });
 
       return await resp;
@@ -156,11 +154,12 @@ export const categorySlice = createSlice({
       state[catIndex].tasks.push(action.payload.data.newTaskObj);
     });
     builder.addCase(toggleCompletedTaskAsync.fulfilled, (state, action) => {
-      // const index = state.findIndex(
-      // 	(todo) => todo.id === action.payload.todo.id
-      // );
-      // state[index].completed = action.payload.todo.completed;
-      return action.payload;
+      const categoryIndex = action.payload.data.objInfo.categoryIndex;
+      console.log("categoryIndex:", categoryIndex);
+      const taskIndex = action.payload.data.objInfo.taskIndex;
+      const updatedToggle = action.payload.data.objInfo.updatedToggle;
+      console.log("toggleUpdate:", updatedToggle);
+      state[categoryIndex].tasks[taskIndex].done = updatedToggle;
     });
     // Delete a category
     builder.addCase(deleteCategoryAsync.fulfilled, (state, action) => {

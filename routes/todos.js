@@ -101,26 +101,31 @@ router.post("/:id/:category_id", async (req, res) => {
 // @access  Private
 router.patch("/:user_id", async (req, res) => {
   const user_id = req.params.user_id;
-  console.log("cat_id", req.body.category_id);
   const categoryIndex = req.body.category_index;
-  const task_id = req.body.id;
   const taskIndex = req.body.task_index;
+  const updatedToggle = req.body.done;
 
-  // Concatenate the key before the query, so there's no errors when creating it
-  const keyValue = "categories." + categoryIndex + ".tasks" + taskIndex;
+  // Creating the key for the update
+  const keyValue =
+    "categories." + categoryIndex + ".tasks." + taskIndex + ".done";
 
+  // Mongoose query for finding the task and toggling the 'done' value
   const updateToggleTask = await Todos.updateOne(
     { user_id },
-    {
-      $set: {
-        [keyValue]: {
-          done: true,
-        },
-      },
-    }
+    { $set: { [keyValue]: updatedToggle } }
   );
 
-  res.send(updateToggleTask);
+  const toggleTaskObj = {
+    confirmation: updateToggleTask,
+    objInfo: {
+      categoryIndex,
+      taskIndex,
+      updatedToggle,
+    },
+  };
+
+  // Send back resp of whether the query call was successful
+  res.send(toggleTaskObj);
 });
 
 // @route   DELETE /user/:user_id/:category_id

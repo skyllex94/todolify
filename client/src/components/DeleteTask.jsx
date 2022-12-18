@@ -3,23 +3,12 @@ import { GrFormClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
 import { deleteTaskAsync } from "../redux/categorySlice";
 
-function DeleteTask({ user_id, category_id, id, setTaskList }) {
+function DeleteTask({ user_id, category_id, id }) {
   const dispatch = useDispatch();
 
   const handleDeleteTask = async () => {
     try {
-      const deletedTask = await dispatch(
-        deleteTaskAsync({ user_id, category_id, id })
-      );
-
-      const deletedTaskId = deletedTask.payload.data.taskToDeleteId;
-
-      // Remove task from the state wt filter
-      if (deletedTaskId) {
-        setTaskList((prevState) =>
-          prevState.filter((curr) => curr._id !== deletedTaskId)
-        );
-      }
+      dispatch(deleteTaskAsync({ user_id, category_id, id }));
     } catch (err) {
       console.log(err.message);
     }

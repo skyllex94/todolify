@@ -11,7 +11,6 @@ const TaskItem = ({
   task,
   task_index,
   done,
-  setTaskList,
 }) => {
   const dispatch = useDispatch();
 
@@ -19,12 +18,13 @@ const TaskItem = ({
     const resp = await dispatch(
       toggleCompletedTaskAsync({
         user_id,
-        category_id,
         category_index,
         id,
+        done: !done,
         task_index,
       })
     );
+
     console.log("resp:", resp);
   };
 
@@ -34,18 +34,13 @@ const TaskItem = ({
         <input
           type="checkbox"
           className="mx-3"
-          onClick={toggleCompletedTask}
-          defaultChecked={done}
+          onChange={toggleCompletedTask}
+          checked={done}
         />
         {task}
       </div>
 
-      <DeleteTask
-        user_id={user_id}
-        category_id={category_id}
-        id={id}
-        setTaskList={setTaskList}
-      />
+      <DeleteTask user_id={user_id} category_id={category_id} id={id} />
     </React.Fragment>
   );
 };
