@@ -18,8 +18,6 @@ function CategoryItem({
   const [addTaskValue, setAddTaskValue] = useState("");
   const [enableAddTask, setEnableAddTask] = useState(false);
   const dispatch = useDispatch();
-  const state = useSelector((state) => state.category[2]);
-  console.log(state);
 
   const onSubmit = async (event) => {
     event.preventDefault();

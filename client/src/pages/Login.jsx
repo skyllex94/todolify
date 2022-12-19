@@ -31,6 +31,7 @@ function Login() {
     try {
       // Request to server to check if use exists in DB and send token
       const res = await axios.post("/user", formData);
+      console.log("res:", res.data);
 
       // Take in the jwt returned from post req and set in redux store
 

@@ -5,10 +5,16 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { decodeJWT } from "./utils/functions";
+import { useDispatch, useSelector } from "react-redux";
+import { storeJWT } from "./redux/authSlice";
 // Redux Store
 
 function App() {
   const savedJWT = window.localStorage.getItem("jwt");
+
+  const jwt = useSelector((state) => state.auth);
+
+  console.log("jwt:", jwt.token);
   let user_id;
   if (savedJWT) {
     const payload = decodeJWT(savedJWT);
@@ -20,18 +26,9 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Landing user_id={user_id} />} />
-          <Route
-            path={`/user/:id`}
-            element={savedJWT ? <Main user_id={user_id} /> : <Login />}
-          />
-          <Route
-            path="/login"
-            element={savedJWT ? <Main user_id={user_id} /> : <Login />}
-          />
-          <Route
-            path="/register"
-            element={savedJWT ? <Main user_id={user_id} /> : <Register />}
-          />
+          <Route path={`/user/:id`} element={<Main user_id={user_id} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
     </Router>

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CategoryItem from "./CategoryItem";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { addCategoryAsync } from "../redux/categorySlice";
+import loader from "../assets/loader.gif";
 
 const TodoList = ({ user_id }) => {
   const dispatch = useDispatch();
@@ -10,11 +11,18 @@ const TodoList = ({ user_id }) => {
 
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.category);
-  // TODO: Including a todo loader gif
-  const [loadedTodos] = useState(todoList ? true : false);
+
+  // loader gif state
+  const [loadedTodos, setLoadedTodos] = useState(false);
+
+  // Change the loader to the data when inputted
+  useEffect(() => {
+    if (todoList) setLoadedTodos(true);
+  }, []);
 
   const addCategory = async (e) => {
     e.preventDefault();
+
     if (addCategoryValue) {
       try {
         // Add the new category and update the state to include it
@@ -30,7 +38,7 @@ const TodoList = ({ user_id }) => {
     <div className="flex ml-5">
       <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
         <ul className="list-group mb-2 pt-5 ">
-          {loadedTodos &&
+          {loadedTodos ? (
             todoList.map((curr, index) => (
               <div
                 key={index}
@@ -46,12 +54,21 @@ const TodoList = ({ user_id }) => {
                   />
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="flex items-center">
+              <img
+                src={loader}
+                alt="loader"
+                className="m-auto mb-4 h-16 w-16"
+              />
+            </div>
+          )}
 
           <form onSubmit={addCategory} className="flex items-center mb-5">
-            <button className="bg-transparent ml-4 text-red-700 font-semibold hover:text-black py-2 px-2">
+            <div className="bg-transparent ml-4 text-red-700 font-semibold hover:text-black py-2 px-2">
               <AiOutlinePlus />
-            </button>
+            </div>
             <input
               type="text"
               autoFocus

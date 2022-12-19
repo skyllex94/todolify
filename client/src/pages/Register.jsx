@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 // HTTP Requests
@@ -24,6 +24,11 @@ function Register() {
   const onChange = (event, keyName) =>
     setFormData({ ...formData, [keyName]: event.target.value });
 
+  useEffect(() => {
+    const fetchJWT = JSON.parse(window.localStorage.getItem("jwt"));
+    if (fetchJWT) navigate("/user/:id");
+  }, []);
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,7 +52,9 @@ function Register() {
           );
 
           const user = decodeJWT(res.data.token);
+          console.log("user:", user);
           const { id } = user.user;
+          console.log("id:", id);
           navigate(`/user/${id}`);
         } catch (error) {
           console.error(error.message);

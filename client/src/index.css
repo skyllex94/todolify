@@ -47,6 +47,7 @@ code {
   margin: 20px;
 }
 
-.add-task-label {
+.add-task-label,
+.logout {
   cursor: pointer;
 }

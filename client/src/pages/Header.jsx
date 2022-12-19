@@ -1,7 +1,24 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { decodeJWT } from "../utils/functions";
 
 function Header() {
+  const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedJWT = window.localStorage.getItem("jwt");
+    if (savedJWT) {
+      const user_id = decodeJWT(savedJWT);
+      setUserId(user_id.user.id);
+    }
+  }, []);
+
+  const logoutUser = () => {
+    localStorage.removeItem("jwt");
+    navigate("/");
+  };
+
   return (
     <div>
       <header>
@@ -44,7 +61,7 @@ function Header() {
                   <ul className="space-y-6 tracking-wide font-medium text-base lg:text-sm lg:flex lg:space-y-0">
                     <li>
                       <Link
-                        to="/user"
+                        to={userId ? `/user/${userId}` : "/"}
                         className="block md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
                       >
                         <span>Home</span>
@@ -52,7 +69,7 @@ function Header() {
                     </li>
                     <li>
                       <Link
-                        to="/user"
+                        to={userId ? `/user/${userId}` : "/"}
                         className="block md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
                       >
                         <span>Portfolio</span>
@@ -60,7 +77,7 @@ function Header() {
                     </li>
                     <li>
                       <Link
-                        to="/user"
+                        to={userId ? `/user/${userId}` : "/"}
                         className="block md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
                       >
                         <span>Services</span>
@@ -69,23 +86,36 @@ function Header() {
                   </ul>
                 </div>
 
-                <div className="w-full space-y-2 border-primary/10 dark:border-gray-700 flex flex-col -ml-1 sm:flex-row lg:space-y-0 md:w-max lg:border-l">
-                  <Link
-                    to="/register"
-                    className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full focus:before:bg-sky-600/10 dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
-                  >
-                    <span className="relative text-sm font-semibold text-primary dark:text-primaryLight">
-                      Sign Up
-                    </span>
-                  </Link>
-                  <Link
-                    to="/login"
-                    className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-sky-600 dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
-                  >
-                    <span className="relative text-sm font-semibold text-white dark:text-gray-900">
-                      Login
-                    </span>
-                  </Link>
+                <div className="w-full space-y-2 border-primary/10 dark:border-gray-700 flex flex-col -ml-1 sm:flex-row lg:space-y-0 md:w-max">
+                  {userId ? (
+                    <button
+                      onClick={logoutUser}
+                      className="pl-3 relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-sky-600 dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                    >
+                      <span className="relative text-sm font-semibold text-white dark:text-gray-900">
+                        Logout
+                      </span>
+                    </button>
+                  ) : (
+                    <React.Fragment>
+                      <Link
+                        to={userId ? `/user/${userId}` : "/register"}
+                        className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full focus:before:bg-sky-600/10 dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                      >
+                        <span className="relative text-sm font-semibold text-primary dark:text-primaryLight">
+                          Sign Up
+                        </span>
+                      </Link>
+                      <Link
+                        to={userId ? `/user/${userId}` : "/login"}
+                        className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-sky-600 dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                      >
+                        <span className="relative text-sm font-semibold text-white dark:text-gray-900">
+                          Login
+                        </span>
+                      </Link>
+                    </React.Fragment>
+                  )}
                 </div>
               </div>
             </div>

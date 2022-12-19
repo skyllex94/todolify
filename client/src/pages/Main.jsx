@@ -2,13 +2,19 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/categorySlice";
 
 function Main({ user_id }) {
-  const id = user_id;
+  const jwt = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  // const savedJWT = window.localStorage.getItem("jwt");
+  // let usr_id;
+
+  // console.log("usr_id:", usr_id);
+  const id = user_id;
+
   const dispatch = useDispatch();
 
   const [loadedTodoList, setLoadedTodoList] = useState(false);
@@ -52,7 +58,7 @@ function Main({ user_id }) {
     <div>
       <Header />
       <div className="flex pt-24">
-        <div className="flex flex-col h-screen p-3  bg-white shadow w-60">
+        <div className="flex flex-col h-screen p-3 bg-white shadow w-60">
           <div className="space-y-3">
             <div className="flex items-center">
               <h2 className="text-xl font-bold">Dashboard</h2>

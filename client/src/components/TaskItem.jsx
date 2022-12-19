@@ -32,11 +32,13 @@ const TaskItem = ({
     <React.Fragment>
       <div className="flex items-center">
         <input
+          id="red-checkbox"
           type="checkbox"
-          className="mx-3"
+          className="accent-orange-600 mx-2"
           onChange={toggleCompletedTask}
           checked={done}
         />
+
         {task}
       </div>
 

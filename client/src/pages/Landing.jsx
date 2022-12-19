@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import landingImage from "../assets/landing_img.svg";
 import { RiLinkUnlinkM } from "react-icons/ri";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Header from "./Header";
+import { useEffect } from "react";
+import { decodeJWT } from "../utils/functions";
 
-function Landing({ user_id }) {
+function Landing() {
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const savedJWT = window.localStorage.getItem("jwt");
+    if (savedJWT) {
+      const user_id = decodeJWT(savedJWT);
+      setUserId(user_id.user.id);
+    } else setUserId(null);
+  }, []);
+
   return (
     <div>
       <Header />
@@ -34,7 +46,7 @@ function Landing({ user_id }) {
               </span>
               <div className="grid grid-cols-3 space-x-4 md:space-x-6 md:flex md:justify-center lg:justify-start">
                 <Link
-                  to={`user/${user_id}`}
+                  to={userId ? `user/${userId}` : "/login"}
                   className="p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-full duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-600/20 dark:hover:border-cyan-300/30"
                 >
                   <div className="flex justify-center space-x-3">
@@ -45,7 +57,7 @@ function Landing({ user_id }) {
                   </div>
                 </Link>
                 <Link
-                  to="/register"
+                  to={userId ? `user/${userId}` : "/register"}
                   className="p-4 border border-gray-200 dark:bg-gray-800  dark:border-gray-700 rounded-full duration-300 hover:border-green-400 hover:shadow-lg hover:shadow-lime-600/20 dark:hover:border-green-300/30"
                 >
                   <div className="flex justify-center space-x-4">
