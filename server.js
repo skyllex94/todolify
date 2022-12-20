@@ -1,4 +1,6 @@
 const express = require("express");
+// Global environment setting
+require("dotenv").config();
 const connectDB = require("./config/mongodb");
 const app = express();
 

@@ -72,7 +72,7 @@ router.post(
       };
 
       // Create the jsonwebtoken / 3rd paramether could be object of expiresIn
-      jwt.sign(payload, config.get("jwtSecret"), {}, (err, token) => {
+      jwt.sign(payload, process.env.jwtSecret, {}, (err, token) => {
         if (err) throw err;
         // Send back a responce from server of the jwt we created
         res.json({ token });

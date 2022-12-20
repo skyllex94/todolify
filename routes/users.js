@@ -3,8 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// Accessing the jwtToken from the config
-const config = require("config");
+
 // User schema (model) for posting data in the DB
 const User = require("../schemas/UserSchema");
 const TodoSchema = require("../schemas/TodoSchema");
@@ -86,7 +85,7 @@ router.post(
       }
 
       // Create the jsonwebtoken / 3rd paramether could be object of expiresIn
-      jwt.sign(payload, config.get("jwtSecret"), {}, (err, token) => {
+      jwt.sign(payload, process.env.jwtSecret, {}, (err, token) => {
         if (err) throw err;
         // Send back a responce from the server of the jwt we created
         res.json({ token });
