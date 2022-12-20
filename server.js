@@ -16,7 +16,7 @@ app.use("/users", require("./routes/users"));
 app.use("/user", require("./routes/auth"));
 app.use("/user", require("./routes/todos"));
 
-// Serve static in production
+// Serve static assets in production
 if (process.env.NODE_ENV === "production") {
   // Set static folder
   app.use(express.static("client/build"));
