@@ -2,12 +2,11 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 // Redux
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/categorySlice";
 
 function Main({ user_id }) {
-  const jwt = useSelector((state) => state.auth);
   const navigate = useNavigate();
   // const savedJWT = window.localStorage.getItem("jwt");
   // let usr_id;

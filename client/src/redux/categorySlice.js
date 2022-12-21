@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Not used for now since async fetching the todo list wt state through Main and passing to TodoList
@@ -7,7 +7,7 @@ export const getTodosAsync = createAsyncThunk(
   async (id) => {
     // Fetch array of todos from DB and return (through res.send() on the backend) a resp value
     try {
-      const resp = await axios.get(`/user/${id}`);
+      const resp = await axios.get(`/api/user/${id}`);
       if (resp.status === 200) {
         // If everything okay wt response, return the data from the DB
         return resp.data;
@@ -22,7 +22,7 @@ export const addCategoryAsync = createAsyncThunk(
   "category/addCategoryAsync",
   async (payload) => {
     try {
-      const resp = await axios.post(`/user/${payload.user_id}`, {
+      const resp = await axios.post(`/api/user/${payload.user_id}`, {
         category: payload.category,
       });
       // Returns the new category object from DB
@@ -39,7 +39,7 @@ export const addTaskAsync = createAsyncThunk(
   async (payload) => {
     try {
       const resp = axios.post(
-        `/user/${payload.user_id}/${payload.category_id}`,
+        `/api/user/${payload.user_id}/${payload.category_id}`,
         {
           task: payload.task,
         }
@@ -58,7 +58,7 @@ export const toggleCompletedTaskAsync = createAsyncThunk(
   async (payload) => {
     // payload => {user_id, category_index, done, task_index}
     try {
-      const resp = await axios.patch(`/user/${payload.user_id}`, {
+      const resp = await axios.patch(`/api/user/${payload.user_id}`, {
         category_index: payload.category_index,
         task_index: payload.task_index,
         done: payload.done,
@@ -77,7 +77,7 @@ export const deleteCategoryAsync = createAsyncThunk(
   async (payload) => {
     try {
       const resp = await axios.delete(
-        `/user/${payload.user_id}/${payload.categoryId}`
+        `/api/user/${payload.user_id}/${payload.categoryId}`
       );
 
       // Returns category id that was removed from DB
@@ -96,7 +96,7 @@ export const deleteTaskAsync = createAsyncThunk(
 
     try {
       const resp = await axios.delete(
-        `/user/${payload.user_id}/${payload.category_id}/${payload.id}`
+        `/api/user/${payload.user_id}/${payload.category_id}/${payload.id}`
       );
 
       // Returns the id of the task that was deleted
@@ -153,12 +153,12 @@ export const categorySlice = createSlice({
       const catIndex = action.payload.data.categoryIndex;
       state[catIndex].tasks.push(action.payload.data.newTaskObj);
     });
+    // Toggle completed on a given task
     builder.addCase(toggleCompletedTaskAsync.fulfilled, (state, action) => {
       const categoryIndex = action.payload.data.objInfo.categoryIndex;
-      console.log("categoryIndex:", categoryIndex);
       const taskIndex = action.payload.data.objInfo.taskIndex;
+      // Value is a boolean, but making sure it's the correct one so it's passed
       const updatedToggle = action.payload.data.objInfo.updatedToggle;
-      console.log("toggleUpdate:", updatedToggle);
       state[categoryIndex].tasks[taskIndex].done = updatedToggle;
     });
     // Delete a category

@@ -5,9 +5,7 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { decodeJWT } from "./utils/functions";
-import { useDispatch, useSelector } from "react-redux";
-import { storeJWT } from "./redux/authSlice";
-// Redux Store
+import { useSelector } from "react-redux";
 
 function App() {
   const savedJWT = window.localStorage.getItem("jwt");

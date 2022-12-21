@@ -4,7 +4,7 @@ import { HiCode } from "react-icons/hi";
 // Components
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addTaskAsync } from "../redux/categorySlice";
 import DeleteCategory from "./DeleteCategory";
 
