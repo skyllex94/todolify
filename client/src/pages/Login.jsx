@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import axios from "axios";
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { storeJWT } from "../redux/authSlice";
 import { decodeJWT } from "../utils/functions";
+import { clearAlert, createAlert } from "../redux/alertSlice";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -15,12 +16,21 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const alert = useSelector((state) => state.alerts.alert);
+
   const { email, password } = formData;
 
   useEffect(() => {
     const fetchJWT = JSON.parse(window.localStorage.getItem("jwt"));
     if (fetchJWT) navigate("/user/:id");
   }, [navigate]);
+
+  useEffect(() => {
+    if (alert.message) {
+      window.confirm(alert.message);
+      dispatch(clearAlert());
+    }
+  }, [alert]);
 
   const onChange = (event, keyName) =>
     setFormData({ ...formData, [keyName]: event.target.value });
@@ -44,6 +54,7 @@ function Login() {
       navigate(`/user/${id}`);
     } catch (err) {
       console.log(err.message);
+      dispatch(createAlert({ type: "error", message: err.message }));
     }
   };
 

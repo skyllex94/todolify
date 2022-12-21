@@ -1,11 +1,9 @@
-const { response } = require("express");
 const mongoose = require("mongoose");
 const express = require("express");
 const { validationResult } = require("express-validator");
 const router = express.Router();
 const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
-const User = require("../schemas/UserSchema");
 
 // @route   GET TODOS /user/:id
 // @desc    Fetch all todos for the authorized user
@@ -14,14 +12,9 @@ router.get("/:id", async (req, res) => {
   try {
     // Fetch the userTodoList by finding the user_id in the Todo Collection
     const userTodoList = await Todos.findOne({ user_id: req.params.id });
-    // res.send(userTodoList);
 
     const populateCategories = userTodoList.categories;
-
     res.send(populateCategories);
-
-    // const todos = await updatedTodos.save();
-    // res.json(todos);
   } catch (error) {
     console.log("Error in fetching TodoList...");
   }
@@ -126,6 +119,38 @@ router.patch("/:user_id", async (req, res) => {
 
   // Send back resp of whether the query call was successful
   res.send(toggleTaskObj);
+});
+
+// @route   PATCH /user/update/:user_id
+// @desc    UPDATE a task
+// @access  Private
+router.patch("/update/:user_id", async (req, res) => {
+  const user_id = req.params.user_id;
+  const categoryIndex = req.body.category_index;
+  const taskIndex = req.body.task_index;
+  const newValue = req.body.value;
+
+  // Creating the key for the update
+  const keyValue =
+    "categories." + categoryIndex + ".tasks." + taskIndex + ".task";
+
+  // Mongoose query for finding the task and toggling the 'done' value
+  const updateToggleTask = await Todos.updateOne(
+    { user_id },
+    { $set: { [keyValue]: newValue } }
+  );
+
+  const updatedTaskObj = {
+    confirmation: updateToggleTask,
+    objInfo: {
+      categoryIndex,
+      taskIndex,
+      newValue,
+    },
+  };
+
+  // Send back resp of whether the query call was successful
+  res.send(updatedTaskObj);
 });
 
 // @route   DELETE /user/:user_id/:category_id

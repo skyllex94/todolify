@@ -5,14 +5,11 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { decodeJWT } from "./utils/functions";
-import { useSelector } from "react-redux";
 
 function App() {
   const savedJWT = window.localStorage.getItem("jwt");
+  // const jwt = useSelector((state) => state.auth);
 
-  const jwt = useSelector((state) => state.auth);
-
-  console.log("jwt:", jwt.token);
   let user_id;
   if (savedJWT) {
     const payload = decodeJWT(savedJWT);

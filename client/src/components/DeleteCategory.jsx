@@ -1,7 +1,7 @@
 import React from "react";
 import { GrFormClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
-import { deleteCategoryAsync } from "../redux/categorySlice";
+import { deleteCategoryAsync } from "../redux/todosSlice";
 
 function DeleteCategory({ user_id, id }) {
   const dispatch = useDispatch();

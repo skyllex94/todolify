@@ -27,7 +27,7 @@ function Register() {
   useEffect(() => {
     const fetchJWT = JSON.parse(window.localStorage.getItem("jwt"));
     if (fetchJWT) navigate("/user/:id");
-  }, []);
+  }, [navigate]);
 
   const onSubmit = async (e) => {
     e.preventDefault();

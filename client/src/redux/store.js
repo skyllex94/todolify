@@ -1,13 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice";
-import categorySlice from "./categorySlice";
-import taskSlice from "./taskSlice";
+import todosSlice from "./todosSlice";
+
+import alertSlice from "./alertSlice";
 
 export default configureStore({
   reducer: {
-    todos: taskSlice,
-    category: categorySlice,
+    todos: todosSlice,
     auth: authSlice,
+    alerts: alertSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

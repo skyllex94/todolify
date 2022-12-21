@@ -4,15 +4,14 @@ import { useNavigate } from "react-router-dom";
 // Redux
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { getTodosAsync } from "../redux/categorySlice";
+import { getTodosAsync } from "../redux/todosSlice";
+import { decodeJWT } from "../utils/functions";
 
-function Main({ user_id }) {
+function Main() {
   const navigate = useNavigate();
-  // const savedJWT = window.localStorage.getItem("jwt");
-  // let usr_id;
-
-  // console.log("usr_id:", usr_id);
-  const id = user_id;
+  const savedJWT = window.localStorage.getItem("jwt");
+  const user_id = decodeJWT(savedJWT);
+  const { id } = user_id.user;
 
   const dispatch = useDispatch();
 
@@ -36,8 +35,8 @@ function Main({ user_id }) {
     const currentUrl = window.location.href;
     const pathArray = currentUrl.split("/");
     const pathToCompare = pathArray.slice(3);
-    if (pathToCompare[1] !== user_id) {
-      const url = `/user/${user_id}`;
+    if (pathToCompare[1] !== id) {
+      const url = `/user/${id}`;
       window.history.pushState({}, "", url);
     }
   };
@@ -50,8 +49,8 @@ function Main({ user_id }) {
 
   useEffect(() => {
     // If there's no JWT passed from App.js, then navigate back to landing page
-    if (!user_id) navigate("/");
-  }, [navigate, user_id]);
+    if (!id) navigate("/");
+  }, [navigate]);
 
   return (
     <div>

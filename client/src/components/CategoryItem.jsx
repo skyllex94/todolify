@@ -5,7 +5,7 @@ import { HiCode } from "react-icons/hi";
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
 import { useDispatch } from "react-redux";
-import { addTaskAsync } from "../redux/categorySlice";
+import { addTaskAsync } from "../redux/todosSlice";
 import DeleteCategory from "./DeleteCategory";
 
 function CategoryItem({
@@ -35,8 +35,8 @@ function CategoryItem({
   return (
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">
-        <div className="flex items-center">
-          <HiCode className="mr-2 " />
+        <div className="flex items-center text-left">
+          <HiCode className="mr-2" />
           {category}
         </div>
 

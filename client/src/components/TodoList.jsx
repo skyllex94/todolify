@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CategoryItem from "./CategoryItem";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { addCategoryAsync } from "../redux/categorySlice";
+import { addCategoryAsync } from "../redux/todosSlice";
 import loader from "../assets/loader.gif";
 
 const TodoList = ({ user_id }) => {
@@ -10,7 +10,7 @@ const TodoList = ({ user_id }) => {
   const [addCategoryValue, setAddCategoryValue] = useState("");
 
   // Redux state for todo list of auth user
-  const todoList = useSelector((state) => state.category);
+  const todoList = useSelector((state) => state.todos);
 
   // loader gif state
   const [loadedTodos, setLoadedTodos] = useState(false);
@@ -37,7 +37,7 @@ const TodoList = ({ user_id }) => {
   return (
     <div className="flex ml-5">
       <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
-        <ul className="list-group mb-2 pt-5 ">
+        <ul className="list-group mb-2 pt-5">
           {loadedTodos ? (
             todoList.map((curr, index) => (
               <div

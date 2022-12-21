@@ -1,7 +1,8 @@
 import React from "react";
+import { AiOutlineEdit } from "react-icons/ai";
 import { GrFormClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
-import { deleteTaskAsync } from "../redux/categorySlice";
+import { deleteTaskAsync } from "../redux/todosSlice";
 
 function DeleteTask({ user_id, category_id, id }) {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function DeleteTask({ user_id, category_id, id }) {
 
   return (
     <button
-      className="ml-3 hidden group-hover:block rounded-full"
+      className="hidden group-hover:inline rounded-full"
       onClick={() => handleDeleteTask()}
     >
       <GrFormClose />
