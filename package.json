@@ -8,7 +8,7 @@
     "server": "nodemon server",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "npm install --prefix client && npm run build --prefix client"
+    "build": "CI=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "Kamen Kanchev",
   "license": "MIT",
