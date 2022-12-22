@@ -68,25 +68,39 @@ export const toggleCompletedTaskAsync = createAsyncThunk(
   }
 );
 
+export const updateCategoryAsync = createAsyncThunk(
+  "updateCategoryAsync",
+  async (payload) => {
+    // payload => {user_id, category_index, updatedValue}
+    try {
+      const resp = await axios.patch(`/api/user/upd-ctry/${payload.user_id}`, {
+        category_index: payload.category_index,
+        value: payload.updatedValue,
+      });
+
+      // Returns an object wt confirmation obj and objInfo
+      return await resp;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
+
 export const updateTaskAsync = createAsyncThunk(
   "updateTaskAsync",
   async (payload) => {
-    console.log(
-      "payload:",
-      payload.user_id,
-      payload.category_id,
-      payload.task_index,
-      payload.newValue
-    );
+    // payload => {user_id, category_index, task_index, updatedValue}
     try {
-      const resp = await axios.patch(`/api/user/update/${payload.user_id}`, {
+      const resp = await axios.patch(`/api/user/upd-task/${payload.user_id}`, {
         category_index: payload.category_index,
         task_index: payload.task_index,
-        value: payload.newValue,
+        value: payload.updatedValue,
       });
-
-      console.log("resp:", resp);
-    } catch (err) {}
+      // Returns an object wt confirmation obj and objInfo
+      return await resp;
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 );
 
@@ -180,11 +194,18 @@ export const todosSlice = createSlice({
       const updatedToggle = action.payload.data.objInfo.updatedToggle;
       state[categoryIndex].tasks[taskIndex].done = updatedToggle;
     });
+    // Update category with a new value
+    builder.addCase(updateCategoryAsync.fulfilled, (state, action) => {
+      const categoryIndex = action.payload.data.objInfo.categoryIndex;
+      const updatedValue = action.payload.data.objInfo.newValue;
+      state[categoryIndex].category = updatedValue;
+    });
+    // Update a task field with a new value
     builder.addCase(updateTaskAsync.fulfilled, (state, action) => {
       const categoryIndex = action.payload.data.objInfo.categoryIndex;
       const taskIndex = action.payload.data.objInfo.taskIndex;
-      // Value is a boolean, but making sure it's the correct one so it's passed
       const updatedTask = action.payload.data.objInfo.newValue;
+      // Update the state at the correct position wt the new task input
       state[categoryIndex].tasks[taskIndex].task = updatedTask;
     });
     // Delete a category

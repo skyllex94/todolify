@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import CategoryItem from "./CategoryItem";
-import { AiOutlinePlus } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
-import { addCategoryAsync } from "../redux/todosSlice";
+import { useSelector } from "react-redux";
 import loader from "../assets/loader.gif";
+import AddCategory from "./AddCategory";
 
 const TodoList = ({ user_id }) => {
-  const dispatch = useDispatch();
-  const [addCategoryValue, setAddCategoryValue] = useState("");
-
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.todos);
 
@@ -19,20 +15,6 @@ const TodoList = ({ user_id }) => {
   useEffect(() => {
     if (todoList) setLoadedTodos(true);
   }, []);
-
-  const addCategory = async (e) => {
-    e.preventDefault();
-
-    if (addCategoryValue) {
-      try {
-        // Add the new category and update the state to include it
-        dispatch(addCategoryAsync({ user_id, category: addCategoryValue }));
-      } catch (err) {
-        console.log(err.message);
-      }
-    }
-    setAddCategoryValue("");
-  };
 
   return (
     <div className="flex ml-5">
@@ -65,20 +47,7 @@ const TodoList = ({ user_id }) => {
             </div>
           )}
 
-          <form onSubmit={addCategory} className="flex items-center mb-5">
-            <div className="bg-transparent ml-4 text-red-700 font-semibold hover:text-black py-2 px-2">
-              <AiOutlinePlus />
-            </div>
-            <input
-              type="text"
-              autoFocus
-              placeholder="Add Category..."
-              value={addCategoryValue}
-              onChange={(event) => setAddCategoryValue(event.target.value)}
-              // onBlur={() => setCategoryInput(false)}
-              className="text-black-500 ml-3 h-12 focus:outline-none pl-5 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
-            />
-          </form>
+          <AddCategory user_id={user_id} />
         </ul>
       </div>
     </div>

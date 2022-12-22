@@ -1,23 +1,16 @@
 import React, { useState } from "react";
-
 import { useDispatch } from "react-redux";
-import { updateTaskAsync } from "../redux/todosSlice";
+import { updateCategoryAsync } from "../redux/todosSlice";
 
-function EditTask({
-  user_id,
-  category_index,
-  task_index,
-  task,
-  setEnableEdit,
-}) {
+function EditCategory({ user_id, category_index, setEnableEdit, category }) {
   const dispatch = useDispatch();
-  const [updatedValue, setUpdatedValue] = useState(task);
+  const [updatedValue, setUpdatedValue] = useState(category);
 
-  const updateTask = async (e) => {
+  const updateCategory = async (e) => {
     e.preventDefault();
     try {
       await dispatch(
-        updateTaskAsync({ user_id, category_index, task_index, updatedValue })
+        updateCategoryAsync({ user_id, category_index, updatedValue })
       );
       setEnableEdit(false);
     } catch (err) {
@@ -26,7 +19,7 @@ function EditTask({
   };
 
   return (
-    <form onSubmit={updateTask} className="form-inline">
+    <form onSubmit={updateCategory} className="form-inline">
       <input
         type="text"
         autoFocus
@@ -39,4 +32,4 @@ function EditTask({
   );
 }
 
-export default EditTask;
+export default EditCategory;

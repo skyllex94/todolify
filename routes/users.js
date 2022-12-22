@@ -68,10 +68,19 @@ router.post(
           user_id: user.id,
           categories: [
             {
+              category: "Skillset to Build",
+              tasks: [
+                {
+                  task: "Associated tasks",
+                  done: false,
+                },
+              ],
+            },
+            {
               category: "Mundane",
               tasks: [
                 {
-                  task: "Wash laudry",
+                  task: "Your everyday tasks",
                   done: false,
                 },
               ],

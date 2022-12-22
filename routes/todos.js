@@ -89,7 +89,7 @@ router.post("/:id/:category_id", async (req, res) => {
   res.send(taskToBeReturned);
 });
 
-// @route   PATCH /user/:user_id
+// @route   PATCH /api/user/:user_id
 // @desc    TOGGLE a task's checkbox and persist it
 // @access  Private
 router.patch("/:user_id", async (req, res) => {
@@ -121,10 +121,36 @@ router.patch("/:user_id", async (req, res) => {
   res.send(toggleTaskObj);
 });
 
-// @route   PATCH /user/update/:user_id
+// @route   PATCH /api/user/upd-ctry/:user_id
+// @desc    UPDATE a category
+// @access  Private
+router.patch("/upd-ctry/:user_id", async (req, res) => {
+  const user_id = req.params.user_id;
+  const categoryIndex = req.body.category_index;
+  const newValue = req.body.value;
+
+  // Creating the key for the update
+  const keyValue = "categories." + categoryIndex + ".category";
+
+  // Mongoose query for finding the category and updating its value
+  const updateCategoryQuery = await Todos.updateOne(
+    { user_id },
+    { $set: { [keyValue]: newValue } }
+  );
+
+  const updatedCategoryObj = {
+    confirmation: updateCategoryQuery,
+    objInfo: { categoryIndex, newValue },
+  };
+
+  // Send back resp wt query call and object info
+  res.send(updatedCategoryObj);
+});
+
+// @route   PATCH /api/user/upd-task/:user_id
 // @desc    UPDATE a task
 // @access  Private
-router.patch("/update/:user_id", async (req, res) => {
+router.patch("/upd-task/:user_id", async (req, res) => {
   const user_id = req.params.user_id;
   const categoryIndex = req.body.category_index;
   const taskIndex = req.body.task_index;
@@ -134,7 +160,7 @@ router.patch("/update/:user_id", async (req, res) => {
   const keyValue =
     "categories." + categoryIndex + ".tasks." + taskIndex + ".task";
 
-  // Mongoose query for finding the task and toggling the 'done' value
+  // Mongoose query for finding the task and updating its value
   const updateToggleTask = await Todos.updateOne(
     { user_id },
     { $set: { [keyValue]: newValue } }
@@ -153,7 +179,7 @@ router.patch("/update/:user_id", async (req, res) => {
   res.send(updatedTaskObj);
 });
 
-// @route   DELETE /user/:user_id/:category_id
+// @route   DELETE /api/user/:user_id/:category_id
 // @desc    DELETE category in an auth user
 // @access  Private
 router.delete("/:id/:category_id", async (req, res) => {
@@ -201,7 +227,7 @@ router.delete("/:id/:category_id", async (req, res) => {
   // const id = req.params.item_id.toString();
 });
 
-// @route   DELETE /user/:user_id/:category_index/:id
+// @route   DELETE /api/user/:user_id/:category_index/:id
 // @desc    DELETE task from a category
 // @access  Private
 router.delete("/:user_id/:category_id/:id", async (req, res) => {
