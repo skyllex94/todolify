@@ -16,6 +16,7 @@ function Header() {
 
   const logoutUser = () => {
     localStorage.removeItem("jwt");
+    if (window.location.pathname === "/") window.location.reload(false);
     navigate("/");
   };
 

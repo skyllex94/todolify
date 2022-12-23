@@ -5,10 +5,10 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { decodeJWT } from "./utils/functions";
+import React from "react";
 
 function App() {
   const savedJWT = window.localStorage.getItem("jwt");
-  // const jwt = useSelector((state) => state.auth);
 
   let user_id;
   if (savedJWT) {

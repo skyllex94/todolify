@@ -71,7 +71,7 @@ router.post(
               category: "Skillset to Build",
               tasks: [
                 {
-                  task: "Associated tasks",
+                  task: "Daily tasks",
                   done: false,
                 },
               ],
