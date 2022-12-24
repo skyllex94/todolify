@@ -14,7 +14,6 @@ export const alertSlice = createSlice({
       state.alert = {};
     },
   },
-  extraReducers: (builder) => {},
 });
 
 export const { createAlert, clearAlert } = alertSlice.actions;

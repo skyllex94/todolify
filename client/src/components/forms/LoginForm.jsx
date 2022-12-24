@@ -1,8 +1,11 @@
 import axios from "axios";
-import React, { Fragment, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { Fragment } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { createAlert } from "../../redux/alertSlice";
+import { useDisplayAlert } from "../../hooks/useDisplayAlert";
+import { useFormData } from "../../hooks/useFormData";
+// import { useLoginUser } from "../../hooks/useLoginUser";
+
 import { storeJWT } from "../../redux/authSlice";
 import { decodeJWT } from "../../utils/functions";
 import Alert from "../Alert";
@@ -11,38 +14,20 @@ function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const alert = useSelector((state) => state.alerts.alert);
-  const [enableAlert, setEnableAlert] = useState(false);
-
+  const { formData, onChange } = useFormData();
   const { email, password } = formData;
-
-  useEffect(() => {
-    if (enableAlert === true) {
-      setTimeout(() => setEnableAlert(false), 3000);
-    }
-  }, [enableAlert]);
-
-  const displayAlert = (type, message, status) => {
-    if (type.includes("AxiosError")) type = "error";
-    if (status === 400) message = "Invalid user credentials, please try again";
-    dispatch(createAlert({ type, message }));
-    setEnableAlert(true);
-  };
+  // Hangling and diplaying alert
+  const { alert, enableAlert, displayAlert } = useDisplayAlert();
+  // const { onSubmit } = useLoginUser(formData, displayAlert);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
       // Request to server to check if use exists in DB and send token
       const res = await axios.post("/api/user", formData);
-      console.log("res:", res.data);
 
       // Take in the jwt returned from post req and set in redux store
       const jwt = dispatch(storeJWT({ jwt: res.data }));
-      console.log(jwt);
       window.localStorage.setItem("jwt", JSON.stringify(jwt.payload.jwt.token));
 
       const user = decodeJWT(res.data.token);
@@ -52,9 +37,6 @@ function LoginForm() {
       displayAlert(err.name, err.message, err.response.status);
     }
   };
-
-  const onChange = (event, keyName) =>
-    setFormData({ ...formData, [keyName]: event.target.value });
 
   return (
     <Fragment>

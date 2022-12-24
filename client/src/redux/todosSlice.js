@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 // Not used for now since async fetching the todo list wt state through Main and passing to TodoList
 export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
@@ -63,7 +64,7 @@ export const toggleCompletedTaskAsync = createAsyncThunk(
 
       return await resp;
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   }
 );

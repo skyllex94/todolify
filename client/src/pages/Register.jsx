@@ -1,50 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 // HTTP Requests
 import axios from "axios";
 import image from "../assets/reg.jpg";
 // Redux
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { storeJWT } from "../redux/authSlice";
 import { decodeJWT } from "../utils/functions";
 import Alert from "../components/Alert";
-import { createAlert } from "../redux/alertSlice";
+
+import { useDisplayAlert } from "../hooks/useDisplayAlert";
+import { useSignupData } from "../hooks/useSignupData";
 
 function Register() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    repeat_password: "",
-  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const alert = useSelector((state) => state.alerts.alert);
-  const [enableAlert, setEnableAlert] = useState(false);
-
+  const { formData, onChange } = useSignupData();
   const { name, email, password, repeat_password } = formData;
-
-  const onChange = (event, keyName) =>
-    setFormData({ ...formData, [keyName]: event.target.value });
+  const { alert, enableAlert, displayAlert } = useDisplayAlert();
 
   useEffect(() => {
     const fetchJWT = JSON.parse(window.localStorage.getItem("jwt"));
     if (fetchJWT) navigate("/user/:id");
   }, [navigate]);
-
-  useEffect(() => {
-    if (enableAlert === true) {
-      setTimeout(() => setEnableAlert(false), 3000);
-    }
-  }, [enableAlert]);
-
-  const displayAlert = (type, message) => {
-    if (type.includes("AxiosError")) type = "error";
-    dispatch(createAlert({ type, message }));
-    setEnableAlert(true);
-  };
 
   const onSubmit = async (e) => {
     e.preventDefault();

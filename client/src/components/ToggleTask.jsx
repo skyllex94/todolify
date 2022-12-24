@@ -17,17 +17,20 @@ function ToggleTask({ user_id, category_index, id, done, task_index }) {
         task_index,
       })
     );
+
     setToggleChecked((prev) => !prev);
   };
 
   return (
-    <input
-      id="red-checkbox"
-      type="checkbox"
-      className="accent-orange-600 mx-3"
-      onChange={toggleCompletedTask}
-      checked={toggleChecked}
-    />
+    <React.Fragment>
+      <input
+        id="red-checkbox"
+        type="checkbox"
+        className="accent-orange-600 mx-3"
+        onChange={toggleCompletedTask}
+        checked={toggleChecked}
+      />
+    </React.Fragment>
   );
 }
 

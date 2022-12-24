@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CategoryItem from "./CategoryItem";
-import { useSelector } from "react-redux";
 import loader from "../assets/loader.gif";
 import AddCategory from "./AddCategory";
+import { useTodoList } from "../hooks/useTodoList";
 
 const TodoList = ({ user_id }) => {
-  // Redux state for todo list of auth user
-  const todoList = useSelector((state) => state.todos);
-
-  // loader gif state
-  const [loadedTodos, setLoadedTodos] = useState(false);
-
-  // Change the loader to the data when inputted
-  useEffect(() => {
-    if (todoList) setLoadedTodos(true);
-  }, []);
+  // Hook fetching redux state for todo list of auth user
+  const { loadedTodos, todoList } = useTodoList();
 
   return (
     <div className="flex ml-5">
