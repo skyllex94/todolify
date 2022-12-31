@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("flowbite/plugin")],
   variants: {
     extend: {
       display: ["group-hover"],

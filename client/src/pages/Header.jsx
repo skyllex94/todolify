@@ -23,14 +23,6 @@ function Header() {
   return (
     <div>
       <header>
-        <input
-          type="checkbox"
-          name="hbr"
-          id="hbr"
-          className="hbr peer"
-          hidden
-          aria-hidden="true"
-        />
         <nav className="fixed z-20 w-full bg-white/90 dark:bg-gray-900/80 backdrop-blur navbar shadow-2xl shadow-gray-600/5 border-b border-gray-100 dark:border-gray-800 peer-checked:navbar-active dark:shadow-snone">
           <div className="xl:container m-auto px-6 md:px-12 lg:px-6">
             <div className="flex flex-wrap items-center justify-between gap-6 md:py-3 md:gap-0 lg:py-5">

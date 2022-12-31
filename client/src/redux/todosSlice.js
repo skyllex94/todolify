@@ -105,6 +105,24 @@ export const updateTaskAsync = createAsyncThunk(
   }
 );
 
+export const updateIconAsync = createAsyncThunk(
+  "updateIconAsync",
+  async (payload) => {
+    // payload => {user_id, category_id}
+    try {
+      const resp = await axios.patch(`/api/user/upd-task/${payload.user_id}`, {
+        category_index: payload.category_index,
+        task_index: payload.task_index,
+        value: payload.updatedValue,
+      });
+      // Returns an object wt confirmation obj and objInfo
+      return await resp;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
+
 export const deleteCategoryAsync = createAsyncThunk(
   "deleteCategoryAsync",
   // payload => {user_id, categoryId}
