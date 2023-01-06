@@ -6,10 +6,11 @@ import EditCategory from "./EditCategory";
 import AddTask from "./AddTask";
 import EnableEditCategory from "./EnableEditCategory";
 
-import { Tooltip } from "flowbite-react/lib/cjs/components";
 import { HiCode } from "react-icons/hi";
 import { MdOutlineAddBusiness } from "react-icons/md";
 import { IoMdBusiness } from "react-icons/io";
+
+import { Popover, OverlayTrigger, Form } from "react-bootstrap/esm";
 
 function CategoryItem({
   user_id,
@@ -27,37 +28,31 @@ function CategoryItem({
   }
 
   const popover = (
-    <div className="flex mr-2 mt-1">
-      <Tooltip
-        arrow={false}
-        style="light"
-        content={
-          <div>
-            <h3 className="text-center">Change Icon</h3>
-            <div className="flex">
-              {icons.map((icon) => (
-                <button
-                  className="border-none"
-                  onClick={() => hangleChangeIcon(icon)}
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
-          </div>
-        }
-        trigger="click"
-      >
-        <button className="border-none">{icon}</button>
-      </Tooltip>
-    </div>
+    <Popover id="popover-positioned-top">
+      <Popover.Header as="h3">Change Icon</Popover.Header>
+      <Popover.Body>
+        <div className="grid grid-cols-6 gap-2">
+          {icons.map((icon) => (
+            <div onClick={() => hangleChangeIcon(icon)}>{icon}</div>
+          ))}
+        </div>
+      </Popover.Body>
+    </Popover>
   );
 
   return (
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">
         <div className="flex items-center text-left">
-          {popover}
+          <OverlayTrigger
+            trigger="click"
+            key="top"
+            rootClose
+            placement="top-start"
+            overlay={popover}
+          >
+            <Form.Label className="optionsStyle p-1">{icon}</Form.Label>
+          </OverlayTrigger>
           {enableEdit ? (
             <EditCategory
               user_id={user_id}
