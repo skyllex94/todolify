@@ -11,6 +11,7 @@ import { MdOutlineAddBusiness } from "react-icons/md";
 import { IoMdBusiness } from "react-icons/io";
 
 import { Popover, OverlayTrigger, Form } from "react-bootstrap/esm";
+import AddIcon from "./SelectIcon";
 
 function CategoryItem({
   user_id,
@@ -21,7 +22,10 @@ function CategoryItem({
 }) {
   const [enableEdit, setEnableEdit] = useState(false);
   const [icon, setIcon] = useState(<HiCode />);
-  const icons = [<HiCode />, <MdOutlineAddBusiness />, <IoMdBusiness />];
+
+  const iconObjs = { code: <HiCode />, business: <MdOutlineAddBusiness /> };
+
+  const icons = [iconObjs.code, iconObjs.business, <IoMdBusiness />];
 
   function hangleChangeIcon(newIcon) {
     setIcon(newIcon);
@@ -44,15 +48,7 @@ function CategoryItem({
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">
         <div className="flex items-center text-left">
-          <OverlayTrigger
-            trigger="click"
-            key="top"
-            rootClose
-            placement="top-start"
-            overlay={popover}
-          >
-            <Form.Label className="optionsStyle p-1">{icon}</Form.Label>
-          </OverlayTrigger>
+          <AddIcon />
           {enableEdit ? (
             <EditCategory
               user_id={user_id}

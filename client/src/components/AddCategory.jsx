@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync } from "../redux/todosSlice";
+import { AiOutlineAntDesign } from "react-icons/ai";
+import AddIcon from "./SelectIcon";
+import SelectIcon from "./SelectIcon";
 
 function AddCategory({ user_id }) {
   const dispatch = useDispatch();
@@ -24,7 +27,7 @@ function AddCategory({ user_id }) {
   return (
     <form onSubmit={addCategory} className="flex items-center mb-5">
       <div className="bg-transparent ml-4 text-red-700 font-semibold hover:text-black py-2 px-2">
-        <AiOutlinePlus />
+        <SelectIcon currIcon={"code"} />
       </div>
       <input
         type="text"
