@@ -17,12 +17,14 @@ export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
 
 export const addCategoryAsync = createAsyncThunk(
   "addCategoryAsync",
+  // payload => {user_id, category (the name), icon (num)}
   async (payload) => {
     try {
       const resp = await axios.post(`/api/user/${payload.user_id}`, {
         category: payload.category,
       });
       // Returns the new category object from DB
+      console.log("resp:", resp);
       return await resp;
     } catch (err) {
       console.log(err.message);
@@ -107,13 +109,15 @@ export const updateTaskAsync = createAsyncThunk(
 export const updateIconAsync = createAsyncThunk(
   "updateIconAsync",
   async (payload) => {
-    // payload => {user_id, category_id}
+    // payload => {user_id, category_idx, newIconIdx}
     try {
-      const resp = await axios.patch(`/api/user/upd-task/${payload.user_id}`, {
-        category_index: payload.category_index,
-        task_index: payload.task_index,
-        value: payload.updatedValue,
-      });
+      const resp = await axios.patch(
+        `/api/user/upd-ctry-icon/${payload.user_id}`,
+        {
+          category_index: payload.category_index,
+          iconIdx: payload.iconIdx,
+        }
+      );
       // Returns an object wt confirmation obj and objInfo
       return await resp;
     } catch (err) {

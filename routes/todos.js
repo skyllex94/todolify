@@ -29,6 +29,7 @@ router.post("/:id", async (req, res) => {
 
   const newCategory = {
     category: req.body.category,
+    icon: 0,
     tasks: [],
   };
   // Push the new category to the current array of categories / returns length of the array
@@ -41,6 +42,7 @@ router.post("/:id", async (req, res) => {
   const categoryToReturn = {
     _id: category_id,
     category: req.body.category,
+    icon: 0,
     tasks: [],
   };
   // Return a response with the whole category object being the same as the one posted to the DB
@@ -143,6 +145,33 @@ router.patch("/upd-ctry/:user_id", async (req, res) => {
     objInfo: { categoryIndex, newValue },
   };
 
+  // Send back resp wt query call and object info
+  res.send(updatedCategoryObj);
+});
+
+// @route   PATCH /api/user/upd-ctry-icon
+// @desc    UPDATE a category icon
+// @access  Private
+router.patch("/upd-ctry-icon/:user_id", async (req, res) => {
+  const user_id = req.params.user_id;
+  const categoryIndex = req.body.category_index;
+  const newIconIdx = req.body.iconIdx;
+
+  // Creating the key for the update
+  const keyValue = "categories." + categoryIndex + ".icon";
+  if (keyValue === null) {
+    return;
+  }
+  // Mongoose query for finding the category and updating its value
+  const updateIcon = await Todos.updateOne(
+    { user_id },
+    { $set: { [keyValue]: newIconIdx } }
+  );
+
+  const updatedCategoryObj = {
+    confirmation: updateIcon,
+    objInfo: { categoryIndex, newIconIdx },
+  };
   // Send back resp wt query call and object info
   res.send(updatedCategoryObj);
 });

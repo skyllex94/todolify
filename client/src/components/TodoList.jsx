@@ -25,6 +25,7 @@ const TodoList = ({ user_id }) => {
                     category_index={index}
                     category={curr.category}
                     tasks={curr.tasks}
+                    icon={curr.icon}
                   />
                 </div>
               </div>

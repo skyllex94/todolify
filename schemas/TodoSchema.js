@@ -14,6 +14,9 @@ const TodoSchema = new mongoose.Schema({
       category: {
         type: String,
       },
+      icon: {
+        type: Number,
+      },
       tasks: [
         {
           id: {

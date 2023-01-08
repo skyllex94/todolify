@@ -69,6 +69,7 @@ router.post(
           categories: [
             {
               category: "Skillset to Build",
+              icon: 0,
               tasks: [
                 {
                   task: "Daily tasks",
@@ -78,6 +79,7 @@ router.post(
             },
             {
               category: "Mundane",
+              icon: 1,
               tasks: [
                 {
                   task: "Your everyday tasks",

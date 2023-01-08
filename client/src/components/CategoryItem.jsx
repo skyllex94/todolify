@@ -6,12 +6,7 @@ import EditCategory from "./EditCategory";
 import AddTask from "./AddTask";
 import EnableEditCategory from "./EnableEditCategory";
 
-import { HiCode } from "react-icons/hi";
-import { MdOutlineAddBusiness } from "react-icons/md";
-import { IoMdBusiness } from "react-icons/io";
-
-import { Popover, OverlayTrigger, Form } from "react-bootstrap/esm";
-import AddIcon from "./SelectIcon";
+import SelectIcon from "./SelectIcon";
 
 function CategoryItem({
   user_id,
@@ -19,36 +14,22 @@ function CategoryItem({
   category_index,
   category,
   tasks,
+  icon,
 }) {
   const [enableEdit, setEnableEdit] = useState(false);
-  const [icon, setIcon] = useState(<HiCode />);
-
-  const iconObjs = { code: <HiCode />, business: <MdOutlineAddBusiness /> };
-
-  const icons = [iconObjs.code, iconObjs.business, <IoMdBusiness />];
-
-  function hangleChangeIcon(newIcon) {
-    setIcon(newIcon);
-  }
-
-  const popover = (
-    <Popover id="popover-positioned-top">
-      <Popover.Header as="h3">Change Icon</Popover.Header>
-      <Popover.Body>
-        <div className="grid grid-cols-6 gap-2">
-          {icons.map((icon) => (
-            <div onClick={() => hangleChangeIcon(icon)}>{icon}</div>
-          ))}
-        </div>
-      </Popover.Body>
-    </Popover>
-  );
+  const [currIcon, setCurrIcon] = useState(icon ?? null);
 
   return (
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">
         <div className="flex items-center text-left">
-          <AddIcon />
+          <SelectIcon
+            user_id={user_id}
+            category_id={category_id}
+            category_index={category_index}
+            currIcon={currIcon}
+            setCurrIcon={setCurrIcon}
+          />
           {enableEdit ? (
             <EditCategory
               user_id={user_id}

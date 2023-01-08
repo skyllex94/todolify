@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync } from "../redux/todosSlice";
-import { AiOutlineAntDesign } from "react-icons/ai";
-import AddIcon from "./SelectIcon";
-import SelectIcon from "./SelectIcon";
 
 function AddCategory({ user_id }) {
   const dispatch = useDispatch();
@@ -16,7 +13,12 @@ function AddCategory({ user_id }) {
     if (addCategoryValue) {
       try {
         // Add the new category and update the state to include it
-        dispatch(addCategoryAsync({ user_id, category: addCategoryValue }));
+        dispatch(
+          addCategoryAsync({
+            user_id,
+            category: addCategoryValue,
+          })
+        );
       } catch (err) {
         console.log(err.message);
       }
@@ -27,7 +29,7 @@ function AddCategory({ user_id }) {
   return (
     <form onSubmit={addCategory} className="flex items-center mb-5">
       <div className="bg-transparent ml-4 text-red-700 font-semibold hover:text-black py-2 px-2">
-        <SelectIcon currIcon={"code"} />
+        <AiOutlinePlus />
       </div>
       <input
         type="text"
