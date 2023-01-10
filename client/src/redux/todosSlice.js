@@ -17,11 +17,14 @@ export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
 
 export const addCategoryAsync = createAsyncThunk(
   "addCategoryAsync",
-  // payload => {user_id, category (the name), icon (num)}
+  // payload => {user_id, category (the name), activeFrom, activeUntil, timeDuration}
   async (payload) => {
     try {
       const resp = await axios.post(`/api/user/${payload.user_id}`, {
         category: payload.category,
+        activeFrom: payload.activeFrom,
+        activeUntil: payload.activeUntil,
+        timeDuration: payload.timeDuration,
       });
       // Returns the new category object from DB
       console.log("resp:", resp);
@@ -236,6 +239,7 @@ export const todosSlice = createSlice({
       const categoryIndex = state.findIndex(
         (curr) => curr._id === action.payload.data
       );
+      console.log("categoryIndex:", categoryIndex);
       state.splice(categoryIndex, 1);
     });
     // Delete a task

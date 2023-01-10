@@ -49,7 +49,7 @@ function SelectIcon({ user_id, category_index, currIcon, setCurrIcon }) {
   ];
   const [icon, setIcon] = useState(icons[currIcon]);
 
-  async function hangleChangeIcon(newIcon, iconIdx) {
+  async function handleChangeIcon(newIcon, iconIdx) {
     setIcon(newIcon);
     setCurrIcon(icons.indexOf(newIcon));
     // Change icon index in the db and save the result
@@ -63,13 +63,14 @@ function SelectIcon({ user_id, category_index, currIcon, setCurrIcon }) {
   const popover = (
     <div className="bg-white border-solid border-2 border-red-600 rounded p-2">
       <Popover id="popover-positioned-top">
-        <Popover.Header className="text-center pb-3">
-          Change Icon
-        </Popover.Header>
         <Popover.Body>
           <div className="grid grid-cols-6 gap-2">
             {icons.map((icon, idx) => (
-              <div key={idx} onClick={() => hangleChangeIcon(icon, idx)}>
+              <div
+                key={idx}
+                className="transition ease-in-out hover:-translate-y-1 hover:scale-105 duration-50"
+                onClick={() => handleChangeIcon(icon, idx)}
+              >
                 {icon}
               </div>
             ))}

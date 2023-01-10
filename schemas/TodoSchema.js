@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const CategoriesSchema = require("./CategoriesSchema");
 
 const TodoSchema = new mongoose.Schema({
   user_id: {
@@ -16,6 +15,15 @@ const TodoSchema = new mongoose.Schema({
       },
       icon: {
         type: Number,
+      },
+      activeFrom: {
+        type: String,
+      },
+      activeUntil: {
+        type: String,
+      },
+      timeDuration: {
+        type: String,
       },
       tasks: [
         {

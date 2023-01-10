@@ -3,17 +3,24 @@ import CategoryItem from "./CategoryItem";
 import loader from "../assets/loader.gif";
 import AddCategory from "./AddCategory";
 import { useTodoList } from "../hooks/useTodoList";
+import { formattedDate, getDayOfWeek } from "../utils/functions";
 
-const TodoList = ({ user_id }) => {
+const TodoList = ({ user_id, todos, day }) => {
   // Hook fetching redux state for todo list of auth user
-  const { loadedTodos, todoList } = useTodoList();
+  const { loadedTodos } = useTodoList();
+
+  const formatDate = formattedDate(day);
+  const dayOfWeek = getDayOfWeek(day);
 
   return (
     <div className="flex ml-5">
       <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
         <ul className="list-group mb-2 pt-5">
+          <h3 className="text-center">
+            <i>{dayOfWeek}</i> - <span>{formatDate}</span>
+          </h3>
           {loadedTodos ? (
-            todoList.map((curr, index) => (
+            todos.map((curr, index) => (
               <div
                 key={index}
                 className="flex inline items-center mb-1 justify-between"

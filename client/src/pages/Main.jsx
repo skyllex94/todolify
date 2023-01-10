@@ -2,7 +2,7 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
 import { decodeJWT } from "../utils/functions";
@@ -16,7 +16,9 @@ function Main() {
   const dispatch = useDispatch();
 
   const [loadedTodoList, setLoadedTodoList] = useState(false);
-  const [todoListObj, setTodoListObj] = useState(null);
+  // Redux state for todo list of auth user
+  const todoList = useSelector((state) => state.todos);
+  const weeklyTodoList = [todoList, todoList, todoList];
 
   // Async function triggered when page loaded to call a GET request
   // to specific user & fetch the todoList object of that user
@@ -25,8 +27,6 @@ function Main() {
     const respFromDB = await dispatch(getTodosAsync(id));
     if (respFromDB) {
       setLoadedTodoList(true);
-      // Set state do it can be used and mapped over
-      setTodoListObj(respFromDB);
     }
   };
 
@@ -56,7 +56,7 @@ function Main() {
     <div>
       <Header />
       <div className="flex pt-24">
-        <div className="flex flex-col h-screen p-3 bg-white shadow w-60">
+        <div className="flex flex-col h-50 p-6 bg-white min-w-[15%]">
           <div className="space-y-3">
             <div className="flex items-center">
               <h2 className="text-xl font-bold">Dashboard</h2>
@@ -111,7 +111,7 @@ function Main() {
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                       />
                     </svg>
-                    <span>Home</span>
+                    <span>Today List</span>
                   </a>
                 </li>
                 <li className="rounded-sm">
@@ -133,7 +133,7 @@ function Main() {
                         d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
                       />
                     </svg>
-                    <span>Inbox</span>
+                    <span>Weekly List</span>
                   </a>
                 </li>
                 <li className="rounded-sm">
@@ -155,7 +155,7 @@ function Main() {
                         d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                       />
                     </svg>
-                    <span>Orders</span>
+                    <span>Yearly Go</span>
                   </a>
                 </li>
                 <li className="rounded-sm">
@@ -211,10 +211,14 @@ function Main() {
             </div>
           </div>
         </div>
-        <div className="container mx-auto mt-12">
-          {loadedTodoList && (
-            <TodoList userTodoList={todoListObj.payload} user_id={id} />
-          )}
+        <div className="flex mt-12">
+          {weeklyTodoList.map((todos, idx) => (
+            <div key={idx}>
+              {loadedTodoList && (
+                <TodoList user_id={id} todos={todos} day={idx} />
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>

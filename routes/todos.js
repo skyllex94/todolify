@@ -26,10 +26,16 @@ router.get("/:id", async (req, res) => {
 router.post("/:id", async (req, res) => {
   // Find the todo list of the logged user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });
+  const activeFrom = req.body.activeFrom;
+  const activeUntil = req.body.activeUntil;
+  const timeDuration = req.body.timeDuration;
 
   const newCategory = {
     category: req.body.category,
     icon: 0,
+    activeFrom,
+    activeUntil,
+    timeDuration,
     tasks: [],
   };
   // Push the new category to the current array of categories / returns length of the array
@@ -43,6 +49,9 @@ router.post("/:id", async (req, res) => {
     _id: category_id,
     category: req.body.category,
     icon: 0,
+    activeFrom,
+    activeUntil,
+    timeDuration,
     tasks: [],
   };
   // Return a response with the whole category object being the same as the one posted to the DB

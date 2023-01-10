@@ -9,14 +9,6 @@ function DeleteCategory({ user_id, id }) {
   const deleteCategory = async () => {
     try {
       dispatch(deleteCategoryAsync({ user_id, categoryId: id }));
-
-      // const deletedCategoryId = deletedCategory.payload.data;
-      // Remove the category
-      // if (deletedCategoryId) {
-      //   setTodoList((prevState) =>
-      //     prevState.filter((curr) => curr._id !== deletedCategoryId)
-      //   );
-      // }
     } catch (err) {
       console.log(err.message);
     }
