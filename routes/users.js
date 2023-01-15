@@ -66,6 +66,40 @@ router.post(
       try {
         const userTodoList = new TodoSchema({
           user_id: user.id,
+
+          date: [
+            {
+              month_year: "01/2023",
+              days: [
+                {
+                  day: 16,
+                  categories: [
+                    {
+                      category: "Skillset to Build",
+                      icon: 0,
+                      tasks: [
+                        {
+                          task: "Daily tasks",
+                          done: false,
+                        },
+                      ],
+                    },
+                    {
+                      category: "Mundane",
+                      icon: 1,
+                      tasks: [
+                        {
+                          task: "Your everyday tasks",
+                          done: false,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+
           categories: [
             {
               category: "Skillset to Build",

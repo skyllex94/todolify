@@ -4,6 +4,8 @@ import loader from "../assets/loader.gif";
 import AddCategory from "./AddCategory";
 import { useTodoList } from "../hooks/useTodoList";
 import { formattedDate, getDayOfWeek } from "../utils/functions";
+import { useDispatch } from "react-redux";
+import { addDateAsync } from "../redux/todosSlice";
 
 const TodoList = ({ user_id, todos, day }) => {
   // Hook fetching redux state for todo list of auth user
@@ -11,6 +13,20 @@ const TodoList = ({ user_id, todos, day }) => {
 
   const formatDate = formattedDate(day);
   const dayOfWeek = getDayOfWeek(day);
+
+  const dispatch = useDispatch();
+  const reachDB = () => {
+    // Splits date into array of 3 values [dd], [mm], [yyyy]
+    const splitDate = formatDate.split("/");
+    const day = splitDate[0];
+    console.log("day:", day);
+    const month_year = splitDate[1] + "/" + splitDate[2];
+    console.log("month_year:", month_year);
+
+    console.log("user_id:", user_id);
+
+    dispatch(addDateAsync({ user_id, month_year, day }));
+  };
 
   return (
     <div className="flex ml-5">
@@ -48,6 +64,9 @@ const TodoList = ({ user_id, todos, day }) => {
           )}
 
           <AddCategory user_id={user_id} />
+          <button className="btn btn-primary border ml-4" onClick={reachDB}>
+            Reach Me
+          </button>
         </ul>
       </div>
     </div>

@@ -15,6 +15,25 @@ export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
   }
 });
 
+export const addDateAsync = createAsyncThunk(
+  "addDateAsync",
+  // payload => {month_year, day, user_id}
+  async (payload) => {
+    console.log("user_id-payload", payload.user_id);
+    try {
+      const resp = await axios.post(`/api/user/date/${payload.user_id}`, {
+        month_year: payload.month_year,
+        day: payload.day,
+      });
+      // Return 'here' from MongoDB
+      console.log("resp:", resp);
+      return await resp;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
+
 export const addCategoryAsync = createAsyncThunk(
   "addCategoryAsync",
   // payload => {user_id, category (the name), activeFrom, activeUntil, timeDuration}
