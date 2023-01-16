@@ -65,7 +65,6 @@ export default function ModalAddCategory({ setShowModal, user_id }) {
                   autoFocus
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  onFocus={category}
                 />
               </div>
 

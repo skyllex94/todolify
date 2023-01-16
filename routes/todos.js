@@ -31,16 +31,51 @@ router.post("/date/:id", async (req, res) => {
 
   // Check if date exist in DB
 
+  // const userTodoList = await Todos.findOne({ user_id: req.params.id });
+
   const findDate = await Todos.find({
     user_id: user_id,
     "date.month_year": month_year,
     "date.days.day": day,
   });
+  console.log("findDate:", findDate);
 
   if (findDate.length === 0) {
-    res.send("Date has no tasks inside");
+    // Todos.aggregate( [ { $project : { "categories" : 1  } } ] )
+
+    const userTodoList = await Todos.findOne({ user_id: req.params.id });
+
+    const newDate = {
+      month_year,
+      days: [
+        {
+          day,
+          categories: [],
+        },
+      ],
+    };
+
+    userTodoList.date.push(newDate);
+    await userTodoList.save(newDate);
+
+    // Push the new category to the current array of categories / returns length of the array
+    // const arrLength = userTodoList.categories.push(newCategory);
+    // Send the new category to MongoDB and store it
+
+    // Todos.aggregate([{ $project: { x: "$categories", _id: 0 } }]);
+
+    res.send(userTodoList);
   } else {
     console.log("findDate:", findDate);
+
+    // Continue from here
+    const key = "date.days.";
+
+    // const insertValue = findDate.updateOne({
+    //   "date.month_year": month_year,
+    //   "date.days.day": day,
+    // });
+
     res.send(findDate);
   }
 
