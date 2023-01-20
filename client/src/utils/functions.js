@@ -27,7 +27,8 @@ export const getDayOfWeek = (addition) => {
   ];
 
   const date = new Date();
-  const dayToConvert = date.getDay() + addition;
+  let dayToConvert = date.getDay() + addition;
+  if (dayToConvert >= 7) dayToConvert = 0;
   let day = weekday[dayToConvert];
   return day;
 };

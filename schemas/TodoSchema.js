@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+const CategoriesSchema = require("./CategoriesSchema");
 
 const TodoSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
+    ref: "user",
   },
 
   date: [
@@ -12,6 +13,13 @@ const TodoSchema = new mongoose.Schema({
       days: [
         {
           day: { type: Number, required: true },
+          ctgries: [CategoriesSchema.schema],
+
+          cats: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "categories",
+          },
+
           categories: [
             {
               id: {
@@ -52,13 +60,8 @@ const TodoSchema = new mongoose.Schema({
     },
   ],
 
-  // month_year: {
-  //   type: String,
-  //   day: {
-  //     type: Number,
-  //     categories: ["reached"],
-  //   },
-  // },
+  // Reference to the subdoc of CategoriesSchema
+  ctgries: [CategoriesSchema.schema],
 
   categories: [
     {

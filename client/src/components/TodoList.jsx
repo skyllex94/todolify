@@ -21,9 +21,6 @@ const TodoList = ({ user_id, todos, day }) => {
     const day = splitDate[0];
     console.log("day:", day);
     const month_year = splitDate[1] + "/" + splitDate[2];
-    console.log("month_year:", month_year);
-
-    console.log("user_id:", user_id);
 
     dispatch(addDateAsync({ user_id, month_year, day }));
   };

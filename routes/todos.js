@@ -20,81 +20,46 @@ router.get("/:id", async (req, res) => {
   }
 });
 // @route   POST /user/date/:id
-// @desc    Add month_year & day to DB
+// @desc    Add date to DB, if it doesn't exist
 // @access  Private
 router.post("/date/:id", async (req, res) => {
-  // Find the todo list of the logged user
-  // const userTodoList = await Todos.findOne({ user_id: req.params.id });s
   const user_id = req.params.id;
   const month_year = req.body.month_year;
   const day = req.body.day;
 
   // Check if date exist in DB
-
-  // const userTodoList = await Todos.findOne({ user_id: req.params.id });
-
   const findDate = await Todos.find({
     user_id: user_id,
     "date.month_year": month_year,
     "date.days.day": day,
   });
-  console.log("findDate:", findDate);
+  const userTodoList = await Todos.findOne({ user_id: req.params.id });
 
   if (findDate.length === 0) {
-    // Todos.aggregate( [ { $project : { "categories" : 1  } } ] )
+    const monthIdx = userTodoList.date.findIndex(
+      (curr) => curr.month_year === month_year
+    );
 
-    const userTodoList = await Todos.findOne({ user_id: req.params.id });
+    const currCategories = userTodoList.categories;
+    console.log("currCategories:", currCategories);
 
-    const newDate = {
-      month_year,
-      days: [
-        {
-          day,
-          categories: [],
-        },
-      ],
+    const newDay = {
+      day,
+      categories: currCategories,
     };
 
-    userTodoList.date.push(newDate);
-    await userTodoList.save(newDate);
-
-    // Push the new category to the current array of categories / returns length of the array
-    // const arrLength = userTodoList.categories.push(newCategory);
-    // Send the new category to MongoDB and store it
-
-    // Todos.aggregate([{ $project: { x: "$categories", _id: 0 } }]);
+    userTodoList.date[monthIdx].days.push(newDay);
+    // Save the new instance of the whole object to MongoDB
+    await userTodoList.save(newDay);
 
     res.send(userTodoList);
   } else {
-    console.log("findDate:", findDate);
+    // console.log("findDate:", findDate);
+    userTodoList.ctgries.push({ category: "Coding Monster" });
+    await userTodoList.save();
 
-    // Continue from here
-    const key = "date.days.";
-
-    // const insertValue = findDate.updateOne({
-    //   "date.month_year": month_year,
-    //   "date.days.day": day,
-    // });
-
-    res.send(findDate);
+    res.send(userTodoList);
   }
-
-  // // Creating the key for the update
-  // const keyValue = "date." + "0." + "days." + "0." + "categories." + "0";
-
-  // // Mongoose query for finding the category and updating its value
-  // const updateCategoryQuery = await Todos.updateOne(
-  //   { user_id },
-  //   { $set: { [keyValue]: "REACHED!" } }
-  // );
-
-  // const reachedCategory = {
-  //   confirmation: updateCategoryQuery,
-  //   objInfo: { month_year, day },
-  // };
-
-  // // Send back resp wt query call and object info
-  // res.send(reachedCategory);
 });
 
 // @route   POST /user/:id
