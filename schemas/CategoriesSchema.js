@@ -34,4 +34,4 @@ const CategoriesSchema = new mongoose.Schema({
   //   ],
 });
 
-module.exports = curCtgry = mongoose.model("categories", CategoriesSchema);
+module.exports = curCtgries = mongoose.model("categories", CategoriesSchema);

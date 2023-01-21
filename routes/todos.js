@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 const router = express.Router();
 const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
+const curCategories = require("../schemas/CategoriesSchema");
 
 // @route   GET TODOS /user/:id
 // @desc    Fetch all todos for the authorized user
@@ -11,14 +12,21 @@ const Todos = require("../schemas/TodoSchema");
 router.get("/:id", async (req, res) => {
   try {
     // Fetch the userTodoList by finding the user_id in the Todo Collection
+    // const userTodoList = await Todos.findOne({ user_id: req.params.id });
+
+    // const populateCategories = userTodoList.categories;
+    // res.send(populateCategories);
+
     const userTodoList = await Todos.findOne({ user_id: req.params.id });
 
-    const populateCategories = userTodoList.categories;
-    res.send(populateCategories);
+    const dates = userTodoList.date;
+    const categories = userTodoList.categories;
+    res.send({ dates, categories });
   } catch (error) {
     console.log("Error in fetching TodoList...");
   }
 });
+
 // @route   POST /user/date/:id
 // @desc    Add date to DB, if it doesn't exist
 // @access  Private
@@ -28,38 +36,64 @@ router.post("/date/:id", async (req, res) => {
   const day = req.body.day;
 
   // Check if date exist in DB
-  const findDate = await Todos.find({
-    user_id: user_id,
-    "date.month_year": month_year,
-    "date.days.day": day,
-  });
+  // const findDate = await Todos.find({
+  //   user_id: user_id,
+  //   "date.month_year": month_year,
+  //   "date.days.day": day,
+  // });
+
+  // Fetch the todo list of user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });
+  const categories = userTodoList.categories;
 
-  if (findDate.length === 0) {
-    const monthIdx = userTodoList.date.findIndex(
-      (curr) => curr.month_year === month_year
-    );
+  // Find index of month of curr request
+  let monthIdx = userTodoList.date.findIndex(
+    (curr) => curr.month_year === month_year
+  );
 
-    const currCategories = userTodoList.categories;
-    console.log("currCategories:", currCategories);
+  // If month doesn't exist
+  if (monthIdx < 0) {
+    // Create the new month object
 
-    const newDay = {
-      day,
-      categories: currCategories,
+    const newMonth = {
+      month_year,
+      days: [{ day, categories }],
     };
 
-    userTodoList.date[monthIdx].days.push(newDay);
-    // Save the new instance of the whole object to MongoDB
-    await userTodoList.save(newDay);
+    // Mongoose query for inserting the new month
+    await Todos.updateOne({ user_id }, { $set: { date: newMonth } });
 
-    res.send(userTodoList);
-  } else {
-    // console.log("findDate:", findDate);
-    userTodoList.ctgries.push({ category: "Coding Monster" });
+    // Modify with newly created month index
+    monthIdx = userTodoList.date.findIndex(
+      (curr) => curr.month_year === month_year
+    );
+  }
+
+  let dayIdx = userTodoList.date[monthIdx].days.findIndex(
+    (curr) => curr.day == day
+  );
+
+  // If day doesn't exist
+  if (dayIdx < 0) {
+    const newDay = { day, categories };
+    userTodoList.date[monthIdx].days.push(newDay);
     await userTodoList.save();
+
+    dayIdx = userTodoList.date[monthIdx].days.findIndex(
+      (curr) => curr.day == day
+    );
 
     res.send(userTodoList);
   }
+  console.log("categories:", categories);
+
+  // If the month and day are present, or created continue
+  userTodoList.date[monthIdx].days[dayIdx].categories.push({
+    category: "newCategory",
+  });
+  await userTodoList.save();
+
+  res.send(userTodoList);
 });
 
 // @route   POST /user/:id

@@ -212,13 +212,26 @@ function Main() {
           </div>
         </div>
         <div className="flex mt-12">
-          {weeklyTodoList.map((todos, idx) => (
-            <div key={idx}>
-              {loadedTodoList && (
-                <TodoList user_id={id} todos={todos} day={idx} />
-              )}
-            </div>
-          ))}
+          {weeklyTodoList.map((todos, idx) => {
+            todos.dates.map((currDate) => {
+              if (currDate.month_year === "01/2023") {
+                return (
+                  <div>
+                    <TodoList
+                      user_id={user_id}
+                      todos={currDate.days[0].categories}
+                    />
+                  </div>
+                );
+              }
+            });
+
+            return (
+              <div>
+                <TodoList user_id={user_id} todos={todos.categories} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

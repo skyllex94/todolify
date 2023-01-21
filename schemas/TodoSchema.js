@@ -13,13 +13,7 @@ const TodoSchema = new mongoose.Schema({
       days: [
         {
           day: { type: Number, required: true },
-          ctgries: [CategoriesSchema.schema],
-
-          cats: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "categories",
-          },
-
+          // ctgries: [CategoriesSchema.schema],
           categories: [
             {
               id: {
@@ -59,9 +53,6 @@ const TodoSchema = new mongoose.Schema({
       ],
     },
   ],
-
-  // Reference to the subdoc of CategoriesSchema
-  ctgries: [CategoriesSchema.schema],
 
   categories: [
     {
