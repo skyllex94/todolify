@@ -28,7 +28,13 @@ export const getDayOfWeek = (addition) => {
 
   const date = new Date();
   let dayToConvert = date.getDay() + addition;
-  if (dayToConvert >= 7) dayToConvert = 0;
+
+  // if (dayToConvert < 0) {
+  //   Math(dayToConvert) %= 7;
+  //   console.log("dayToConvert:", dayToConvert);
+  // }
+  if (dayToConvert >= 7) dayToConvert %= 7;
+
   let day = weekday[dayToConvert];
   return day;
 };
@@ -43,7 +49,17 @@ export const formattedDate = (addition) => {
   if (mm < 10) mm = "0" + mm;
 
   return dd + "/" + mm + "/" + yyyy;
+};
 
-  // import Moment from "moment";
-  // return Moment().format("MMM Do, YYYY");
+export const getDate = (addedDays) => {
+  const formatDate = formattedDate(addedDays);
+
+  const splitDate = formatDate.split("/");
+  const day = parseInt(splitDate[0]);
+  const month_year = splitDate[1] + "/" + splitDate[2];
+
+  // TO DO: Fix daysofWeek for Sunday and figure out the loop
+  const dayOfWeek = getDayOfWeek(addedDays);
+
+  return { day, month_year, dayOfWeek };
 };

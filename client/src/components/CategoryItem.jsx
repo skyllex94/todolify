@@ -5,11 +5,13 @@ import DeleteCategory from "./DeleteCategory";
 import EditCategory from "./EditCategory";
 import AddTask from "./AddTask";
 import EnableEditCategory from "./EnableEditCategory";
-
 import SelectIcon from "./SelectIcon";
 
 function CategoryItem({
   user_id,
+  day,
+  month_year,
+  dayWtData,
   category_id,
   category_index,
   category,
@@ -44,8 +46,13 @@ function CategoryItem({
 
         <div className="wrapper-right-elements flex inline">
           <EnableEditCategory setEnableEdit={setEnableEdit} />
-          <DeleteCategory user_id={user_id} id={category_id} />
-          <DoneTasks tasks={tasks} />
+          <DeleteCategory
+            user_id={user_id}
+            id={category_id}
+            day={day}
+            month_year={month_year}
+            dayWtData={dayWtData}
+          />
         </div>
       </div>
 
@@ -71,7 +78,12 @@ function CategoryItem({
               </div>
             );
           })}
-        <AddTask user_id={user_id} category_id={category_id} />
+        <AddTask
+          user_id={user_id}
+          category_id={category_id}
+          day={day}
+          month_year={month_year}
+        />
       </div>
     </ul>
   );

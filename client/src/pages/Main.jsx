@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
-import { decodeJWT } from "../utils/functions";
+import { decodeJWT, getDate } from "../utils/functions";
 
 function Main() {
   const navigate = useNavigate();
@@ -25,6 +25,7 @@ function Main() {
   const getUserTodoList = async (id) => {
     // Trigger async GET request to the server, who fetch the data from MongoDB
     const respFromDB = await dispatch(getTodosAsync(id));
+
     if (respFromDB) {
       setLoadedTodoList(true);
     }
@@ -212,26 +213,36 @@ function Main() {
           </div>
         </div>
         <div className="flex mt-12">
-          {weeklyTodoList.map((todos, idx) => {
-            todos.dates.map((currDate) => {
-              if (currDate.month_year === "01/2023") {
-                return (
-                  <div>
-                    <TodoList
-                      user_id={user_id}
-                      todos={currDate.days[0].categories}
-                    />
-                  </div>
-                );
-              }
-            });
+          {loadedTodoList &&
+            weeklyTodoList.map((todos, idx) => {
+              const date = getDate(idx + 1);
+              const { day, month_year, dayOfWeek } = date;
+              let categories = todos.categories;
+              let dayWtData = false;
 
-            return (
-              <div>
-                <TodoList user_id={user_id} todos={todos.categories} />
-              </div>
-            );
-          })}
+              todos.date.map((currDate) => {
+                if (currDate.month_year === month_year) {
+                  currDate.days.map((curr) => {
+                    if (curr.day === day) {
+                      dayWtData = true;
+                      categories = curr.categories;
+                    }
+                  });
+                }
+              });
+
+              console.log("categoriesArr:", categories);
+              return (
+                <TodoList
+                  user_id={id}
+                  todos={categories}
+                  day={day}
+                  month_year={month_year}
+                  dayOfWeek={dayOfWeek}
+                  dayWtData={dayWtData}
+                />
+              );
+            })}
         </div>
       </div>
     </div>

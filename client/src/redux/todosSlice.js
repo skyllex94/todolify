@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Not used for now since async fetching the todo list wt state through Main and passing to TodoList
@@ -8,6 +8,8 @@ export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
     const resp = await axios.get(`/api/user/${id}`);
     if (resp.status === 200) {
       // If everything okay wt response, return the data from the DB
+      console.log("resp.data:", resp.data);
+
       return resp.data;
     }
   } catch (err) {
@@ -36,7 +38,7 @@ export const addDateAsync = createAsyncThunk(
 
 export const addCategoryAsync = createAsyncThunk(
   "addCategoryAsync",
-  // payload => {user_id, category (the name), activeFrom, activeUntil, timeDuration}
+  // payload => {user_id, day, month_year, category (the name), activeFrom, activeUntil, timeDuration, daywtData}
   async (payload) => {
     try {
       const resp = await axios.post(`/api/user/${payload.user_id}`, {
@@ -44,9 +46,11 @@ export const addCategoryAsync = createAsyncThunk(
         activeFrom: payload.activeFrom,
         activeUntil: payload.activeUntil,
         timeDuration: payload.timeDuration,
+        day: payload.day,
+        month_year: payload.month_year,
+        dayWtData: payload.dayWtData,
       });
       // Returns the new category object from DB
-      console.log("resp:", resp);
       return await resp;
     } catch (err) {
       console.log(err.message);
@@ -150,11 +154,21 @@ export const updateIconAsync = createAsyncThunk(
 
 export const deleteCategoryAsync = createAsyncThunk(
   "deleteCategoryAsync",
-  // payload => {user_id, categoryId}
+  // payload => {user_id, categoryId, day, month_year, dayWtData}
   async (payload) => {
     try {
       const resp = await axios.delete(
-        `/api/user/${payload.user_id}/${payload.categoryId}`
+        `/api/user/${payload.user_id}/${payload.categoryId}`,
+        {
+          headers: {
+            Authorization: "***",
+          },
+          data: {
+            dayWtData: payload.dayWtData,
+            day: payload.day,
+            month_year: payload.month_year,
+          },
+        }
       );
 
       // Returns category id that was removed from DB
@@ -221,8 +235,23 @@ export const todosSlice = createSlice({
     });
     // Add category to the user
     builder.addCase(addCategoryAsync.fulfilled, (state, action) => {
-      const newCategory = action.payload.data;
-      state.push(newCategory);
+      // Update the whole userTodoList Obj with the updated one
+      // Following Redux reducer rule #2: If you change it, replace it.
+      return action.payload.data;
+
+      // Alternatively - Push to the state, rather than replacing all of it
+      // const newCategory = action.payload.data;
+      // const { categoryObj, info } = newCategory;
+      // const { dayWtData, monthIdx, dayIdx } = info;
+      // console.log("dayIdx:", dayIdx);
+      // console.log("monthIdx:", monthIdx);
+      // console.log("newCategory:", newCategory.categoryObj);
+
+      // if (dayWtData) {
+      //   state.date[monthIdx].days[dayIdx].categories.push(categoryObj);
+      // } else {
+      //   state.categories.push(categoryObj);
+      // }
     });
     // Add task to its category
     builder.addCase(addTaskAsync.fulfilled, (state, action) => {
@@ -255,11 +284,12 @@ export const todosSlice = createSlice({
     // Delete a category
     builder.addCase(deleteCategoryAsync.fulfilled, (state, action) => {
       // Find category index and delete it from the state
-      const categoryIndex = state.findIndex(
+      console.log("action.payload.data:", action.payload.data);
+      const categoryIndex = state.categories.findIndex(
         (curr) => curr._id === action.payload.data
       );
       console.log("categoryIndex:", categoryIndex);
-      state.splice(categoryIndex, 1);
+      state.categories.splice(categoryIndex, 1);
     });
     // Delete a task
     builder.addCase(deleteTaskAsync.fulfilled, (state, action) => {

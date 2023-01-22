@@ -3,12 +3,20 @@ import { GrFormClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
 import { deleteCategoryAsync } from "../redux/todosSlice";
 
-function DeleteCategory({ user_id, id }) {
+function DeleteCategory({ user_id, id, day, month_year, dayWtData }) {
   const dispatch = useDispatch();
 
   const deleteCategory = async () => {
     try {
-      dispatch(deleteCategoryAsync({ user_id, categoryId: id }));
+      dispatch(
+        deleteCategoryAsync({
+          user_id,
+          categoryId: id,
+          day,
+          month_year,
+          dayWtData,
+        })
+      );
     } catch (err) {
       console.log(err.message);
     }

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTaskAsync } from "../redux/todosSlice";
 
-function AddTask({ user_id, category_id }) {
+function AddTask({ user_id, category_id, day, month_year }) {
   const dispatch = useDispatch();
   const [addTaskValue, setAddTaskValue] = useState("");
   const [enableAddTask, setEnableAddTask] = useState(false);
@@ -37,7 +37,7 @@ function AddTask({ user_id, category_id }) {
               <div className="flex items-center">
                 <div className="relative">
                   <div>
-                    <i className="fa fa-search text-white z-20 hover:text-gray-500"></i>
+                    <i className="fa fa-search text-white z-20 hover:text-gray-500" />
                   </div>
                   <input
                     type="text"

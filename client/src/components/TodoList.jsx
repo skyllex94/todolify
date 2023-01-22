@@ -3,25 +3,23 @@ import CategoryItem from "./CategoryItem";
 import loader from "../assets/loader.gif";
 import AddCategory from "./AddCategory";
 import { useTodoList } from "../hooks/useTodoList";
-import { formattedDate, getDayOfWeek } from "../utils/functions";
 import { useDispatch } from "react-redux";
 import { addDateAsync } from "../redux/todosSlice";
 
-const TodoList = ({ user_id, todos, day }) => {
+const TodoList = ({
+  user_id,
+  todos,
+  day,
+  month_year,
+  dayOfWeek,
+  dayWtData,
+}) => {
   // Hook fetching redux state for todo list of auth user
   const { loadedTodos } = useTodoList();
 
-  const formatDate = formattedDate(day);
-  const dayOfWeek = getDayOfWeek(day);
-
   const dispatch = useDispatch();
+  // First adjusted DB accounting for date (day & month)
   const reachDB = () => {
-    // Splits date into array of 3 values [dd], [mm], [yyyy]
-    const splitDate = formatDate.split("/");
-    const day = splitDate[0];
-    console.log("day:", day);
-    const month_year = splitDate[1] + "/" + splitDate[2];
-
     dispatch(addDateAsync({ user_id, month_year, day }));
   };
 
@@ -30,26 +28,31 @@ const TodoList = ({ user_id, todos, day }) => {
       <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
         <ul className="list-group mb-2 pt-5">
           <h3 className="text-center">
-            <i>{dayOfWeek}</i> - <span>{formatDate}</span>
+            <i>{dayOfWeek}</i> - <span>{day + "/" + month_year}</span>
           </h3>
           {loadedTodos ? (
-            todos.map((curr, index) => (
-              <div
-                key={index}
-                className="flex inline items-center mb-1 justify-between"
-              >
-                <div className="brackets min-w-[93%]">
-                  <CategoryItem
-                    user_id={user_id}
-                    category_id={curr._id}
-                    category_index={index}
-                    category={curr.category}
-                    tasks={curr.tasks}
-                    icon={curr.icon}
-                  />
+            todos.map((curr, index) => {
+              return (
+                <div
+                  key={index}
+                  className="flex inline items-center mb-1 justify-between"
+                >
+                  <div className="brackets min-w-[93%]">
+                    <CategoryItem
+                      user_id={user_id}
+                      day={day}
+                      month_year={month_year}
+                      category_id={curr._id}
+                      category_index={index}
+                      category={curr.category}
+                      tasks={curr.tasks}
+                      icon={curr.icon}
+                      dayWtData={dayWtData}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="flex items-center">
               <img
@@ -60,7 +63,12 @@ const TodoList = ({ user_id, todos, day }) => {
             </div>
           )}
 
-          <AddCategory user_id={user_id} />
+          <AddCategory
+            user_id={user_id}
+            day={day}
+            month_year={month_year}
+            dayWtData={dayWtData}
+          />
           <button className="btn btn-primary border ml-4" onClick={reachDB}>
             Reach Me
           </button>

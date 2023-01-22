@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import ModalAddCategory from "./forms/ModalAddCategory";
 
-function AddCategory({ user_id }) {
+function AddCategory({ user_id, day, month_year, dayWtData }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -20,7 +20,13 @@ function AddCategory({ user_id }) {
       />
 
       {showModal && (
-        <ModalAddCategory setShowModal={setShowModal} user_id={user_id} />
+        <ModalAddCategory
+          setShowModal={setShowModal}
+          user_id={user_id}
+          day={day}
+          month_year={month_year}
+          dayWtData={dayWtData}
+        />
       )}
     </div>
   );

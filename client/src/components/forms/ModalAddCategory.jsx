@@ -3,7 +3,13 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync } from "../../redux/todosSlice";
 
-export default function ModalAddCategory({ setShowModal, user_id }) {
+export default function ModalAddCategory({
+  setShowModal,
+  user_id,
+  day,
+  month_year,
+  dayWtData,
+}) {
   const dispatch = useDispatch();
 
   const [category, setCategory] = useState("");
@@ -14,8 +20,8 @@ export default function ModalAddCategory({ setShowModal, user_id }) {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (category === "") {
-      alert("Please input a name for the new category.");
+    if (category.length < 2) {
+      alert("Please provide a full name for your category");
       return;
     }
 
@@ -25,6 +31,9 @@ export default function ModalAddCategory({ setShowModal, user_id }) {
         dispatch(
           addCategoryAsync({
             user_id,
+            dayWtData,
+            day,
+            month_year,
             category,
             activeFrom,
             activeUntil,
