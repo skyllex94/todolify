@@ -81,8 +81,10 @@ function CategoryItem({
         <AddTask
           user_id={user_id}
           category_id={category_id}
+          category_index={category_index}
           day={day}
           month_year={month_year}
+          dayWtData={dayWtData}
         />
       </div>
     </ul>

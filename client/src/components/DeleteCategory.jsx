@@ -7,6 +7,8 @@ function DeleteCategory({ user_id, id, day, month_year, dayWtData }) {
   const dispatch = useDispatch();
 
   const deleteCategory = async () => {
+    // Future optimization - Find the monthIdx and dayIdx before you pass
+    // the values so one of the DB queries can be omitted
     try {
       dispatch(
         deleteCategoryAsync({

@@ -215,7 +215,7 @@ function Main() {
         <div className="flex mt-12">
           {loadedTodoList &&
             weeklyTodoList.map((todos, idx) => {
-              const date = getDate(idx + 1);
+              const date = getDate(idx);
               const { day, month_year, dayOfWeek } = date;
               let categories = todos.categories;
               let dayWtData = false;
@@ -234,6 +234,7 @@ function Main() {
               console.log("categoriesArr:", categories);
               return (
                 <TodoList
+                  key={idx}
                   user_id={id}
                   todos={categories}
                   day={day}

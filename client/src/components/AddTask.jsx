@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTaskAsync } from "../redux/todosSlice";
 
-function AddTask({ user_id, category_id, day, month_year }) {
+function AddTask({
+  user_id,
+  category_id,
+  category_index,
+  day,
+  month_year,
+  dayWtData,
+}) {
   const dispatch = useDispatch();
   const [addTaskValue, setAddTaskValue] = useState("");
   const [enableAddTask, setEnableAddTask] = useState(false);
@@ -12,7 +19,17 @@ function AddTask({ user_id, category_id, day, month_year }) {
     if (addTaskValue) {
       try {
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
-        dispatch(addTaskAsync({ user_id, category_id, task: addTaskValue }));
+        dispatch(
+          addTaskAsync({
+            user_id,
+            category_id,
+            category_index,
+            task: addTaskValue,
+            day,
+            month_year,
+            dayWtData,
+          })
+        );
       } catch (err) {
         console.log(err.message);
       }

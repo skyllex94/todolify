@@ -60,18 +60,22 @@ export const addCategoryAsync = createAsyncThunk(
 
 export const addTaskAsync = createAsyncThunk(
   "addTaskAsync",
-  // payload => {user_id, category_id, task - meaning the name of the task}
+  // payload => {user_id, category_id, category_index, task (name), day, month_year, dayWtData(boolean)}
   async (payload) => {
     try {
-      const resp = axios.post(
+      const resp = await axios.post(
         `/api/user/${payload.user_id}/${payload.category_id}`,
         {
           task: payload.task,
+          day: payload.day,
+          month_year: payload.month_year,
+          dayWtData: payload.dayWtData,
+          category_index: payload.category_index,
         }
       );
 
-      // Returns new task obj wt included id from DB
-      return await resp;
+      // Returns the whole new updated userTodoList
+      return resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -233,7 +237,8 @@ export const todosSlice = createSlice({
       // Fething the state wt the data from the DB for current user
       return action.payload;
     });
-    // Add category to the user
+
+    // Add category to a day or to default categories array
     builder.addCase(addCategoryAsync.fulfilled, (state, action) => {
       // Update the whole userTodoList Obj with the updated one
       // Following Redux reducer rule #2: If you change it, replace it.
@@ -249,16 +254,19 @@ export const todosSlice = createSlice({
 
       // if (dayWtData) {
       //   state.date[monthIdx].days[dayIdx].categories.push(categoryObj);
-      // } else {
-      //   state.categories.push(categoryObj);
       // }
+      // state.categories.push(categoryObj);
     });
+
     // Add task to its category
     builder.addCase(addTaskAsync.fulfilled, (state, action) => {
       // Returns {newTaskObj, categoryIndex}
-      const catIndex = action.payload.data.categoryIndex;
-      state[catIndex].tasks.push(action.payload.data.newTaskObj);
+      // const catIndex = action.payload.data.categoryIndex;
+      // state[catIndex].tasks.push(action.payload.data.newTaskObj);
+
+      return action.payload.data;
     });
+
     // Toggle completed on a given task
     builder.addCase(toggleCompletedTaskAsync.fulfilled, (state, action) => {
       const categoryIndex = action.payload.data.objInfo.categoryIndex;
@@ -267,12 +275,14 @@ export const todosSlice = createSlice({
       const updatedToggle = action.payload.data.objInfo.updatedToggle;
       state[categoryIndex].tasks[taskIndex].done = updatedToggle;
     });
+
     // Update category with a new value
     builder.addCase(updateCategoryAsync.fulfilled, (state, action) => {
       const categoryIndex = action.payload.data.objInfo.categoryIndex;
       const updatedValue = action.payload.data.objInfo.newValue;
       state[categoryIndex].category = updatedValue;
     });
+
     // Update a task field with a new value
     builder.addCase(updateTaskAsync.fulfilled, (state, action) => {
       const categoryIndex = action.payload.data.objInfo.categoryIndex;
@@ -281,16 +291,20 @@ export const todosSlice = createSlice({
       // Update the state at the correct position wt the new task input
       state[categoryIndex].tasks[taskIndex].task = updatedTask;
     });
-    // Delete a category
+
+    // Delete a category from a day
     builder.addCase(deleteCategoryAsync.fulfilled, (state, action) => {
-      // Find category index and delete it from the state
-      console.log("action.payload.data:", action.payload.data);
-      const categoryIndex = state.categories.findIndex(
-        (curr) => curr._id === action.payload.data
-      );
-      console.log("categoryIndex:", categoryIndex);
-      state.categories.splice(categoryIndex, 1);
+      // Returned the new updated document from todo collection
+      const { updatedTodoList } = action.payload.data;
+      return updatedTodoList;
+      // Alternatively - can we done with finding the field id and splicing it
+      // const categoryIndex = state.categories.findIndex(
+      //   (curr) => curr._id === action.payload.data
+      // );
+      // console.log("categoryIndex:", categoryIndex);
+      // state.categories.splice(categoryIndex, 1);
     });
+
     // Delete a task
     builder.addCase(deleteTaskAsync.fulfilled, (state, action) => {
       const categoryIndex = state.findIndex(

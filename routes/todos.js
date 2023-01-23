@@ -5,8 +5,6 @@ const router = express.Router();
 const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
 
-let todoList;
-
 // @route   GET TODOS /user/:id
 // @desc    Fetch all todos for the authorized user
 // @access  Private
@@ -19,7 +17,6 @@ router.get("/:id", async (req, res) => {
     // res.send(populateCategories);
 
     const userTodoList = await Todos.findOne({ user_id: req.params.id });
-    todoList = userTodoList;
 
     const date = userTodoList.date;
     const categories = userTodoList.categories;
@@ -192,46 +189,99 @@ router.post("/:id", async (req, res) => {
   }
 });
 
+function getCategoryIdx(ctgryId, dayIdx, monthIdx, userTodoList) {
+  try {
+    const categoryIdx = userTodoList.date[monthIdx].days[
+      dayIdx
+    ].categories.findIndex((curr) => curr._id.valueOf() === ctgryId);
+
+    if (categoryIdx < 0) return null;
+    return categoryIdx;
+  } catch (err) {
+    return err.message;
+  }
+}
+
 // @route   POST /user/:id/category_id
 // @desc    Add task to a certain category to an auth user
 // @access  Private
 router.post("/:id/:category_id", async (req, res) => {
-  const userTodoList = await Todos.findOne({ user_id: req.params.id });
+  const dayWtData = req.body.dayWtData;
+  const day = req.body.day;
+  const month_year = req.body.month_year;
+  const category_id = req.params.category_id;
+  const default_category_idx = req.body.category_index;
+  console.log("category_id:", category_id);
 
-  // The new task object with it info inside, id is auto-generated
+  const userTodoList = await getUserTodoList(req.params.id);
+
   const newTask = {
     task: req.body.task,
     done: false,
   };
 
-  // Find the index of the Category in which to input the task comparing ids
-  const categoryIndex = userTodoList.categories.findIndex(
-    (curr) => curr._id.valueOf() === req.params.category_id
-  );
+  const dayMonthIdxObj = getDayMonthIdx(day, month_year, userTodoList);
+  const { dayIdx, monthIdx } = dayMonthIdxObj;
+  console.log("monthIdx:", monthIdx);
 
-  // Push the new task to the existing array of task for the correct category / returned array length
-  const taskToDBList =
-    userTodoList.categories[categoryIndex].tasks.push(newTask);
-  // Send the new task to MongoDB
-  await userTodoList.save(taskToDBList);
+  if (dayWtData) {
+    // Find the index of the Category in which to input the task comparing ids
+    const categoryIdx = getCategoryIdx(
+      category_id,
+      dayIdx,
+      monthIdx,
+      userTodoList
+    );
 
-  // Fetch the newly created task_id from the DB
-  const task_id =
-    userTodoList.categories[categoryIndex].tasks[taskToDBList - 1]._id;
+    if (categoryIdx) {
+      // Push the new task to the existing array of task for the correct category / returned array length
+      userTodoList.date[monthIdx].days[dayIdx].categories[
+        categoryIdx
+      ].tasks.push(newTask);
+      // Save the new task to MongoDB
+      await userTodoList.save();
+    }
 
-  // Return the object wt all info to update UI
-  const taskToBeReturned = {
-    newTaskObj: {
-      _id: task_id.valueOf(),
-      task: req.body.task,
-      done: false,
-    },
-    categoryIndex,
-  };
+    // // Fetch the newly created task_id from the DB
+    // const task_id =
+    //   userTodoList.categories[categoryIndex].tasks[taskToDBList - 1]._id;
 
-  console.log(taskToBeReturned);
+    // // Return the object wt all info to update UI
+    // const taskToBeReturned = {
+    //   newTaskObj: {
+    //     _id: task_id.valueOf(),
+    //     task: req.body.task,
+    //     done: false,
+    //   },
+    //   categoryIndex,
+    // };
+  } else {
+    console.log("Create a new task for an empty day - that will be exciting");
 
-  res.send(taskToBeReturned);
+    const categories = userTodoList.categories;
+
+    console.log("default_category_idx:", default_category_idx);
+
+    categories[default_category_idx].tasks.push(newTask);
+    // console.log("defaultCategories:", defaultCategories);
+
+    // New day structure including the fetched default categories
+    const newDay = { day, categories };
+    console.log("newDay:", newDay);
+
+    // TODO: Check if there is a month that matches the month of the current day, go through months wt a map
+    // TODO: Do so for the day as well - maybe
+
+    // Find the monthIdx and why it's undefined
+    console.log("[monthIdx]:", monthIdx);
+
+    const updatedTodoList = userTodoList.date[monthIdx].days.push(newDay);
+
+    console.log("updatedTodoList:", updatedTodoList);
+    await userTodoList.save();
+  }
+
+  res.send(userTodoList);
 });
 
 // @route   PATCH /api/user/:user_id
@@ -351,8 +401,49 @@ router.patch("/upd-task/:user_id", async (req, res) => {
   res.send(updatedTaskObj);
 });
 
+// Helper functions
+async function getUserTodoList(user_id) {
+  if (!user_id) return null;
+
+  try {
+    return await Todos.findOne({ user_id });
+  } catch (err) {
+    return err.message;
+  }
+}
+
+function getDayMonthIdx(day, month_year, fetchedTodoList) {
+  if (!fetchedTodoList) return "No userTodoList passed";
+
+  let monthIdx, dayIdx;
+
+  try {
+    if (month_year) {
+      monthIdx = fetchedTodoList.date.findIndex(
+        (curr) => curr.month_year === month_year
+      );
+      if (monthIdx < 0) return "No month found in DB";
+    }
+  } catch (err) {
+    return err.message;
+  }
+
+  try {
+    if (day) {
+      dayIdx = fetchedTodoList.date[monthIdx].days.findIndex(
+        (curr) => curr.day == day
+      );
+      if (dayIdx < 0) return "No day found in DB";
+    }
+  } catch (err) {
+    return err.message;
+  }
+
+  return { dayIdx, monthIdx };
+}
+
 // @route   DELETE /api/user/:user_id/:category_id
-// @desc    DELETE category in an auth user
+// @desc    DELETE category from a day in an auth user
 // @access  Private
 router.delete("/:id/:category_id", async (req, res) => {
   // Define the user_id and category_id and prep them for the DB query
@@ -362,48 +453,46 @@ router.delete("/:id/:category_id", async (req, res) => {
   const dayWtData = req.body.dayWtData;
   const day = req.body.day;
   const month_year = req.body.month_year;
-
-  // console.log("todoList", todoList);
+  let queryKey;
+  const userTodoList = await getUserTodoList(user_id);
 
   if (dayWtData) {
+    const dayMonthIdxObj = getDayMonthIdx(day, month_year, userTodoList);
+    const { dayIdx, monthIdx } = dayMonthIdxObj;
+
+    queryKey = "date." + monthIdx + ".days." + dayIdx + ".categories";
   } else {
-    // Find user_id, and remove the selected category by id
-    const deleteCategory = await Todos.updateOne(
-      { user_id },
-      {
-        $pull: {
-          categories: {
-            _id: categoryToDelete,
-          },
-        },
-      }
-    );
-    // Return back the id of the category removed
-    console.log("deleteCategory:", deleteCategory);
-    res.send(categoryToDelete);
+    queryKey = "categories";
   }
 
-  // Additional included tryouts
-  // const selectedCategory = await Todos.findById("639696a51c46586c25b44bde");
+  const updatedTodoList = await Todos.findOneAndUpdate(
+    { user_id },
+    {
+      $pull: {
+        [queryKey]: {
+          _id: categoryToDelete,
+        },
+      },
+    },
+    // Mongoose Option to return the new updated collection
+    // Use {returnNewDocument: true} for MongoDB
+    { new: true }
+  );
 
-  // const deleteCategory = await Todos.deleteOne({
-  //   "categories._id": userId,
-  // });
+  // Return back dayWtData, category_id OR alternatively the whole new document
+  res.send({ dayWtData, categoryToDelete, updatedTodoList });
 
-  // const categoryIndex = userTodoList.categories.findIndex(
-  //   (curr) => curr._id.valueOf() === req.params.item_id
+  // Find user_id, and remove the selected category by id
+  // await userTodoList.updateOne(
+  //   { user_id },
+  //   {
+  //     $pull: {
+  //       [queryKey]: {
+  //         _id: categoryToDelete,
+  //       },
+  //     },
+  //   }
   // );
-
-  // const deleteCategoryFromDB = await Todos.deleteOne({
-  //   category: "newlyINPUTED",
-  // });
-
-  // Works on deleting the entire document
-  // const resp = await Todos.findByIdAndDelete("637f9337db5851a564a0b001");
-
-  // const show = await Todos.find({ user_id: req.params.id });
-
-  // const id = req.params.item_id.toString();
 });
 
 // @route   DELETE /api/user/:user_id/:category_index/:id
