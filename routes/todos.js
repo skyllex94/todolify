@@ -198,7 +198,7 @@ function getCategoryIdx(ctgryId, dayIdx, monthIdx, userTodoList) {
     if (categoryIdx < 0) return null;
     return categoryIdx;
   } catch (err) {
-    return err.message;
+    return null;
   }
 }
 
@@ -211,7 +211,6 @@ router.post("/:id/:category_id", async (req, res) => {
   const month_year = req.body.month_year;
   const category_id = req.params.category_id;
   const default_category_idx = req.body.category_index;
-  console.log("category_id:", category_id);
 
   const userTodoList = await getUserTodoList(req.params.id);
 
@@ -220,18 +219,27 @@ router.post("/:id/:category_id", async (req, res) => {
     done: false,
   };
 
-  const dayMonthIdxObj = getDayMonthIdx(day, month_year, userTodoList);
-  const { dayIdx, monthIdx } = dayMonthIdxObj;
+  const monthIdx = getMonthIdx(month_year, userTodoList);
   console.log("monthIdx:", monthIdx);
 
+  //   // TODO: Return back an object with the updated todo list and error
+  //   // in order to be able to check and display an error message to the UI if there's any
+  //   // res.send({ userTodoList, error: "Error while deleting, monthIdx doesn't exist" });
+
+  const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+
+  console.log("day-monthIdx:", dayIdx, monthIdx);
+
   if (dayWtData) {
-    // Find the index of the Category in which to input the task comparing ids
+    // Find category index in which to input the task when comparing ids
     const categoryIdx = getCategoryIdx(
       category_id,
       dayIdx,
       monthIdx,
       userTodoList
     );
+
+    console.log("categoryIdx:", categoryIdx);
 
     if (categoryIdx) {
       // Push the new task to the existing array of task for the correct category / returned array length
@@ -242,38 +250,25 @@ router.post("/:id/:category_id", async (req, res) => {
       await userTodoList.save();
     }
 
-    // // Fetch the newly created task_id from the DB
-    // const task_id =
-    //   userTodoList.categories[categoryIndex].tasks[taskToDBList - 1]._id;
-
-    // // Return the object wt all info to update UI
-    // const taskToBeReturned = {
-    //   newTaskObj: {
-    //     _id: task_id.valueOf(),
-    //     task: req.body.task,
-    //     done: false,
-    //   },
-    //   categoryIndex,
-    // };
+    // If there's not data in the current date, take the default
+    // categories and create the new day in the date array
   } else {
-    console.log("Create a new task for an empty day - that will be exciting");
-
     const categories = userTodoList.categories;
-
     console.log("default_category_idx:", default_category_idx);
 
-    categories[default_category_idx].tasks.push(newTask);
+    // This is the issue -
+    // Start from here - trying to create a new array copy with the current data, so it doesn't change the userTodolist
+    // which it might not be, so investigate
+    const categoryCopy = new Array(categories[default_category_idx].tasks);
+    categoryCopy.push(newTask);
     // console.log("defaultCategories:", defaultCategories);
 
     // New day structure including the fetched default categories
-    const newDay = { day, categories };
+    const newDay = { day, categories: categoryCopy };
     console.log("newDay:", newDay);
 
     // TODO: Check if there is a month that matches the month of the current day, go through months wt a map
     // TODO: Do so for the day as well - maybe
-
-    // Find the monthIdx and why it's undefined
-    console.log("[monthIdx]:", monthIdx);
 
     const updatedTodoList = userTodoList.date[monthIdx].days.push(newDay);
 
@@ -408,38 +403,45 @@ async function getUserTodoList(user_id) {
   try {
     return await Todos.findOne({ user_id });
   } catch (err) {
-    return err.message;
+    return null;
   }
 }
 
-function getDayMonthIdx(day, month_year, fetchedTodoList) {
-  if (!fetchedTodoList) return "No userTodoList passed";
+function isEmpty(fetchedTodoList) {
+  if (fetchedTodoList) return false;
+  return true;
+}
 
-  let monthIdx, dayIdx;
+function getMonthIdx(month_year, fetchedTodoList) {
+  if (isEmpty(fetchedTodoList)) return "No userTodoList";
 
   try {
     if (month_year) {
-      monthIdx = fetchedTodoList.date.findIndex(
+      const monthIdx = fetchedTodoList.date.findIndex(
         (curr) => curr.month_year === month_year
       );
       if (monthIdx < 0) return "No month found in DB";
+      return monthIdx;
     }
   } catch (err) {
-    return err.message;
+    return null;
   }
+}
+
+function getDayIdx(day, monthIdx, fetchedTodoList) {
+  if (isEmpty(fetchedTodoList)) return "No userTodoList";
 
   try {
     if (day) {
-      dayIdx = fetchedTodoList.date[monthIdx].days.findIndex(
+      const dayIdx = fetchedTodoList.date[monthIdx].days.findIndex(
         (curr) => curr.day == day
       );
       if (dayIdx < 0) return "No day found in DB";
+      return dayIdx;
     }
   } catch (err) {
-    return err.message;
+    return null;
   }
-
-  return { dayIdx, monthIdx };
 }
 
 // @route   DELETE /api/user/:user_id/:category_id
@@ -457,8 +459,14 @@ router.delete("/:id/:category_id", async (req, res) => {
   const userTodoList = await getUserTodoList(user_id);
 
   if (dayWtData) {
-    const dayMonthIdxObj = getDayMonthIdx(day, month_year, userTodoList);
-    const { dayIdx, monthIdx } = dayMonthIdxObj;
+    const monthIdx = getMonthIdx(month_year, userTodoList);
+    // if (monthIdx === "No month found in DB")
+    //   return res.send("Error while deleting, monthIdx doesn't exist");
+    // if (!monthIdx) {
+    //   return res.send("Error while deleting month, userTodoList may be empty");
+    // }
+
+    const dayIdx = getDayIdx(day, monthIdx, userTodoList);
 
     queryKey = "date." + monthIdx + ".days." + dayIdx + ".categories";
   } else {

@@ -18,6 +18,7 @@ function AddTask({
     event.preventDefault();
     if (addTaskValue) {
       try {
+        console.log("day/Month: ", day, month_year);
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
         dispatch(
           addTaskAsync({

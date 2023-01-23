@@ -13,7 +13,6 @@ function AddCategory({ user_id, day, month_year, dayWtData }) {
 
       <input
         type="text"
-        autoFocus
         placeholder="Add Category..."
         onClick={() => setShowModal(true)}
         className=" w-full text-black-500 ml-3 mr-2 h-12 focus:outline-none pl-5 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
