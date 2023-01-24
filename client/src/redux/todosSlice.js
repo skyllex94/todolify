@@ -82,18 +82,21 @@ export const addTaskAsync = createAsyncThunk(
   }
 );
 
-export const toggleCompletedTaskAsync = createAsyncThunk(
-  "toggleCompletedTaskAsync",
+export const toggleTaskAsync = createAsyncThunk(
+  "toggleTaskAsync",
   async (payload) => {
-    // payload => {user_id, category_index, done, task_index}
+    // payload => {user_id, category_index, day, month_year, done, task_index}
+    console.log("day:", payload.day);
+    console.log("month_year:", payload.month_year);
     try {
-      const resp = await axios.patch(`/api/user/${payload.user_id}`, {
+      return await axios.patch(`/api/user/toggle_task`, {
+        user_id: payload.user_id,
         category_index: payload.category_index,
+        day: payload.day,
+        month_year: payload.month_year,
         task_index: payload.task_index,
         done: payload.done,
       });
-
-      return await resp;
     } catch (err) {
       alert(err.message);
     }
@@ -103,15 +106,18 @@ export const toggleCompletedTaskAsync = createAsyncThunk(
 export const updateCategoryAsync = createAsyncThunk(
   "updateCategoryAsync",
   async (payload) => {
-    // payload => {user_id, category_index, updatedValue}
+    // payload => {user_id, category_index, day, month_year, dayWtData, updatedValue}
     try {
       const resp = await axios.patch(`/api/user/upd-ctry/${payload.user_id}`, {
         category_index: payload.category_index,
-        value: payload.updatedValue,
+        day: payload.day,
+        month_year: payload.month_year,
+        dayWtData: payload.dayWtData,
+        new_name: payload.updatedValue,
       });
 
-      // Returns an object wt confirmation obj and objInfo
-      return await resp;
+      // Returns object {userTodoList: theWholeUpdatedDocument, error: IfAny}
+      return resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -185,17 +191,25 @@ export const deleteCategoryAsync = createAsyncThunk(
 
 export const deleteTaskAsync = createAsyncThunk(
   "deleteTaskAsync",
-  // payload => {user_id, category_id, id}
-  async (payload) => {
-    // console.log("payload:", payload.user_id, payload.category_id, payload.id);
+  // payload => {user_id, category_id, id, day, month_year}
 
+  async (payload) => {
     try {
       const resp = await axios.delete(
-        `/api/user/${payload.user_id}/${payload.category_id}/${payload.id}`
+        `/api/user/${payload.user_id}/${payload.category_id}/${payload.id}`,
+        {
+          headers: {
+            Authorization: "***",
+          },
+          data: {
+            day: payload.day,
+            month_year: payload.month_year,
+          },
+        }
       );
 
-      // Returns the id of the task that was deleted
-      return await resp;
+      // Returns the whole updated userTodoList document object
+      return resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -267,20 +281,28 @@ export const todosSlice = createSlice({
       return action.payload.data;
     });
 
-    // Toggle completed on a given task
-    builder.addCase(toggleCompletedTaskAsync.fulfilled, (state, action) => {
-      const categoryIndex = action.payload.data.objInfo.categoryIndex;
-      const taskIndex = action.payload.data.objInfo.taskIndex;
-      // Value is a boolean, but making sure it's the correct one so it's passed
-      const updatedToggle = action.payload.data.objInfo.updatedToggle;
-      state[categoryIndex].tasks[taskIndex].done = updatedToggle;
+    // Toggle task for a certain category
+    builder.addCase(toggleTaskAsync.fulfilled, (state, action) => {
+      const { userTodoList, error } = action.payload.data;
+      if (error) {
+        console.log(error);
+        return;
+      }
+      return userTodoList;
     });
 
-    // Update category with a new value
+    // Update category's name
     builder.addCase(updateCategoryAsync.fulfilled, (state, action) => {
-      const categoryIndex = action.payload.data.objInfo.categoryIndex;
-      const updatedValue = action.payload.data.objInfo.newValue;
-      state[categoryIndex].category = updatedValue;
+      // const categoryIndex = action.payload.data.objInfo.categoryIndex;
+      // const updatedValue = action.payload.data.objInfo.newValue;
+      // state[categoryIndex].category = updatedValue;
+
+      const { userTodoList, error } = action.payload.data;
+      if (error) {
+        console.log(error);
+        return;
+      }
+      return userTodoList;
     });
 
     // Update a task field with a new value
@@ -307,13 +329,19 @@ export const todosSlice = createSlice({
 
     // Delete a task
     builder.addCase(deleteTaskAsync.fulfilled, (state, action) => {
-      const categoryIndex = state.findIndex(
-        (curr) => curr._id === action.payload.data.category_id
-      );
-      const taskIndex = state[categoryIndex].tasks.findIndex(
-        (curr) => curr._id === action.payload.data.taskToDeleteId
-      );
-      state[categoryIndex].tasks.splice(taskIndex, 1);
+      const updatedDB = action.payload.data;
+      const { userTodoList, error } = updatedDB;
+      if (error) console.log(error);
+
+      return userTodoList;
+      // Initial and alternative way - return task id and splice it
+      // const categoryIndex = state.findIndex(
+      //   (curr) => curr._id === action.payload.data.category_id
+      // );
+      // const taskIndex = state[categoryIndex].tasks.findIndex(
+      //   (curr) => curr._id === action.payload.data.taskToDeleteId
+      // );
+      // state[categoryIndex].tasks.splice(taskIndex, 1);
     });
   },
 });

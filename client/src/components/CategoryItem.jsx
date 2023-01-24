@@ -36,6 +36,9 @@ function CategoryItem({
             <EditCategory
               user_id={user_id}
               category_index={category_index}
+              day={day}
+              month_year={month_year}
+              dayWtData={dayWtData}
               setEnableEdit={setEnableEdit}
               category={category}
             />
@@ -70,6 +73,8 @@ function CategoryItem({
                   user_id={user_id}
                   category_id={category_id}
                   category_index={category_index}
+                  day={day}
+                  month_year={month_year}
                   id={_id}
                   task={task}
                   task_index={index}

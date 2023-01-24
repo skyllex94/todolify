@@ -1,17 +1,27 @@
 import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toggleCompletedTaskAsync } from "../redux/todosSlice";
+import { toggleTaskAsync } from "../redux/todosSlice";
 
-function ToggleTask({ user_id, category_index, id, done, task_index }) {
+function ToggleTask({
+  user_id,
+  category_index,
+  day,
+  month_year,
+  id,
+  done,
+  task_index,
+}) {
   const dispatch = useDispatch();
   const [toggleChecked, setToggleChecked] = useState(done);
 
   const toggleCompletedTask = async () => {
     dispatch(
-      toggleCompletedTaskAsync({
+      toggleTaskAsync({
         user_id,
         category_index,
+        day,
+        month_year,
         id,
         done: !done,
         task_index,

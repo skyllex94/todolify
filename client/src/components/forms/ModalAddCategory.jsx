@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync } from "../../redux/todosSlice";
@@ -16,6 +17,20 @@ export default function ModalAddCategory({
   const [activeFrom, setActiveFrom] = useState("");
   const [activeUntil, setActiveUntil] = useState("");
   const [timeDuration, setTimeDuration] = useState(0);
+
+  // Trigger removing modal on escape key pressed
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.keyCode === 27) {
+        setShowModal(false);
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [setShowModal]);
 
   const onSubmit = (e) => {
     e.preventDefault();

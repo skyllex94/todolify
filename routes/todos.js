@@ -220,17 +220,29 @@ router.post("/:id/:category_id", async (req, res) => {
   };
 
   const monthIdx = getMonthIdx(month_year, userTodoList);
-  console.log("monthIdx:", monthIdx);
+
+  // Use monthIdx === null, since !monthIdx will return error for index 0
+  if (monthIdx === null || monthIdx === "No month found in DB") {
+    console.log(
+      "Index of the month could not be found or missing userTodoList when deleting"
+    );
+    return res.send(userTodoList);
+  }
 
   //   // TODO: Return back an object with the updated todo list and error
   //   // in order to be able to check and display an error message to the UI if there's any
   //   // res.send({ userTodoList, error: "Error while deleting, monthIdx doesn't exist" });
 
-  const dayIdx = getDayIdx(day, monthIdx, userTodoList);
-
-  console.log("day-monthIdx:", dayIdx, monthIdx);
-
   if (dayWtData) {
+    const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+
+    if (dayIdx === null || dayIdx === "No day found in DB") {
+      console.log(
+        "Index of the day could not be found or missing userTodoList when deleting"
+      );
+      return res.send(userTodoList);
+    }
+
     // Find category index in which to input the task when comparing ids
     const categoryIdx = getCategoryIdx(
       category_id,
@@ -239,9 +251,8 @@ router.post("/:id/:category_id", async (req, res) => {
       userTodoList
     );
 
-    console.log("categoryIdx:", categoryIdx);
-
-    if (categoryIdx) {
+    // Use !== null, since again return false for the 0th index
+    if (categoryIdx !== null) {
       // Push the new task to the existing array of task for the correct category / returned array length
       userTodoList.date[monthIdx].days[dayIdx].categories[
         categoryIdx
@@ -253,88 +264,128 @@ router.post("/:id/:category_id", async (req, res) => {
     // If there's not data in the current date, take the default
     // categories and create the new day in the date array
   } else {
-    const categories = userTodoList.categories;
-    console.log("default_category_idx:", default_category_idx);
+    // Use parse and strigifify in order to make a full copy of the array wt objects
+    // if trying to spread, it won't work, because it only creates a shallow copy without copying the inner objects
+    const categories = JSON.parse(JSON.stringify(userTodoList.categories));
 
-    // This is the issue -
-    // Start from here - trying to create a new array copy with the current data, so it doesn't change the userTodolist
-    // which it might not be, so investigate
-    const categoryCopy = new Array(categories[default_category_idx].tasks);
-    categoryCopy.push(newTask);
-    // console.log("defaultCategories:", defaultCategories);
+    categories[default_category_idx].tasks.push(newTask);
 
     // New day structure including the fetched default categories
-    const newDay = { day, categories: categoryCopy };
-    console.log("newDay:", newDay);
+    const newDay = { day, categories };
 
     // TODO: Check if there is a month that matches the month of the current day, go through months wt a map
-    // TODO: Do so for the day as well - maybe
+    // TODO: Do so for the days as well - maybe
 
-    const updatedTodoList = userTodoList.date[monthIdx].days.push(newDay);
-
-    console.log("updatedTodoList:", updatedTodoList);
+    userTodoList.date[monthIdx].days.push(newDay);
     await userTodoList.save();
   }
 
   res.send(userTodoList);
 });
 
+async function getDayAndMonthIdx(day, month_year, user_id) {
+  const userTodoList = await Todos.findOne({ user_id });
+
+  const monthIdx = getMonthIdx(month_year, userTodoList);
+  if (!idxIsValid(monthIdx, "month"))
+    return res.send({ error: "Error why fetching monthIdx" });
+
+  const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+  if (!idxIsValid(dayIdx, "day"))
+    return res.send({ error: "Error why fetching dayIdx" });
+
+  return { dayIdx, monthIdx, userTodoList };
+}
+
 // @route   PATCH /api/user/:user_id
-// @desc    TOGGLE a task's checkbox and persist it
+// @desc    TOGGLE a task in a category
 // @access  Private
-router.patch("/:user_id", async (req, res) => {
-  const user_id = req.params.user_id;
-  const categoryIndex = req.body.category_index;
-  const taskIndex = req.body.task_index;
+router.patch("/toggle_task", async (req, res) => {
+  const user_id = req.body.user_id;
+  const categoryIdx = req.body.category_index;
+  const day = req.body.day;
+  const month_year = req.body.month_year;
+  const taskIdx = req.body.task_index;
   const updatedToggle = req.body.done;
 
+  const fetchedIndexes = await getDayAndMonthIdx(day, month_year, user_id);
+  if (fetchedIndexes.error) return res.send({ error: fetchedIndexes.error });
+
+  const { dayIdx, monthIdx } = fetchedIndexes;
+
   // Creating the key for the update
-  const keyValue =
-    "categories." + categoryIndex + ".tasks." + taskIndex + ".done";
+  const key =
+    "date." +
+    monthIdx +
+    ".days." +
+    dayIdx +
+    ".categories." +
+    categoryIdx +
+    ".tasks." +
+    taskIdx +
+    ".done";
 
   // Mongoose query for finding the task and toggling the 'done' value
-  const updateToggleTask = await Todos.updateOne(
+  const updatedTodoList = await Todos.findOneAndUpdate(
     { user_id },
-    { $set: { [keyValue]: updatedToggle } }
+    { $set: { [key]: updatedToggle } },
+    { new: true }
   );
 
-  const toggleTaskObj = {
-    confirmation: updateToggleTask,
-    objInfo: {
-      categoryIndex,
-      taskIndex,
-      updatedToggle,
-    },
-  };
-
   // Send back resp of whether the query call was successful
-  res.send(toggleTaskObj);
+  res.send({ userTodoList: updatedTodoList });
 });
 
 // @route   PATCH /api/user/upd-ctry/:user_id
-// @desc    UPDATE a category
+// @desc    UPDATE category name for a certain day
 // @access  Private
 router.patch("/upd-ctry/:user_id", async (req, res) => {
   const user_id = req.params.user_id;
-  const categoryIndex = req.body.category_index;
-  const newValue = req.body.value;
+  const categoryIdx = req.body.category_index;
+  const newName = req.body.new_name;
+  const dayWtData = req.body.dayWtData;
+  let key = null;
 
-  // Creating the key for the update
-  const keyValue = "categories." + categoryIndex + ".category";
+  const userTodoList = await Todos.findOne({ user_id });
 
-  // Mongoose query for finding the category and updating its value
-  const updateCategoryQuery = await Todos.updateOne(
+  // If updating the name needs to happed to a day that has data
+  if (dayWtData) {
+    const day = req.body.day;
+    const month_year = req.body.month_year;
+
+    const monthIdx = getMonthIdx(month_year, userTodoList);
+    if (!idxIsValid(monthIdx, "month"))
+      return res.send({ error: "Error while retrieving monthIdx" });
+
+    const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+    if (!idxIsValid(dayIdx, "day"))
+      return res.send({ error: "Error while retrieving dayIdx" });
+
+    key =
+      "date." +
+      monthIdx +
+      ".days." +
+      dayIdx +
+      ".categories." +
+      categoryIdx +
+      ".category";
+  }
+
+  // Else update the default categories' name
+  else {
+    key = "categories." + categoryIdx + ".category";
+  }
+
+  if (key === null) res.send({ error: "Query key is missing" });
+
+  // Mongoose query updating the category name and returning the updated document
+  const updatedTodoList = await Todos.findOneAndUpdate(
     { user_id },
-    { $set: { [keyValue]: newValue } }
+    { $set: { [key]: newName } },
+    { new: true }
   );
 
-  const updatedCategoryObj = {
-    confirmation: updateCategoryQuery,
-    objInfo: { categoryIndex, newValue },
-  };
-
-  // Send back resp wt query call and object info
-  res.send(updatedCategoryObj);
+  res.send({ userTodoList: updatedTodoList, error: null });
 });
 
 // @route   PATCH /api/user/upd-ctry-icon
@@ -365,7 +416,7 @@ router.patch("/upd-ctry-icon/:user_id", async (req, res) => {
 });
 
 // @route   PATCH /api/user/upd-task/:user_id
-// @desc    UPDATE a task
+// @desc    UPDATE the name of a task
 // @access  Private
 router.patch("/upd-task/:user_id", async (req, res) => {
   const user_id = req.params.user_id;
@@ -413,7 +464,7 @@ function isEmpty(fetchedTodoList) {
 }
 
 function getMonthIdx(month_year, fetchedTodoList) {
-  if (isEmpty(fetchedTodoList)) return "No userTodoList";
+  if (isEmpty(fetchedTodoList)) return null;
 
   try {
     if (month_year) {
@@ -429,7 +480,7 @@ function getMonthIdx(month_year, fetchedTodoList) {
 }
 
 function getDayIdx(day, monthIdx, fetchedTodoList) {
-  if (isEmpty(fetchedTodoList)) return "No userTodoList";
+  if (isEmpty(fetchedTodoList)) return null;
 
   try {
     if (day) {
@@ -460,13 +511,27 @@ router.delete("/:id/:category_id", async (req, res) => {
 
   if (dayWtData) {
     const monthIdx = getMonthIdx(month_year, userTodoList);
-    // if (monthIdx === "No month found in DB")
-    //   return res.send("Error while deleting, monthIdx doesn't exist");
-    // if (!monthIdx) {
-    //   return res.send("Error while deleting month, userTodoList may be empty");
-    // }
+    if (monthIdx === "No month found in DB") {
+      console.log("Error while deleting, monthIdx doesn't exist");
+      return res.send({ dayWtData, categoryToDelete, userTodoList });
+    }
+
+    if (monthIdx === null) {
+      console.log("Error while deleting month, userTodoList may be empty");
+      return res.send({ dayWtData, categoryToDelete, userTodoList });
+    }
 
     const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+
+    if (dayIdx === "No month found in DB") {
+      console.log("Error while deleting, dayIdx doesn't exist");
+      return res.send();
+    }
+
+    if (dayIdx === null) {
+      console.log("Error while deleting day, userTodoList may be empty");
+      return res.send({ dayWtData, categoryToDelete, userTodoList });
+    }
 
     queryKey = "date." + monthIdx + ".days." + dayIdx + ".categories";
   } else {
@@ -503,42 +568,91 @@ router.delete("/:id/:category_id", async (req, res) => {
   // );
 });
 
+function idxIsValid(idx, timePeriod) {
+  if (idx === `No ${timePeriod} found in DB`) {
+    const error = `Error while deleting, ${timePeriod}Idx doesn't exist`;
+    return { isValid: false, error };
+  }
+
+  if (idx === null) {
+    const error = `Error while deleting ${timePeriod}, userTodoList may be empty`;
+    return { isValid: false, error };
+  }
+
+  return { isValid: true };
+}
+
 // @route   DELETE /api/user/:user_id/:category_index/:id
-// @desc    DELETE task from a category
+// @desc    DELETE task from a category in a day or default category if not data
 // @access  Private
 router.delete("/:user_id/:category_id/:id", async (req, res) => {
   // Define the user_id and category_id and prep them for the DB query
   const user_id = mongoose.Types.ObjectId(req.params.user_id);
   const taskToDelete = mongoose.Types.ObjectId(req.params.id);
 
-  // Finding the user's todo list object
+  const day = req.body.day;
+  const month_year = req.body.month_year;
+
+  // Finding userTodolist object
   const userTodoList = await Todos.findOne({ user_id });
 
-  // Finding the index of the category where the task is located
-  const categoryIndex = userTodoList.categories.findIndex(
-    (curr) => curr._id.valueOf() === req.params.category_id
+  // TODO: try to get the monthIdx and dayIdx from the UI before you start the backend request
+
+  // Try-out to do another abstraction with creating getValidMonthAndDayIdx()
+  const monthIdx = userTodoList.date.findIndex(
+    (curr) => curr.month_year === month_year
   );
 
-  // Concatenate the key before the query, so there's no errors when creating it
-  const keyValue = "categories." + categoryIndex + ".tasks";
+  const monthIsValid = idxIsValid(monthIdx, "month");
+  if (!monthIsValid.isValid)
+    return res.send({ userTodoList, error: checkIfValid.error });
 
-  // Query and pull out the task by its id
-  const deletedTask = await Todos.updateOne(
+  const dayIdx = userTodoList.date[monthIdx].days.findIndex(
+    (curr) => curr.day == day
+  );
+
+  const dayisValid = idxIsValid(dayIdx, "day");
+  if (!dayisValid.isValid)
+    return res.send({ userTodoList, error: checkIfValid.error });
+
+  // Finding the index of the category where the task is located
+  const categoryIdx = userTodoList.date[monthIdx].days[
+    dayIdx
+  ].categories.findIndex(
+    (curr) => curr._id.valueOf() === req.params.category_id
+  );
+  console.log("categoryIdx:", categoryIdx);
+  if (categoryIdx < 0)
+    return res.send({
+      userTodoList,
+      error: "Category index could not be found when deleting the task",
+    });
+
+  // Concatenate the key before the query, so there's no errors when creating it
+  const key =
+    "date." +
+    monthIdx +
+    ".days." +
+    dayIdx +
+    ".categories." +
+    categoryIdx +
+    ".tasks";
+
+  // Pull out the task and return the updated DB document
+  const updatedUserTodoList = await Todos.findOneAndUpdate(
     { user_id },
     {
       $pull: {
-        [keyValue]: {
+        [key]: {
           _id: taskToDelete,
         },
       },
-    }
+    },
+    { new: true }
   );
 
-  // Return back the deleted task's id
-  res.send({
-    taskToDeleteId: taskToDelete,
-    category_id: req.params.category_id,
-  });
+  // Return the whole document
+  res.send({ userTodoList: updatedUserTodoList, error: null });
 });
 
 module.exports = router;

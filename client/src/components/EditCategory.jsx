@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateCategoryAsync } from "../redux/todosSlice";
 
-function EditCategory({ user_id, category_index, setEnableEdit, category }) {
+function EditCategory({
+  user_id,
+  category_index,
+  day,
+  month_year,
+  dayWtData,
+  setEnableEdit,
+  category,
+}) {
   const dispatch = useDispatch();
   const [updatedValue, setUpdatedValue] = useState(category);
 
@@ -10,7 +18,14 @@ function EditCategory({ user_id, category_index, setEnableEdit, category }) {
     e.preventDefault();
     try {
       await dispatch(
-        updateCategoryAsync({ user_id, category_index, updatedValue })
+        updateCategoryAsync({
+          user_id,
+          category_index,
+          day,
+          month_year,
+          dayWtData,
+          updatedValue,
+        })
       );
       setEnableEdit(false);
     } catch (err) {

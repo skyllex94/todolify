@@ -8,6 +8,8 @@ const TaskItem = ({
   user_id,
   category_id,
   category_index,
+  day,
+  month_year,
   id,
   task,
   task_index,
@@ -21,6 +23,8 @@ const TaskItem = ({
         <ToggleTask
           user_id={user_id}
           category_index={category_index}
+          day={day}
+          month_year={month_year}
           id={id}
           done={done}
           task_index={task_index}
@@ -41,7 +45,13 @@ const TaskItem = ({
 
       <div className="flex item-center">
         <EnableEditTask setEnableEdit={setEnableEdit} />
-        <DeleteTask user_id={user_id} category_id={category_id} id={id} />
+        <DeleteTask
+          user_id={user_id}
+          category_id={category_id}
+          id={id}
+          day={day}
+          month_year={month_year}
+        />
       </div>
     </React.Fragment>
   );
