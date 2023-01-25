@@ -127,15 +127,18 @@ export const updateCategoryAsync = createAsyncThunk(
 export const updateTaskAsync = createAsyncThunk(
   "updateTaskAsync",
   async (payload) => {
-    // payload => {user_id, category_index, task_index, updatedValue}
+    // payload => {user_id, category_index, day, month_year, task_index, updatedValue}
+    console.log("day, month:", payload.day, payload.month_year);
     try {
-      const resp = await axios.patch(`/api/user/upd-task/${payload.user_id}`, {
+      // Returns an object wt confirmation obj and objInfo
+      return await axios.patch(`/api/user/rename-task/`, {
+        user_id: payload.user_id,
         category_index: payload.category_index,
+        day: payload.day,
+        month_year: payload.month_year,
         task_index: payload.task_index,
         value: payload.updatedValue,
       });
-      // Returns an object wt confirmation obj and objInfo
-      return await resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -305,13 +308,22 @@ export const todosSlice = createSlice({
       return userTodoList;
     });
 
-    // Update a task field with a new value
+    // Rename a task field with a new value
     builder.addCase(updateTaskAsync.fulfilled, (state, action) => {
-      const categoryIndex = action.payload.data.objInfo.categoryIndex;
-      const taskIndex = action.payload.data.objInfo.taskIndex;
-      const updatedTask = action.payload.data.objInfo.newValue;
-      // Update the state at the correct position wt the new task input
-      state[categoryIndex].tasks[taskIndex].task = updatedTask;
+      // Return the whole updated document
+      const { userTodoList, error } = action.payload.data;
+
+      if (error) {
+        window.alert(error);
+        return;
+      }
+      return userTodoList;
+
+      // Updating UI State instead of replacing it
+      // const categoryIndex = action.payload.data.objInfo.categoryIndex;
+      // const taskIndex = action.payload.data.objInfo.taskIndex;
+      // const updatedTask = action.payload.data.objInfo.newValue;
+      // state[categoryIndex].tasks[taskIndex].task = updatedTask;
     });
 
     // Delete a category from a day

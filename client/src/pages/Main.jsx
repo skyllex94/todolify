@@ -1,11 +1,12 @@
 import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
-// Redux
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
 import { decodeJWT, getDate } from "../utils/functions";
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import loader from "../assets/loader.gif";
 
 function Main() {
   const navigate = useNavigate();
@@ -16,20 +17,10 @@ function Main() {
   const dispatch = useDispatch();
 
   const [loadedTodoList, setLoadedTodoList] = useState(false);
+  const [dateIdx, setDateIdx] = useState(0);
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.todos);
-  const weeklyTodoList = [todoList, todoList, todoList];
-
-  // Async function triggered when page loaded to call a GET request
-  // to specific user & fetch the todoList object of that user
-  const getUserTodoList = async (id) => {
-    // Trigger async GET request to the server, who fetch the data from MongoDB
-    const respFromDB = await dispatch(getTodosAsync(id));
-
-    if (respFromDB) {
-      setLoadedTodoList(true);
-    }
-  };
+  const weeklyTodoList = [todoList, todoList, todoList, todoList, todoList];
 
   // URl change if comming from a different route
   const urlValidation = () => {
@@ -44,7 +35,20 @@ function Main() {
 
   // Trigger async func on page load
   useEffect(() => {
-    getUserTodoList(id);
+    // Async function triggered when page loaded to call a GET request
+    // to specific user & fetch the todoList object of that user
+    const getUserTodoList = async (id) => {
+      // Trigger async GET request to the server, who fetch the data from MongoDB
+      // Use await to get a response obj and compare the result in order to remove loader
+      // and load all the data set since fetched in Redux if it does pass it
+      const respFromDB = await dispatch(getTodosAsync(id));
+
+      if (respFromDB.type === "getTodosAsync/fulfilled") {
+        setLoadedTodoList(true);
+      }
+    };
+
+    getUserTodoList(id).catch(console.error);
     urlValidation();
   }, []);
 
@@ -53,12 +57,49 @@ function Main() {
     if (!id) navigate("/");
   }, [navigate]);
 
+  function getWeek(idx) {
+    const date = getDate(idx);
+    return date.day + "/" + date.month_year;
+  }
+
+  const loadPreviousWeek = () => {
+    setDateIdx(dateIdx - 5);
+  };
+
+  const loadNexWeek = () => {
+    setDateIdx(dateIdx + 5);
+  };
+
+  const ref = useRef();
+
+  function scrollHorizontally(e, container) {
+    console.log("container:", container);
+
+    // Start from here - figure out hwo to move field horizontally
+    container.current.style.background = "black";
+    // console.log("here");
+    // e.preventDefault();
+
+    // const ref = document.querySelector(".todo-list");
+
+    // container.addEventListener("wheel", (event) => {
+    //   event.preventDefault();
+    // });
+    // container.current.scrollBy({
+    //   left: e.deltaY < 0 ? -30 : 30,
+    // });
+  }
+
   return (
     <div>
       <Header />
-      <div className="flex pt-24">
-        <div className="flex flex-col h-50 p-6 bg-white min-w-[15%]">
-          <div className="space-y-3">
+      <div
+        className="flex pt-24"
+        ref={ref}
+        onWheel={(e) => scrollHorizontally(e, ref)}
+      >
+        <div className="flex p-6 bg-white min-w-[15%]">
+          <div className="dashboard-style space-y-3">
             <div className="flex items-center">
               <h2 className="text-xl font-bold">Dashboard</h2>
             </div>
@@ -212,38 +253,55 @@ function Main() {
             </div>
           </div>
         </div>
-        <div className="flex mt-12">
-          {loadedTodoList &&
-            weeklyTodoList.map((todos, idx) => {
-              const date = getDate(idx);
-              const { day, month_year, dayOfWeek } = date;
-              let categories = todos.categories;
-              let dayWtData = false;
+        <div className="mt-6">
+          <div className="flex">
+            <button className="m-auto" onClick={loadPreviousWeek}>
+              <AiOutlineArrowLeft />
+            </button>
+            <h5 className="text-center m-auto">
+              Week ({getWeek(dateIdx)} - {getWeek(dateIdx + 4)})
+            </h5>
+            <button className="m-auto">
+              <AiOutlineArrowRight onClick={loadNexWeek} />
+            </button>
+          </div>
+          <div className="flex">
+            {loadedTodoList ? (
+              weeklyTodoList.map((todos, idx) => {
+                const date = getDate(dateIdx + idx);
+                const { day, month_year, dayOfWeek } = date;
+                let categories = todos.categories;
+                let dayWtData = false;
 
-              todos.date.map((currDate) => {
-                if (currDate.month_year === month_year) {
-                  currDate.days.map((curr) => {
-                    if (curr.day === day) {
-                      dayWtData = true;
-                      categories = curr.categories;
-                    }
-                  });
-                }
-              });
+                todos.date.map((currDate) => {
+                  if (currDate.month_year === month_year) {
+                    currDate.days.map((curr) => {
+                      if (curr.day === day) {
+                        dayWtData = true;
+                        categories = curr.categories;
+                      }
+                    });
+                  }
+                });
 
-              console.log("categoriesArr:", categories);
-              return (
-                <TodoList
-                  key={idx}
-                  user_id={id}
-                  todos={categories}
-                  day={day}
-                  month_year={month_year}
-                  dayOfWeek={dayOfWeek}
-                  dayWtData={dayWtData}
-                />
-              );
-            })}
+                return (
+                  <TodoList
+                    key={idx}
+                    user_id={id}
+                    todos={categories}
+                    day={day}
+                    month_year={month_year}
+                    dayOfWeek={dayOfWeek}
+                    dayWtData={dayWtData}
+                  />
+                );
+              })
+            ) : (
+              <div>
+                <img src={loader} alt="loader" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

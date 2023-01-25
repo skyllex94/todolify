@@ -6,7 +6,7 @@ function AddCategory({ user_id, day, month_year, dayWtData }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="flex items-center pb-2">
+    <div className="flex items-center pb-5">
       <div className="ml-6 mr-4">
         <AiOutlinePlus />
       </div>

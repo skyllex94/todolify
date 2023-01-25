@@ -15,7 +15,7 @@ export const decodeJWT = (token) => {
   return JSON.parse(jsonPayload);
 };
 
-export const getDayOfWeek = (addition) => {
+export const getDayOfWeek = (date) => {
   const weekday = [
     "Sunday",
     "Monday",
@@ -26,24 +26,22 @@ export const getDayOfWeek = (addition) => {
     "Saturday",
   ];
 
-  const date = new Date();
-  let dayToConvert = date.getDay() + addition;
-
-  // if (dayToConvert < 0) {
-  //   Math(dayToConvert) %= 7;
-  //   console.log("dayToConvert:", dayToConvert);
-  // }
-  if (dayToConvert >= 7) dayToConvert %= 7;
+  let dayToConvert = date.getUTCDay();
 
   let day = weekday[dayToConvert];
   return day;
 };
 
-export const formattedDate = (addition) => {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  let mm = today.getMonth() + 1; // Months start at 0!
-  let dd = today.getDate() + addition;
+function addDays(date, days) {
+  const dateCopy = new Date(date);
+  dateCopy.setDate(date.getDate() + days);
+  return dateCopy;
+}
+
+export const formatDate = (date) => {
+  const yyyy = date.getFullYear();
+  let mm = date.getMonth() + 1; // Months start at 0!
+  let dd = date.getDate();
 
   if (dd < 10) dd = "0" + dd;
   if (mm < 10) mm = "0" + mm;
@@ -52,14 +50,16 @@ export const formattedDate = (addition) => {
 };
 
 export const getDate = (addedDays) => {
-  const formatDate = formattedDate(addedDays);
+  const today = new Date();
 
-  const splitDate = formatDate.split("/");
+  const addedDaysDate = addDays(today, addedDays);
+  const dayOfWeek = getDayOfWeek(addedDaysDate);
+
+  const formattedDate = formatDate(addedDaysDate);
+
+  const splitDate = formattedDate.split("/");
   const day = parseInt(splitDate[0]);
   const month_year = splitDate[1] + "/" + splitDate[2];
-
-  // TO DO: Fix daysofWeek for Sunday and figure out the loop
-  const dayOfWeek = getDayOfWeek(addedDays);
 
   return { day, month_year, dayOfWeek };
 };

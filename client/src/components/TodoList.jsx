@@ -5,6 +5,8 @@ import AddCategory from "./AddCategory";
 import { useTodoList } from "../hooks/useTodoList";
 import { useDispatch } from "react-redux";
 import { addDateAsync } from "../redux/todosSlice";
+import { useEffect } from "react";
+import { useRef } from "react";
 
 const TodoList = ({
   user_id,
@@ -24,19 +26,16 @@ const TodoList = ({
   };
 
   return (
-    <div className="flex ml-5">
-      <div className="rounded-lg shadow-lg bg-white pr-5 max-w-sm">
-        <ul className="list-group mb-2 pt-5">
+    <div className="todo-list ml-5 min-w-[25%]">
+      <div className="rounded-lg shadow-lg bg-white pr-5 justify-between">
+        <ul className="list-group pt-5">
           <h3 className="text-center">
             <i>{dayOfWeek}</i> - <span>{day + "/" + month_year}</span>
           </h3>
           {loadedTodos ? (
             todos.map((curr, index) => {
               return (
-                <div
-                  key={index}
-                  className="flex inline items-center mb-1 justify-between"
-                >
+                <div key={index} className="flex inline mb-1">
                   <div className="brackets min-w-[93%]">
                     <CategoryItem
                       user_id={user_id}
@@ -69,9 +68,6 @@ const TodoList = ({
             month_year={month_year}
             dayWtData={dayWtData}
           />
-          <button className="btn btn-primary border ml-4" onClick={reachDB}>
-            Reach Me
-          </button>
         </ul>
       </div>
     </div>

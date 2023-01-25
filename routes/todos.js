@@ -415,36 +415,50 @@ router.patch("/upd-ctry-icon/:user_id", async (req, res) => {
   res.send(updatedCategoryObj);
 });
 
-// @route   PATCH /api/user/upd-task/:user_id
+// @route   PATCH /api/user/rename-task/:user_id
 // @desc    UPDATE the name of a task
 // @access  Private
-router.patch("/upd-task/:user_id", async (req, res) => {
-  const user_id = req.params.user_id;
-  const categoryIndex = req.body.category_index;
-  const taskIndex = req.body.task_index;
-  const newValue = req.body.value;
+router.patch("/rename-task/", async (req, res) => {
+  const user_id = req.body.user_id;
+  const day = req.body.day;
+  const month_year = req.body.month_year;
+  const categoryIdx = req.body.category_index;
+  const taskIdx = req.body.task_index;
+  const newName = req.body.value;
+
+  const userTodoList = await Todos.findOne({ user_id });
+  if (userTodoList === null)
+    return res.send({ error: "User Todolist could not be retrieved." });
+
+  const monthIdx = getMonthIdx(month_year, userTodoList);
+  if (!idxIsValid(monthIdx, "month"))
+    return res.send({ error: "Error while fetching monthIdx" });
+
+  const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+  if (!idxIsValid(dayIdx, "day"))
+    return res.send({ error: "Error while fetching dayIdx" });
 
   // Creating the key for the update
-  const keyValue =
-    "categories." + categoryIndex + ".tasks." + taskIndex + ".task";
+  const key =
+    "date." +
+    monthIdx +
+    ".days." +
+    dayIdx +
+    ".categories." +
+    categoryIdx +
+    ".tasks." +
+    taskIdx +
+    ".task";
 
-  // Mongoose query for finding the task and updating its value
-  const updateToggleTask = await Todos.updateOne(
+  // Mongoose query for finding the task, updating & returning the updated document
+  const updatedTodoList = await Todos.findOneAndUpdate(
     { user_id },
-    { $set: { [keyValue]: newValue } }
+    { $set: { [key]: newName } },
+    { new: true }
   );
 
-  const updatedTaskObj = {
-    confirmation: updateToggleTask,
-    objInfo: {
-      categoryIndex,
-      taskIndex,
-      newValue,
-    },
-  };
-
-  // Send back resp of whether the query call was successful
-  res.send(updatedTaskObj);
+  // Send back resp of the whole updated document
+  res.send({ userTodoList: updatedTodoList });
 });
 
 // Helper functions

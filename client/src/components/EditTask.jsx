@@ -6,6 +6,8 @@ import { updateTaskAsync } from "../redux/todosSlice";
 function EditTask({
   user_id,
   category_index,
+  day,
+  month_year,
   task_index,
   task,
   setEnableEdit,
@@ -13,11 +15,18 @@ function EditTask({
   const dispatch = useDispatch();
   const [updatedValue, setUpdatedValue] = useState(task);
 
-  const updateTask = async (e) => {
+  const updateTask = (e) => {
     e.preventDefault();
     try {
-      await dispatch(
-        updateTaskAsync({ user_id, category_index, task_index, updatedValue })
+      dispatch(
+        updateTaskAsync({
+          user_id,
+          category_index,
+          day,
+          month_year,
+          task_index,
+          updatedValue,
+        })
       );
       setEnableEdit(false);
     } catch (err) {

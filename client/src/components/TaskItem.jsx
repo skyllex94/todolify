@@ -34,6 +34,8 @@ const TaskItem = ({
           <EditTask
             user_id={user_id}
             category_index={category_index}
+            day={day}
+            month_year={month_year}
             task_index={task_index}
             task={task}
             setEnableEdit={setEnableEdit}
