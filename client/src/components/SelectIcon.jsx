@@ -11,7 +11,7 @@ import {
 } from "react-icons/md";
 import { IoIosMusicalNotes, IoMdBusiness } from "react-icons/io";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateIconAsync } from "../redux/todosSlice";
 import { AiOutlineStock } from "react-icons/ai";
 import {
@@ -25,7 +25,15 @@ import { MdNightlife } from "react-icons/md";
 import { RxCodesandboxLogo } from "react-icons/rx";
 import { GrAnalytics, GrTechnology } from "react-icons/gr";
 
-function SelectIcon({ user_id, category_index, currIcon, setCurrIcon }) {
+function SelectIcon({
+  user_id,
+  category_index,
+  day,
+  month_year,
+  dayWtData,
+  currIcon,
+  setCurrIcon,
+}) {
   const dispatch = useDispatch();
   const icons = [
     <MdOutlineCategory />,
@@ -48,12 +56,56 @@ function SelectIcon({ user_id, category_index, currIcon, setCurrIcon }) {
     <RxCodesandboxLogo />,
   ];
   const [icon, setIcon] = useState(icons[currIcon]);
+  const currTodo = useSelector((state) => state.todos);
+
+  const getDayMonthIdx = (day, month_year) => {
+    const monthIdx = currTodo.date.findIndex(
+      (curr) => curr.month_year === month_year
+    );
+
+    let dayIdx = null;
+    if (monthIdx >= 0) {
+      dayIdx = currTodo.date[monthIdx].days.findIndex(
+        (curr) => curr.day === day
+      );
+    }
+
+    if (monthIdx < 0) return { monthIdx: null, dayIdx: null };
+    if (monthIdx >= 0 && dayIdx < 0) return { monthIdx, dayIdx: null };
+
+    return { monthIdx, dayIdx };
+  };
 
   async function handleChangeIcon(newIcon, iconIdx) {
     setIcon(newIcon);
     setCurrIcon(icons.indexOf(newIcon));
+
+    if (!dayWtData)
+      return dispatch(
+        updateIconAsync({
+          user_id,
+          category_index,
+          dayWtData,
+          iconIdx,
+          monthIdx: null,
+          dayIdx: null,
+        })
+      );
+
+    // Get monthIdx and dayIdx
+    const { dayIdx, monthIdx } = getDayMonthIdx(day, month_year);
+
     // Change icon index in the db and save the result
-    dispatch(updateIconAsync({ user_id, category_index, iconIdx }));
+    dispatch(
+      updateIconAsync({
+        user_id,
+        category_index,
+        iconIdx,
+        dayWtData,
+        dayIdx,
+        monthIdx,
+      })
+    );
   }
 
   useEffect(() => {

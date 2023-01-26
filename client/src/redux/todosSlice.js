@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Not used for now since async fetching the todo list wt state through Main and passing to TodoList
@@ -6,12 +6,8 @@ export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
   // Fetch array of todos from DB and return (through res.send() on the backend) a resp value
   try {
     const resp = await axios.get(`/api/user/${id}`);
-    if (resp.status === 200) {
-      // If everything okay wt response, return the data from the DB
-      console.log("resp.data:", resp.data);
-
-      return resp.data;
-    }
+    // If everything okay wt response, return the data from the DB
+    if (resp.status === 200) return resp.data;
   } catch (err) {
     console.log(err.message);
   }
@@ -63,7 +59,7 @@ export const addTaskAsync = createAsyncThunk(
   // payload => {user_id, category_id, category_index, task (name), day, month_year, dayWtData(boolean)}
   async (payload) => {
     try {
-      const resp = await axios.post(
+      return await axios.post(
         `/api/user/${payload.user_id}/${payload.category_id}`,
         {
           task: payload.task,
@@ -73,9 +69,6 @@ export const addTaskAsync = createAsyncThunk(
           category_index: payload.category_index,
         }
       );
-
-      // Returns the whole new updated userTodoList
-      return resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -86,8 +79,7 @@ export const toggleTaskAsync = createAsyncThunk(
   "toggleTaskAsync",
   async (payload) => {
     // payload => {user_id, category_index, day, month_year, done, task_index}
-    console.log("day:", payload.day);
-    console.log("month_year:", payload.month_year);
+
     try {
       return await axios.patch(`/api/user/toggle_task`, {
         user_id: payload.user_id,
@@ -108,16 +100,14 @@ export const updateCategoryAsync = createAsyncThunk(
   async (payload) => {
     // payload => {user_id, category_index, day, month_year, dayWtData, updatedValue}
     try {
-      const resp = await axios.patch(`/api/user/upd-ctry/${payload.user_id}`, {
+      // Returns object {userTodoList: theWholeUpdatedDocument, error: IfAny}
+      return await axios.patch(`/api/user/upd-ctry/${payload.user_id}`, {
         category_index: payload.category_index,
         day: payload.day,
         month_year: payload.month_year,
         dayWtData: payload.dayWtData,
         new_name: payload.updatedValue,
       });
-
-      // Returns object {userTodoList: theWholeUpdatedDocument, error: IfAny}
-      return resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -148,17 +138,24 @@ export const updateTaskAsync = createAsyncThunk(
 export const updateIconAsync = createAsyncThunk(
   "updateIconAsync",
   async (payload) => {
-    // payload => {user_id, category_idx, newIconIdx}
+    // payload => {user_id, category_idx, newIconIdx, dayWtData, dayIdx, monthIdx}
+
     try {
-      const resp = await axios.patch(
-        `/api/user/upd-ctry-icon/${payload.user_id}`,
-        {
-          category_index: payload.category_index,
-          iconIdx: payload.iconIdx,
-        }
-      );
+      console.log("payload.monthIdx:", payload.monthIdx);
+      console.log("payload.dayIdx:", payload.dayIdx);
+      console.log("payload.dayWtData:", payload.dayWtData);
+      console.log("payload.iconIdx:", payload.iconIdx);
+      console.log("payload.user_id:", payload.user_id);
+
       // Returns an object wt confirmation obj and objInfo
-      return await resp;
+      return await axios.patch(`/api/user/upd-ctry-icon/`, {
+        user_id: payload.user_id,
+        category_index: payload.category_index,
+        iconIdx: payload.iconIdx,
+        dayWtData: payload.dayWtData,
+        dayIdx: payload.dayIdx,
+        monthIdx: payload.monthIdx,
+      });
     } catch (err) {
       console.log(err.message);
     }
@@ -198,7 +195,8 @@ export const deleteTaskAsync = createAsyncThunk(
 
   async (payload) => {
     try {
-      const resp = await axios.delete(
+      // Returns the whole updated userTodoList document object
+      return await axios.delete(
         `/api/user/${payload.user_id}/${payload.category_id}/${payload.id}`,
         {
           headers: {
@@ -210,9 +208,6 @@ export const deleteTaskAsync = createAsyncThunk(
           },
         }
       );
-
-      // Returns the whole updated userTodoList document object
-      return resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -282,6 +277,14 @@ export const todosSlice = createSlice({
       // state[catIndex].tasks.push(action.payload.data.newTaskObj);
 
       return action.payload.data;
+    });
+
+    builder.addCase(updateIconAsync.fulfilled, (_, action) => {
+      console.log(action.payload);
+      const { userTodoList, error } = action.payload.data;
+      if (error) return console.log(error);
+
+      return userTodoList;
     });
 
     // Toggle task for a certain category

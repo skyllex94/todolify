@@ -5,8 +5,6 @@ import AddCategory from "./AddCategory";
 import { useTodoList } from "../hooks/useTodoList";
 import { useDispatch } from "react-redux";
 import { addDateAsync } from "../redux/todosSlice";
-import { useEffect } from "react";
-import { useRef } from "react";
 
 const TodoList = ({
   user_id,
@@ -26,7 +24,7 @@ const TodoList = ({
   };
 
   return (
-    <div className="todo-list ml-5 min-w-[25%]">
+    <div className="todo-list ml-5 min-w-[20%] max-w-[20%]">
       <div className="rounded-lg shadow-lg bg-white pr-5 justify-between">
         <ul className="list-group pt-5">
           <h3 className="text-center">

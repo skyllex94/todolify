@@ -2,11 +2,14 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
 import { decodeJWT, getDate } from "../utils/functions";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import loader from "../assets/loader.gif";
+import { useHorizontalScroll } from "../hooks/horizontalScroll";
+// Framer Motion
+import { motion } from "framer-motion";
 
 function Main() {
   const navigate = useNavigate();
@@ -18,11 +21,22 @@ function Main() {
 
   const [loadedTodoList, setLoadedTodoList] = useState(false);
   const [dateIdx, setDateIdx] = useState(0);
+  const scrollRef = useHorizontalScroll();
+
+  const [slideTransition, setSlideTransition] = useState(false);
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.todos);
-  const weeklyTodoList = [todoList, todoList, todoList, todoList, todoList];
+  const weeklyTodoList = [
+    todoList,
+    todoList,
+    todoList,
+    todoList,
+    todoList,
+    todoList,
+    todoList,
+  ];
 
-  // URl change if comming from a different route
+  // URl change if coming from a different route
   const urlValidation = () => {
     const currentUrl = window.location.href;
     const pathArray = currentUrl.split("/");
@@ -42,6 +56,7 @@ function Main() {
       // Use await to get a response obj and compare the result in order to remove loader
       // and load all the data set since fetched in Redux if it does pass it
       const respFromDB = await dispatch(getTodosAsync(id));
+      console.log("respFromDB:", respFromDB);
 
       if (respFromDB.type === "getTodosAsync/fulfilled") {
         setLoadedTodoList(true);
@@ -55,7 +70,7 @@ function Main() {
   useEffect(() => {
     // If there's no JWT passed from App.js, then navigate back to landing page
     if (!id) navigate("/");
-  }, [navigate]);
+  }, [navigate, id]);
 
   function getWeek(idx) {
     const date = getDate(idx);
@@ -63,43 +78,26 @@ function Main() {
   }
 
   const loadPreviousWeek = () => {
-    setDateIdx(dateIdx - 5);
+    setDateIdx(dateIdx - 7);
+    setSlideTransition(true);
   };
 
   const loadNexWeek = () => {
-    setDateIdx(dateIdx + 5);
+    setDateIdx(dateIdx + 7);
+    setSlideTransition(true);
   };
 
-  const ref = useRef();
-
-  function scrollHorizontally(e, container) {
-    console.log("container:", container);
-
-    // Start from here - figure out hwo to move field horizontally
-    container.current.style.background = "black";
-    // console.log("here");
-    // e.preventDefault();
-
-    // const ref = document.querySelector(".todo-list");
-
-    // container.addEventListener("wheel", (event) => {
-    //   event.preventDefault();
-    // });
-    // container.current.scrollBy({
-    //   left: e.deltaY < 0 ? -30 : 30,
-    // });
-  }
-
   return (
-    <div>
+    <div className="h-screen">
       <Header />
+
       <div
-        className="flex pt-24"
-        ref={ref}
-        onWheel={(e) => scrollHorizontally(e, ref)}
+        className="flex pt-24 h-full"
+        ref={scrollRef}
+        style={{ overflow: "auto" }}
       >
-        <div className="flex p-6 bg-white min-w-[15%]">
-          <div className="dashboard-style space-y-3">
+        <div className="side-board flex p-6 bg-white min-w-[15%]">
+          <div className="space-y-3">
             <div className="flex items-center">
               <h2 className="text-xl font-bold">Dashboard</h2>
             </div>
@@ -253,17 +251,24 @@ function Main() {
             </div>
           </div>
         </div>
-        <div className="mt-6">
-          <div className="flex">
-            <button className="m-auto" onClick={loadPreviousWeek}>
-              <AiOutlineArrowLeft />
-            </button>
-            <h5 className="text-center m-auto">
-              Week ({getWeek(dateIdx)} - {getWeek(dateIdx + 4)})
-            </h5>
-            <button className="m-auto">
-              <AiOutlineArrowRight onClick={loadNexWeek} />
-            </button>
+        <div>
+          <div className="flex mb-5">
+            <div class="flex ml-5 items-center space-x-1 text-lg px-2 bg-gray-200 text-gray-800 rounded-full">
+              <motion.button className="mr-5" onClick={loadPreviousWeek}>
+                <AiOutlineArrowLeft />
+              </motion.button>
+
+              <div
+                style={{ width: "0.4rem", height: "0.4rem" }}
+                class="bg-gray-500 rounded-full mr-5"
+              />
+              <div>
+                Week ({getWeek(dateIdx)} - {getWeek(dateIdx + 6)})
+              </div>
+              <button className="pl-5">
+                <AiOutlineArrowRight onClick={loadNexWeek} />
+              </button>
+            </div>
           </div>
           <div className="flex">
             {loadedTodoList ? (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
 import DeleteCategory from "./DeleteCategory";
@@ -21,6 +21,11 @@ function CategoryItem({
   const [enableEdit, setEnableEdit] = useState(false);
   const [currIcon, setCurrIcon] = useState(icon ?? null);
 
+  // Rerender the new icon when the week is changed
+  useEffect(() => {
+    setCurrIcon(icon);
+  }, [currIcon, setCurrIcon, icon]);
+
   return (
     <ul className={`list-group`}>
       <div className="flex categories items-center justify-between">
@@ -29,6 +34,9 @@ function CategoryItem({
             user_id={user_id}
             category_id={category_id}
             category_index={category_index}
+            day={day}
+            month_year={month_year}
+            dayWtData={dayWtData}
             currIcon={currIcon}
             setCurrIcon={setCurrIcon}
           />
@@ -48,7 +56,9 @@ function CategoryItem({
         </div>
 
         <div className="wrapper-right-elements flex inline">
+          <DoneTasks tasks={tasks} />
           <EnableEditCategory setEnableEdit={setEnableEdit} />
+
           <DeleteCategory
             user_id={user_id}
             id={category_id}

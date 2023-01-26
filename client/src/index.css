@@ -55,3 +55,23 @@ code {
   opacity: 0;
   transition: all 250ms linear 2s;
 }
+
+.lis {
+  position: relative;
+}
+
+.navlinks:hover {
+  background-image: linear-gradient(#ffb1bb, #ffb1bb),
+    linear-gradient(#ffb1bb, #ffb1bb), linear-gradient(#ffb1bb, #ffb1bb),
+    linear-gradient(#ffb1bb, #ffb1bb);
+
+  background-repeat: no-repeat;
+  background-size: 2px 2px;
+  background-position: top left, top right, bottom left, bottom right;
+
+  border: solid #ffb1bb;
+  text-align: justify;
+  border-width: 0 2px;
+  display: inline-block;
+  vertical-align: top;
+}

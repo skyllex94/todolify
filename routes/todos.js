@@ -209,6 +209,7 @@ router.post("/:id/:category_id", async (req, res) => {
   const dayWtData = req.body.dayWtData;
   const day = req.body.day;
   const month_year = req.body.month_year;
+
   const category_id = req.params.category_id;
   const default_category_idx = req.body.category_index;
 
@@ -219,19 +220,32 @@ router.post("/:id/:category_id", async (req, res) => {
     done: false,
   };
 
-  const monthIdx = getMonthIdx(month_year, userTodoList);
+  let monthIdx = getMonthIdx(month_year, userTodoList);
+
+  // Create the new month_year
+  if (monthIdx === "No month found in DB") {
+    const newMonthYear = {
+      month_year,
+      days: [],
+    };
+    const arrLength = userTodoList.date.push(newMonthYear);
+    const newlyCreatedMonth = userTodoList.date[arrLength - 1];
+    monthIdx = userTodoList.date.indexOf(newlyCreatedMonth);
+
+    await userTodoList.save();
+  }
 
   // Use monthIdx === null, since !monthIdx will return error for index 0
-  if (monthIdx === null || monthIdx === "No month found in DB") {
+  if (monthIdx === null) {
     console.log(
       "Index of the month could not be found or missing userTodoList when deleting"
     );
     return res.send(userTodoList);
   }
 
-  //   // TODO: Return back an object with the updated todo list and error
-  //   // in order to be able to check and display an error message to the UI if there's any
-  //   // res.send({ userTodoList, error: "Error while deleting, monthIdx doesn't exist" });
+  // TODO: Return back an object with the updated todo list and error
+  // in order to be able to check and display an error message to the UI if there's any
+  // res.send({ userTodoList, error: "Error while deleting, monthIdx doesn't exist" });
 
   if (dayWtData) {
     const dayIdx = getDayIdx(day, monthIdx, userTodoList);
@@ -261,8 +275,7 @@ router.post("/:id/:category_id", async (req, res) => {
       await userTodoList.save();
     }
 
-    // If there's not data in the current date, take the default
-    // categories and create the new day in the date array
+    // If there's no data for current day, take default categories and create the new day
   } else {
     // Use parse and strigifify in order to make a full copy of the array wt objects
     // if trying to spread, it won't work, because it only creates a shallow copy without copying the inner objects
@@ -272,9 +285,6 @@ router.post("/:id/:category_id", async (req, res) => {
 
     // New day structure including the fetched default categories
     const newDay = { day, categories };
-
-    // TODO: Check if there is a month that matches the month of the current day, go through months wt a map
-    // TODO: Do so for the days as well - maybe
 
     userTodoList.date[monthIdx].days.push(newDay);
     await userTodoList.save();
@@ -391,28 +401,45 @@ router.patch("/upd-ctry/:user_id", async (req, res) => {
 // @route   PATCH /api/user/upd-ctry-icon
 // @desc    UPDATE a category icon
 // @access  Private
-router.patch("/upd-ctry-icon/:user_id", async (req, res) => {
-  const user_id = req.params.user_id;
-  const categoryIndex = req.body.category_index;
+router.patch("/upd-ctry-icon/", async (req, res) => {
+  const user_id = req.body.user_id;
+  const categoryIdx = req.body.category_index;
   const newIconIdx = req.body.iconIdx;
+  const dayWtData = req.body.dayWtData;
+  const dayIdx = req.body.dayIdx;
+  const monthIdx = req.body.monthIdx;
 
-  // Creating the key for the update
-  const keyValue = "categories." + categoryIndex + ".icon";
-  if (keyValue === null) {
-    return;
+  let key = null;
+  if (dayWtData) {
+    // Check if any of the idxes are null, using "=== null" since the values could be 0
+    if (dayIdx === null || monthIdx === null)
+      return { error: "Either monthIdx or dayIdx is not found for this date" };
+    key =
+      "date." +
+      monthIdx +
+      ".days." +
+      dayIdx +
+      ".categories." +
+      categoryIdx +
+      ".icon";
+  } else {
+    key = "categories." + categoryIdx + ".icon";
+  }
+
+  if (key === null) {
+    return { error: "The key for the query could not be populated" };
   }
   // Mongoose query for finding the category and updating its value
-  const updateIcon = await Todos.updateOne(
+  const updatedTodoList = await Todos.findOneAndUpdate(
     { user_id },
-    { $set: { [keyValue]: newIconIdx } }
+    { $set: { [key]: newIconIdx } },
+    { new: true }
   );
 
-  const updatedCategoryObj = {
-    confirmation: updateIcon,
-    objInfo: { categoryIndex, newIconIdx },
-  };
-  // Send back resp wt query call and object info
-  res.send(updatedCategoryObj);
+  // console.log("updatedTodoList:", updatedTodoList);
+
+  // Send back resp wt the updatedTodoList
+  res.send({ userTodoList: updatedTodoList });
 });
 
 // @route   PATCH /api/user/rename-task/:user_id
@@ -431,6 +458,7 @@ router.patch("/rename-task/", async (req, res) => {
     return res.send({ error: "User Todolist could not be retrieved." });
 
   const monthIdx = getMonthIdx(month_year, userTodoList);
+
   if (!idxIsValid(monthIdx, "month"))
     return res.send({ error: "Error while fetching monthIdx" });
 
