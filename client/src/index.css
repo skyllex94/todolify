@@ -75,3 +75,9 @@ code {
   display: inline-block;
   vertical-align: top;
 }
+
+.side-menu {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
