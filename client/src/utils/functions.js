@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 // Decode the fetched JWT to get the user id in order to take his todos
 export const decodeJWT = (token) => {
   var base64Url = token.split(".")[1];
@@ -63,3 +65,19 @@ export const getDate = (addedDays) => {
 
   return { day, month_year, dayOfWeek };
 };
+
+export function getMonth(month = dayjs().month()) {
+  month = Math.floor(month);
+  const year = dayjs().year();
+  const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
+  let currMonthIdx = 0 - firstDayOfTheMonth;
+
+  const rows = 5;
+  const monthMatrix = new Array(rows).fill([]).map(() => {
+    return new Array(7).fill(null).map(() => {
+      currMonthIdx++;
+      return dayjs(new Date(year, month, currMonthIdx));
+    });
+  });
+  return { monthMatrix, currMonthIdx: month };
+}

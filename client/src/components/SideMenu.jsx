@@ -1,7 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
-function SideMenu() {
+function SideMenu(user_id) {
   // Default motion style props for usage
   const motionProps = {
     initial: { scale: 1 },
@@ -9,8 +10,10 @@ function SideMenu() {
     whileTap: { scale: 0.9 },
   };
 
+  // TODO: Stick the side menu to be locked on the left
+
   return (
-    <div className="side-menu z-10 flex p-6 bg-white min-w-[15%]">
+    <div className="side-menu z-2 flex p-6 bg-white min-w-[15%]">
       <div className="space-y-3">
         <div className="flex items-center">
           <h2 className="text-xl font-bold">Dashboard</h2>
@@ -71,8 +74,8 @@ function SideMenu() {
               </a>
             </motion.li>
             <motion.li {...motionProps} className="rounded-sm">
-              <a
-                href="#!"
+              <Link
+                to={`/user/${user_id}`}
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
                 <svg
@@ -90,11 +93,14 @@ function SideMenu() {
                   />
                 </svg>
                 <span>Weekly List</span>
-              </a>
+              </Link>
             </motion.li>
             <motion.li {...motionProps} className="rounded-sm">
-              <a
-                href="#!"
+              <Link
+                to={{
+                  pathname: `/events/${user_id}`,
+                  state: { fromDashboard: true },
+                }}
                 className="flex items-center p-2 space-x-3 rounded-md"
               >
                 <svg
@@ -112,7 +118,7 @@ function SideMenu() {
                   />
                 </svg>
                 <span>Events</span>
-              </a>
+              </Link>
             </motion.li>
             <motion.li {...motionProps} className="rounded-sm">
               <a

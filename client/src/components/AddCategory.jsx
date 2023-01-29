@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import ModalAddCategory from "./forms/ModalAddCategory";
+import ModalAddCategory from "./ModalAddCategory";
 
 function AddCategory({ user_id, day, month_year, dayWtData }) {
   const [showModal, setShowModal] = useState(false);

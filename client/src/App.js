@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Events from "./pages/Events";
 import { decodeJWT } from "./utils/functions";
 import React from "react";
 
@@ -16,14 +17,16 @@ function App() {
     user_id = payload.user.id;
   }
 
+  // TODO: Fix link error
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Landing user_id={user_id} />} />
-          <Route path={`/user/:id`} element={<Main user_id={user_id} />} />
+          <Route path="/" element={<Landing />} />
+          <Route path={`/user/:id`} element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path={`/events/:${user_id}`} element={<Events />} />
         </Routes>
       </div>
     </Router>

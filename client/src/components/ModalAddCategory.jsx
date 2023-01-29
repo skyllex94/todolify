@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addCategoryAsync } from "../../redux/todosSlice";
+import { addCategoryAsync } from "../redux/todosSlice";
+import { motion } from "framer-motion";
 
 export default function ModalAddCategory({
   setShowModal,
@@ -62,9 +62,15 @@ export default function ModalAddCategory({
 
     setShowModal(false);
   };
+
   return (
     <React.Fragment>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+      <motion.div
+        initial={{ y: 300, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 300, opacity: 0 }}
+        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+      >
         <div className="relative w-auto max-w-xl">
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
@@ -160,7 +166,7 @@ export default function ModalAddCategory({
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
     </React.Fragment>
   );

@@ -13,7 +13,6 @@ const TodoSchema = new mongoose.Schema({
       days: [
         {
           day: { type: Number, required: true },
-          // ctgries: [CategoriesSchema.schema],
           categories: [
             {
               id: {
@@ -47,6 +46,19 @@ const TodoSchema = new mongoose.Schema({
                   },
                 },
               ],
+            },
+          ],
+          events: [
+            {
+              id: {
+                type: mongoose.Schema.Types.ObjectId,
+              },
+              event: {
+                type: String,
+              },
+              done: {
+                type: Boolean,
+              },
             },
           ],
         },

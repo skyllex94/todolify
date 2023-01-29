@@ -19,6 +19,7 @@ function Main() {
   const { id } = user_id.user;
 
   const dispatch = useDispatch();
+  // TODO: Make priorities on the tasks
 
   const [loadedTodoList, setLoadedTodoList] = useState(false);
   const [dateIdx, setDateIdx] = useState(0);
@@ -94,7 +95,7 @@ function Main() {
         ref={scrollRef}
         style={{ overflow: "auto" }}
       >
-        <SideMenu />
+        <SideMenu user_id={id} />
 
         <div>
           <div className="flex mb-5">
