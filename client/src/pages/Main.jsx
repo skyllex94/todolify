@@ -57,7 +57,6 @@ function Main() {
       // Use await to get a response obj and compare the result in order to remove loader
       // and load all the data set since fetched in Redux if it does pass it
       const respFromDB = await dispatch(getTodosAsync(id));
-      console.log("respFromDB:", respFromDB);
 
       if (respFromDB.type === "getTodosAsync/fulfilled") {
         setLoadedTodoList(true);
@@ -99,7 +98,7 @@ function Main() {
 
         <div>
           <div className="flex mb-5">
-            <div class="flex ml-5 relative items-center space-x-1 text-lg px-2 bg-gray-200 text-gray-800 rounded-full">
+            <div className="flex ml-5 relative items-center space-x-1 text-lg px-2 bg-gray-200 text-gray-800 rounded-full">
               <motion.button
                 initial={{ scale: 1 }}
                 whileHover={{ scale: 1.2 }}
@@ -112,7 +111,7 @@ function Main() {
 
               <div
                 style={{ width: "0.4rem", height: "0.4rem" }}
-                class="bg-gray-500 rounded-full mr-5"
+                className="bg-gray-500 rounded-full mr-5"
               />
               <motion.div layout>
                 Week ({getWeek(dateIdx)} - {getWeek(dateIdx + 6)})

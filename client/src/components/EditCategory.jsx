@@ -17,7 +17,7 @@ function EditCategory({
   const updateCategory = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(
+      dispatch(
         updateCategoryAsync({
           user_id,
           category_index,

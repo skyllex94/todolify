@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import AddEventModal from "./AddEventModal";
 
 import CalendarDay from "./CalendarDay";
 
 function CalendarUI({ monthObj }) {
   const [showModal, setShowModal] = useState(false);
+  const [monthInfo, setMonthInfo] = useState(null);
+  const events = useSelector((state) => state.events);
 
   const { monthMatrix, currMonthIdx } = monthObj;
   const weekDays = [
@@ -16,6 +19,11 @@ function CalendarUI({ monthObj }) {
     "Friday",
     "Saturday",
   ];
+
+  const openModal = (day) => {
+    setMonthInfo(day);
+    setShowModal(true);
+  };
 
   return (
     <div className="container mx-auto ml-2">
@@ -90,21 +98,19 @@ function CalendarUI({ monthObj }) {
             {monthMatrix.map((row, i) => (
               <tr className="text-center h-20" key={i}>
                 {row.map((day, idx) => {
-                  const { $M } = day;
+                  const { $M, $D } = day;
                   let dimDay = "";
                   if (currMonthIdx != $M) dimDay = "bg-gray-100";
+
+                  console.log("events", events);
 
                   return (
                     <td
                       key={idx}
-                      onClick={() => setShowModal(true)}
+                      onClick={() => openModal(day)}
                       className={`border p-1 ${dimDay} h-40 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300`}
                     >
-                      <CalendarDay
-                        day={day}
-                        showModal={showModal}
-                        setShowModal={setShowModal}
-                      />
+                      <CalendarDay day={day} />
                     </td>
                   );
                 })}
@@ -112,6 +118,9 @@ function CalendarUI({ monthObj }) {
             ))}
           </tbody>
         </table>
+        {showModal && (
+          <AddEventModal monthInfo={monthInfo} setShowModal={setShowModal} />
+        )}
       </div>
     </div>
   );

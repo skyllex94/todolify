@@ -138,12 +138,6 @@ export const updateIconAsync = createAsyncThunk(
     // payload => {user_id, category_idx, newIconIdx, dayWtData, dayIdx, monthIdx}
 
     try {
-      console.log("payload.monthIdx:", payload.monthIdx);
-      console.log("payload.dayIdx:", payload.dayIdx);
-      console.log("payload.dayWtData:", payload.dayWtData);
-      console.log("payload.iconIdx:", payload.iconIdx);
-      console.log("payload.user_id:", payload.user_id);
-
       // Returns an object wt confirmation obj and objInfo
       return await axios.patch(`/api/user/upd-ctry-icon/`, {
         user_id: payload.user_id,
@@ -164,7 +158,8 @@ export const deleteCategoryAsync = createAsyncThunk(
   // payload => {user_id, categoryId, day, month_year, dayWtData}
   async (payload) => {
     try {
-      const resp = await axios.delete(
+      // Returns category id that was removed from DB
+      return await axios.delete(
         `/api/user/${payload.user_id}/${payload.categoryId}`,
         {
           headers: {
@@ -177,9 +172,6 @@ export const deleteCategoryAsync = createAsyncThunk(
           },
         }
       );
-
-      // Returns category id that was removed from DB
-      return await resp;
     } catch (err) {
       console.log(err.message);
     }
@@ -189,7 +181,6 @@ export const deleteCategoryAsync = createAsyncThunk(
 export const deleteTaskAsync = createAsyncThunk(
   "deleteTaskAsync",
   // payload => {user_id, category_id, id, day, month_year}
-
   async (payload) => {
     try {
       // Returns the whole updated userTodoList document object

@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addEventAsync } from "../../redux/eventsSlice";
 
-function AddEventModal({ setShowModal }) {
-  const [eventName, setEventName] = useState("");
+function AddEventModal({ monthInfo, setShowModal }) {
+  // States
+  const [eventName, setEventName] = useState(null);
+  const user_id = useSelector((state) => state.auth.user_id);
+
+  // Actions and Destructuring
+  const dispatch = useDispatch();
+  const { $D, $M, $y } = monthInfo;
+
+  // Page Checks
+  const navigate = useNavigate();
+  if (!user_id) navigate("/");
 
   // Trigger removing modal on escape key pressed
   useEffect(() => {
@@ -18,8 +31,41 @@ function AddEventModal({ setShowModal }) {
     };
   }, [setShowModal]);
 
+  // TODO: Fetch events and populate in the events UI
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    // Error checks
+    if (eventName === null) return alert("Please write a name for the event.");
+
+    if (monthInfo === null)
+      return { error: "Error finding the information about the event date" };
+
+    if (($D, $M, $y === null))
+      return { error: "Some month values are missing" };
+
+    const day = parseInt($D);
+    // Concatinate 0 to any month lower than 10 with the slice method
+    const month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
+
+    let event_name;
+    if (eventName !== "") event_name = eventName;
+
+    try {
+      // Add event for to a specific day
+      const res = dispatch(
+        addEventAsync({ user_id, event_name, day, month_year })
+      );
+      console.log("res:", res);
+    } catch (err) {
+      return { err };
+    }
+    console.log("monthInfo:", monthInfo);
+  };
+
   return (
-    <React.Fragment>
+    <div>
       <AnimatePresence>
         <motion.div
           initial={{ y: 300, opacity: 0 }}
@@ -37,8 +83,7 @@ function AddEventModal({ setShowModal }) {
                 />
               </div>
 
-              <form className="p-8">
-                {/*onSubmit={onSubmit} */}
+              <form className="p-8" onSubmit={onSubmit}>
                 <div className="flex items-center border p-6">
                   <label
                     className="block text-gray-700 text-md font-bold mb-2 mr-3"
@@ -109,7 +154,7 @@ function AddEventModal({ setShowModal }) {
                 <button
                   className="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
-                  // onClick={onSubmit}
+                  onClick={onSubmit}
                 >
                   Create Category
                 </button>
@@ -127,8 +172,8 @@ function AddEventModal({ setShowModal }) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="fixed inset-0 z-40"></div>
-    </React.Fragment>
+      <div className="opacity-25 bg-black fixed inset-0 z-100"></div>
+    </div>
   );
 }
 

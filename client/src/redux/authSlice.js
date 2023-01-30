@@ -2,13 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const authSlice = createSlice({
   name: "authToken",
-  initialState: { jwt: null },
+  initialState: { jwt: null, user_id: null },
   reducers: {
     storeJWT: (state, action) => {
       state.jwt = action.payload.jwt;
     },
+    saveUserId: (state, action) => {
+      console.log(action.payload.user_id);
+      state.user_id = action.payload.user_id;
+    },
   },
 });
 
-export const { storeJWT } = authSlice.actions;
+export const { storeJWT, saveUserId } = authSlice.actions;
 export default authSlice.reducer;

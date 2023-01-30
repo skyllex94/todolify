@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 const router = express.Router();
 const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
+const { getDayIdx } = require("./helper_funcs");
 
 // @route   GET TODOS /user/:id
 // @desc    Fetch all todos for the authorized user
@@ -515,22 +516,6 @@ function getMonthIdx(month_year, fetchedTodoList) {
       );
       if (monthIdx < 0) return "No month found in DB";
       return monthIdx;
-    }
-  } catch (err) {
-    return null;
-  }
-}
-
-function getDayIdx(day, monthIdx, fetchedTodoList) {
-  if (isEmpty(fetchedTodoList)) return null;
-
-  try {
-    if (day) {
-      const dayIdx = fetchedTodoList.date[monthIdx].days.findIndex(
-        (curr) => curr.day == day
-      );
-      if (dayIdx < 0) return "No day found in DB";
-      return dayIdx;
     }
   } catch (err) {
     return null;

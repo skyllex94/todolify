@@ -1,27 +1,43 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CalendarUI from "../components/EventsComponents/CalendarUI";
 import SideMenu from "../components/SideMenu";
-import { decodeJWT, getMonth } from "../utils/functions";
+import { getMonth } from "../utils/functions";
 import Header from "./Header";
-import { useState } from "react";
-function Events() {
-  const savedJWT = window.localStorage.getItem("jwt");
-  const user_id = decodeJWT(savedJWT);
-  const { id } = user_id.user;
+import { useDispatch, useSelector } from "react-redux";
+import { getEventsAsync } from "../redux/eventsSlice";
 
-  const navigate = useNavigate();
+function Events() {
+  // Declare required global and local states
+  const user_id = useSelector((state) => state.auth.user_id);
   const [currMonth, setCurrMonth] = useState(getMonth());
+  const [loadEvents, setLoadEvents] = useState(false);
+
+  // UI Manipulation requirements
+  const navigate = useNavigate();
   const { monthIdx } = 0;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setCurrMonth(getMonth(monthIdx));
   }, []);
 
+  // Load all the events for the current month
   useEffect(() => {
-    // If there's no JWT, navigate back to landing page
-    if (!id) navigate("/");
-  }, [navigate, id]);
+    // You need to await the async response to display the data after fetched
+    const getEvents = async (user_id) => {
+      const respFromDB = await dispatch(getEventsAsync(user_id));
+
+      if (respFromDB.type === "getEventsAsync/fulfilled") setLoadEvents(true);
+    };
+
+    getEvents(user_id).catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    // If there's no user_id, navigate back to landing page
+    if (!user_id) navigate("/");
+  }, [navigate, user_id]);
 
   return (
     <div>
