@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const CategoriesSchema = require("./CategoriesSchema");
 
 const TodoSchema = new mongoose.Schema({
   user_id: {
@@ -9,10 +8,10 @@ const TodoSchema = new mongoose.Schema({
 
   date: [
     {
-      month_year: { type: String, required: true },
+      month_year: { type: String },
       days: [
         {
-          day: { type: Number, required: true },
+          day: { type: Number },
           categories: [
             {
               id: {
@@ -48,19 +47,16 @@ const TodoSchema = new mongoose.Schema({
               ],
             },
           ],
-          events: [
-            {
-              id: {
-                type: mongoose.Schema.Types.ObjectId,
-              },
-              event: {
-                type: String,
-              },
-              done: {
-                type: Boolean,
-              },
-            },
-          ],
+          // events: [
+          //   {
+          //     event: {
+          //       type: String,
+          //     },
+          //     done: {
+          //       type: Boolean,
+          //     },
+          //   },
+          // ],
         },
       ],
     },
@@ -97,6 +93,19 @@ const TodoSchema = new mongoose.Schema({
           done: {
             type: Boolean,
           },
+        },
+      ],
+    },
+  ],
+
+  events: [
+    {
+      date: { type: String },
+      eventList: [
+        {
+          event: { type: String },
+          done: { type: Boolean },
+          notes: { type: String },
         },
       ],
     },

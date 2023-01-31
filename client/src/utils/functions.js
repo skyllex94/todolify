@@ -69,6 +69,8 @@ export const getDate = (addedDays) => {
 export function getMonth(month = dayjs().month()) {
   month = Math.floor(month);
   const year = dayjs().year();
+  const monthName = dayjs().month(month);
+
   const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
   let currMonthIdx = 0 - firstDayOfTheMonth;
 
@@ -79,5 +81,5 @@ export function getMonth(month = dayjs().month()) {
       return dayjs(new Date(year, month, currMonthIdx));
     });
   });
-  return { monthMatrix, currMonthIdx: month };
+  return { monthMatrix, currMonthIdx: month, year, monthName };
 }

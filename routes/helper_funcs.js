@@ -1,3 +1,5 @@
+const Todos = require("../schemas/TodoSchema");
+
 exports.getMonthIdx = function getMonthIdx(month_year, fetchedTodoList) {
   if (isEmpty(fetchedTodoList)) return null;
 
@@ -12,6 +14,20 @@ exports.getMonthIdx = function getMonthIdx(month_year, fetchedTodoList) {
     }
   } catch (err) {
     return null;
+  }
+};
+
+exports.getEventsDateIdx = function getEventsDateIdx(date, eventsList) {
+  if (!eventsList) return null;
+
+  try {
+    if (date) {
+      const dateIdx = eventsList.date.findIndex((curr) => curr.date === date);
+      if (dateIdx < 0) return "No date found in events";
+      return dateIdx;
+    }
+  } catch (err) {
+    return err.message;
   }
 };
 
@@ -48,4 +64,8 @@ exports.getDayIdx = function getDayIdx(day, monthIdx, fetchedTodoList) {
   } catch (err) {
     return null;
   }
+};
+
+exports.getUserTodoList = async function getUserTodoList(user_id) {
+  return await Todos.findOne({ user_id });
 };

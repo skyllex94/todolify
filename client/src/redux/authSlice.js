@@ -8,7 +8,6 @@ export const authSlice = createSlice({
       state.jwt = action.payload.jwt;
     },
     saveUserId: (state, action) => {
-      console.log(action.payload.user_id);
       state.user_id = action.payload.user_id;
     },
   },

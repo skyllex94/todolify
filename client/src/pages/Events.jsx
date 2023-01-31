@@ -13,26 +13,30 @@ function Events() {
   const [currMonth, setCurrMonth] = useState(getMonth());
   const [loadEvents, setLoadEvents] = useState(false);
 
+  const [currMonthIdx, setCurrMonthIdx] = useState(0);
+
   // UI Manipulation requirements
   const navigate = useNavigate();
-  const { monthIdx } = 0;
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setCurrMonth(getMonth(monthIdx));
-  }, []);
+    setCurrMonth(getMonth(currMonthIdx));
+  }, [currMonthIdx]);
 
   // Load all the events for the current month
   useEffect(() => {
     // You need to await the async response to display the data after fetched
     const getEvents = async (user_id) => {
-      const respFromDB = await dispatch(getEventsAsync(user_id));
+      const fetchedEvents = await dispatch(getEventsAsync(user_id));
+      console.log("fetchedEvents:", fetchedEvents);
 
-      if (respFromDB.type === "getEventsAsync/fulfilled") setLoadEvents(true);
+      if (fetchedEvents.type === "getEventsAsync/fulfilled")
+        setLoadEvents(true);
     };
 
+    if (!user_id) return console.log("User ID not found");
     getEvents(user_id).catch(console.error);
-  }, []);
+  }, [dispatch, user_id]);
 
   useEffect(() => {
     // If there's no user_id, navigate back to landing page
@@ -45,7 +49,11 @@ function Events() {
 
       <div className="flex p-24">
         <SideMenu />
-        <CalendarUI monthObj={currMonth} setCurrMonth={setCurrMonth} />
+        <CalendarUI
+          monthObj={currMonth}
+          setCurrMonth={setCurrMonth}
+          setCurrMonthIdx={setCurrMonthIdx}
+        />
       </div>
     </div>
   );

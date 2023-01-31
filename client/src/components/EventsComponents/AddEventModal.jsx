@@ -6,7 +6,8 @@ import { addEventAsync } from "../../redux/eventsSlice";
 
 function AddEventModal({ monthInfo, setShowModal }) {
   // States
-  const [eventName, setEventName] = useState(null);
+  const [eventName, setEventName] = useState("");
+  const [notes, setNotes] = useState("");
   const user_id = useSelector((state) => state.auth.user_id);
 
   // Actions and Destructuring
@@ -33,11 +34,11 @@ function AddEventModal({ monthInfo, setShowModal }) {
 
   // TODO: Fetch events and populate in the events UI
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     // Error checks
-    if (eventName === null) return alert("Please write a name for the event.");
+    if (eventName === "") return alert("Please write a name for the event.");
 
     if (monthInfo === null)
       return { error: "Error finding the information about the event date" };
@@ -45,23 +46,24 @@ function AddEventModal({ monthInfo, setShowModal }) {
     if (($D, $M, $y === null))
       return { error: "Some month values are missing" };
 
-    const day = parseInt($D);
-    // Concatinate 0 to any month lower than 10 with the slice method
-    const month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
+    // const day = parseInt($D);
+    // Concatinate 0 to any month lower than 10 with the slice method full_date(string: "dd/mm/yyyy")
+    const full_date =
+      ("0" + $D).slice(-2) + "/" + ("0" + ($M + 1)).slice(-2) + "/" + $y;
 
-    let event_name;
-    if (eventName !== "") event_name = eventName;
+    console.log("full_date:", full_date);
+    let event_name = eventName;
 
     try {
       // Add event for to a specific day
-      const res = dispatch(
-        addEventAsync({ user_id, event_name, day, month_year })
+      const res = await dispatch(
+        addEventAsync({ user_id, event_name, full_date })
       );
       console.log("res:", res);
+      setShowModal(false);
     } catch (err) {
       return { err };
     }
-    console.log("monthInfo:", monthInfo);
   };
 
   return (
@@ -89,7 +91,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
                     className="block text-gray-700 text-md font-bold mb-2 mr-3"
                     htmlFor="category_name"
                   >
-                    Name:
+                    Event:
                   </label>
                   <input
                     className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
@@ -99,55 +101,21 @@ function AddEventModal({ monthInfo, setShowModal }) {
                     onChange={(e) => setEventName(e.target.value)}
                   />
                 </div>
-                {/* 
-                    <div className="border p-6">
-                      <label
-                        className="block text-gray-700 text-md font-bold mb-2"
-                        htmlFor="start_from"
-                      >
-                        Start From:
-                      </label>
-                      <input
-                        className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
-                        type="date"
-                        value={activeFrom}
-                        onChange={(e) => setActiveFrom(e.target.value)}
-                      />
-                      <label
-                        className="block text-gray-700 text-md font-bold mb-2"
-                        htmlFor="end_at"
-                      >
-                        End At:
-                      </label>
-                      <input
-                        className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
-                        type="date"
-                        value={activeUntil}
-                        onChange={(e) => setActiveUntil(e.target.value)}
-                      />
-                    </div>
-      
-                    <div className="flex items-center border p-6">
-                      <label
-                        className="block text-gray-700 text-md font-bold"
-                        htmlFor="start_from"
-                      >
-                        Timeblock Hours:
-                      </label>
-      
-                      <select
-                        className="flex items-center ml-2"
-                        value={timeDuration}
-                        onChange={(e) => setTimeDuration(e.target.value)}
-                      >
-                        <option value={1}>1 Hour</option>
-                        <option value={2}>2 Hours</option>
-                        <option value={3}>3 Hours</option>
-                        <option value={4}>4 Hours</option>
-                        <option value={5}>5 Hours</option>
-                        <option value={6}>6 Hours</option>
-                      </select>
-                    </div> */}
+
+                <div className="border p-6">
+                  <label
+                    className="block text-gray-700 text-md font-bold mb-2"
+                    htmlFor="Notes"
+                  >
+                    Notes:
+                  </label>
+                  <textarea
+                    className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                    value={notes}
+                    maxLength="200"
+                    onChange={(e) => setNotes(e.target.value)}
+                  />
+                </div>
               </form>
 
               <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
