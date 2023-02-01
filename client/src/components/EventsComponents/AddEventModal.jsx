@@ -46,20 +46,18 @@ function AddEventModal({ monthInfo, setShowModal }) {
     if (($D, $M, $y === null))
       return { error: "Some month values are missing" };
 
-    // const day = parseInt($D);
-    // Concatinate 0 to any month lower than 10 with the slice method full_date(string: "dd/mm/yyyy")
-    const full_date =
-      ("0" + $D).slice(-2) + "/" + ("0" + ($M + 1)).slice(-2) + "/" + $y;
+    const day = parseInt($D);
 
-    console.log("full_date:", full_date);
+    const month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
+
     let event_name = eventName;
 
     try {
       // Add event for to a specific day
-      const res = await dispatch(
-        addEventAsync({ user_id, event_name, full_date })
+      await dispatch(
+        addEventAsync({ user_id, event_name, day, month_year, notes })
       );
-      console.log("res:", res);
+
       setShowModal(false);
     } catch (err) {
       return { err };

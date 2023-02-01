@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CalendarUI from "../components/EventsComponents/CalendarUI";
+import CalendarMonth from "../components/EventsComponents/CalendarMonth";
 import SideMenu from "../components/SideMenu";
 import { getMonth } from "../utils/functions";
 import Header from "./Header";
 import { useDispatch, useSelector } from "react-redux";
 import { getEventsAsync } from "../redux/eventsSlice";
+import loader from "../assets/loader.gif";
 
 function Events() {
   // Declare required global and local states
   const user_id = useSelector((state) => state.auth.user_id);
   const [currMonth, setCurrMonth] = useState(getMonth());
-  const [loadEvents, setLoadEvents] = useState(false);
-
   const [currMonthIdx, setCurrMonthIdx] = useState(0);
+  const [loadEvents, setLoadEvents] = useState(false);
+  const events = useSelector((state) => state.events);
 
   // UI Manipulation requirements
   const navigate = useNavigate();
@@ -49,11 +50,18 @@ function Events() {
 
       <div className="flex p-24">
         <SideMenu />
-        <CalendarUI
-          monthObj={currMonth}
-          setCurrMonth={setCurrMonth}
-          setCurrMonthIdx={setCurrMonthIdx}
-        />
+        {loadEvents ? (
+          <CalendarMonth
+            monthObj={currMonth}
+            setCurrMonth={setCurrMonth}
+            setCurrMonthIdx={setCurrMonthIdx}
+            events={events}
+          />
+        ) : (
+          <div>
+            <img src={loader} alt="loader" />
+          </div>
+        )}
       </div>
     </div>
   );

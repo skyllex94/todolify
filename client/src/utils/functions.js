@@ -68,6 +68,7 @@ export const getDate = (addedDays) => {
 
 export function getMonth(month = dayjs().month()) {
   month = Math.floor(month);
+
   const year = dayjs().year();
   const monthName = dayjs().month(month);
 

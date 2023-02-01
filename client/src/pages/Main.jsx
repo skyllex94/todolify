@@ -37,16 +37,16 @@ function Main() {
     todoList,
   ];
 
-  // URl change if coming from a different route
-  const urlValidation = () => {
-    const currentUrl = window.location.href;
-    const pathArray = currentUrl.split("/");
-    const pathToCompare = pathArray.slice(3);
-    if (pathToCompare[1] !== id) {
-      const url = `/user/${id}`;
-      window.history.pushState({}, "", url);
-    }
-  };
+  // // URl change if coming from a different route
+  // const urlValidation = () => {
+  //   const currentUrl = window.location.href;
+  //   const pathArray = currentUrl.split("/");
+  //   const pathToCompare = pathArray.slice(3);
+  //   if (pathToCompare[1] !== id) {
+  //     const url = `/user/${id}`;
+  //     window.history.pushState({}, "", url);
+  //   }
+  // };
 
   // Trigger async func on page load
   useEffect(() => {
@@ -64,8 +64,8 @@ function Main() {
     };
 
     getUserTodoList(id).catch(console.error);
-    urlValidation();
-  }, []);
+    // urlValidation();
+  }, [dispatch, id]);
 
   useEffect(() => {
     // If there's no JWT passed from App.js, then navigate back to landing page

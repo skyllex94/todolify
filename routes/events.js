@@ -30,45 +30,42 @@ router.get("/:user_id/", async (req, res) => {
 router.post("/add-event/", async (req, res) => {
   const user_id = req.body.user_id;
   const event_name = req.body.event_name;
-  const date = req.body.full_date;
-  console.log("date:", typeof date);
-
-  console.log("full_date_BE:", date);
+  const day = req.body.day;
+  const month_year = req.body.month_year;
+  const notes = req.body.notes;
 
   // Make sure you await the fetching of the userTodoList
   const userTodoList = await getUserTodoList(user_id);
   if (!userTodoList) return res.send({ error: "No user todo list found" });
 
-  let newEventList = { event: event_name, done: false, notes: "" };
+  let newEvent = { event: event_name, done: false, notes };
 
-  // // TODO: Check if day has events
+  const monthIdx = getMonthIdx(month_year, userTodoList);
+  // If there is no month, create a month and day and input the event in it
+  if (monthIdx === "No month found in DB") {
+    const newMonth = { month_year, days: [{ day, events: [newEvent] }] };
+    userTodoList.date.push(newMonth);
+    userTodoList.save();
+    return res.send({ userTodoList });
+  }
 
-  // If it doesn't
-  const dateIdx = getEventsDateIdx(date, userTodoList.events);
+  const validIdx = idxIsValid(monthIdx, "month");
+  if (!validIdx) return res.send({ error: validIdx.error });
 
-  const newDate = { date, eventList: [newEventList] };
+  // If there is no day, create it and insert in with nothing in categories array
+  const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+  if (dayIdx === "No day found in DB") {
+    const newDay = { day, events: [newEvent] };
+    userTodoList.date[monthIdx].days.push(newDay);
+    userTodoList.save();
+    return res.send({ userTodoList });
+  }
 
-  userTodoList.events.push(newDate);
+  const validDayIdx = idxIsValid(dayIdx, "day");
+  if (!validDayIdx) return res.send({ error: validDayIdx.error });
+
+  userTodoList.date[monthIdx].days[dayIdx]?.events.push(newEvent);
   await userTodoList.save();
-
-  // const validIdx = idxIsValid(monthIdx, "month");
-  // if (!validIdx) return res.send({ userTodoList, error: validIdx.error });
-
-  // const dayIdx = getDayIdx(day, monthIdx, userTodoList);
-  // const validDayIdx = idxIsValid(dayIdx, "day");
-  // if (!validDayIdx) return res.send({ userTodoList, error: validDayIdx.error });
-
-  // // Add-in the events array structure
-  // const key = "date." + monthIdx + ".days." + dayIdx + ".events";
-
-  // // newEvent = { events: [newEvent] };
-  // console.log("newEvent:", [newEvent]);
-
-  // const updatedTodoList = await Todos.findOneAndUpdate(
-  //   { user_id },
-  //   { $set: { [key]: newEvent } },
-  //   { new: true }
-  // );
 
   res.send({ userTodoList });
 });

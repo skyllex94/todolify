@@ -18,12 +18,32 @@ export const getEventsAsync = createAsyncThunk(
 export const addEventAsync = createAsyncThunk(
   "addEventAsync",
   async (payload) => {
-    // payload => {user_id, event_name(string), full_date(string: "dd/mm/yyyy")}
+    // payload => {user_id, event_name(string), day(number) month_year(string: "dd/mm/yyyy"), notes}
     try {
       return await axios.post("/api/events/add-event", {
         user_id: payload.user_id,
         event_name: payload.event_name,
-        full_date: payload.full_date,
+        day: payload.day,
+        month_year: payload.month_year,
+        notes: payload.notes,
+      });
+    } catch (err) {
+      return err.message;
+    }
+  }
+);
+
+export const removeEventAsync = createAsyncThunk(
+  "removeEventAsync",
+  async (payload) => {
+    // payload => {user_id, day(number) month_year(string: "dd/mm/yyyy"), eventIdx}
+    try {
+      return await axios.delete("/api/events/remove-event", {
+        user_id: payload.user_id,
+        event_name: payload.event_name,
+        day: payload.day,
+        month_year: payload.month_year,
+        notes: payload.notes,
       });
     } catch (err) {
       return err.message;
@@ -38,14 +58,22 @@ export const eventsSlice = createSlice({
     // Get all events from DB
     builder.addCase(getEventsAsync.fulfilled, (_, action) => {
       const { userTodoList, error } = action.payload.data;
-      if (error) return alert(error);
-      return userTodoList.events;
+      if (error) {
+        alert(error);
+        return;
+      }
+      return userTodoList;
     });
 
     // Add an event to a specific date
     builder.addCase(addEventAsync.fulfilled, (_, action) => {
-      // TODO: Check how you would fetch the events data from the created state
-      return action.payload.data;
+      // Make sure you return the correct state
+      const { userTodoList, error } = action.payload.data;
+      if (error === "undefined") {
+        alert(error);
+        return;
+      }
+      return userTodoList;
     });
   },
 });

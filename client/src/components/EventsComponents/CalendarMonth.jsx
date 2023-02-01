@@ -1,19 +1,25 @@
 import React, { useState } from "react";
-
-import { useSelector } from "react-redux";
 import AddEventModal from "./AddEventModal";
 
 import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
 
-function CalendarUI({ monthObj, setCurrMonthIdx }) {
+function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   const [showModal, setShowModal] = useState(false);
   const [monthInfo, setMonthInfo] = useState(null);
-  const events = useSelector((state) => state.events);
-  const [eventsState, setEventsState] = useState(events);
-  console.log("events:", events);
 
-  const { monthMatrix, currMonthIdx, monthName } = monthObj;
+  // Start here: check why in the hell doesn't it update the state correctly
+  let { monthMatrix, currMonthIdx, monthName } = monthObj;
+
+  let month_year = monthMatrix[2][2];
+  const { $M, $y } = month_year;
+  month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
+
+  const eventsMonth = events.date.find(
+    (curr) => curr.month_year === month_year
+  );
+  console.log("eventsMonth:", eventsMonth);
+
   const weekDays = [
     "Sunday",
     "Monday",
@@ -24,7 +30,7 @@ function CalendarUI({ monthObj, setCurrMonthIdx }) {
     "Saturday",
   ];
 
-  const openModal = (day) => {
+  const addEventModal = (day) => {
     setMonthInfo(day);
     setShowModal(true);
   };
@@ -115,36 +121,32 @@ function CalendarUI({ monthObj, setCurrMonthIdx }) {
               {monthMatrix.map((row, i) => (
                 <tr className="text-center h-20" key={i}>
                   {row.map((day, idx) => {
-                    const { $M, $D, $y } = day;
+                    const { $M, $D } = day;
 
-                    // Concatinate 0 to day and month - date("dd/mm/yyyy")
-                    const date =
-                      ("0" + $D).slice(-2) +
-                      "/" +
-                      ("0" + ($M + 1)).slice(-2) +
-                      "/" +
-                      $y;
-
-                    let dailyEvents = null;
-                    let findDate;
-                    if (events) {
-                      findDate = events.find((curr) => curr.date === date);
-                      console.log("findDate:", findDate);
+                    let dayEventsList = null;
+                    if (eventsMonth) {
+                      const day = eventsMonth.days.find(
+                        (curr) => curr.day === $D
+                      );
+                      if (day?.events.length > 0) dayEventsList = day.events;
                     }
 
-                    // Perhaps employ the same way of going about solving the issue like in "Main"
-                    if (findDate) dailyEvents = findDate;
-
-                    let dimDay = "";
+                    let dimDay;
                     if (currMonthIdx !== parseInt($M)) dimDay = "bg-gray-100";
+                    // TODO: Fix the dimming on years in the past
 
                     return (
                       <td
                         key={idx}
-                        onClick={() => openModal(day)}
-                        className={`border p-1 ${dimDay} h-40 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300`}
+                        className={`border p-1 ${dimDay} h-40 xl:w-40 lg:w-30 md:w-30 
+                        sm:w-20 w-10 transition cursor-pointer ease-out hover:border-red-500/50`}
                       >
-                        <CalendarDay day={day} events={dailyEvents} />
+                        <CalendarDay
+                          className=""
+                          day={day}
+                          events={dayEventsList}
+                          addEventModal={addEventModal}
+                        />
                       </td>
                     );
                   })}
@@ -161,4 +163,4 @@ function CalendarUI({ monthObj, setCurrMonthIdx }) {
   );
 }
 
-export default CalendarUI;
+export default CalendarMonth;
