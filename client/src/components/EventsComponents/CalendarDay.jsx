@@ -18,6 +18,7 @@ function CalendarDay({ day, events, addEventModal }) {
 
   function removeEvent(event, idx) {
     console.log(event, idx);
+    console.log(day.$D);
     // Start here: I need day and month
   }
 
