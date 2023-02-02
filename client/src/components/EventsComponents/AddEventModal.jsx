@@ -20,19 +20,17 @@ function AddEventModal({ monthInfo, setShowModal }) {
 
   // Trigger removing modal on escape key pressed
   useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.keyCode === 27) {
+    const keyPressed = (e) => {
+      if (e.keyCode === 27) {
         setShowModal(false);
       }
     };
-    window.addEventListener("keydown", handleEsc);
 
+    window.addEventListener("keydown", keyPressed);
     return () => {
-      window.removeEventListener("keydown", handleEsc);
+      window.removeEventListener("keydown", keyPressed);
     };
   }, [setShowModal]);
-
-  // TODO: Fetch events and populate in the events UI
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -47,11 +45,9 @@ function AddEventModal({ monthInfo, setShowModal }) {
       return { error: "Some month values are missing" };
 
     const day = parseInt($D);
-
     const month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
 
     let event_name = eventName;
-
     try {
       // Add event for to a specific day
       await dispatch(

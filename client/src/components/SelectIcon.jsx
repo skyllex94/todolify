@@ -81,7 +81,7 @@ function SelectIcon({
     setCurrIcon(icons.indexOf(newIcon));
 
     if (!dayWtData)
-      return dispatch(
+      dispatch(
         updateIconAsync({
           user_id,
           category_index,

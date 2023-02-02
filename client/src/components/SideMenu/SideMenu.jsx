@@ -1,19 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import styles from "./sidemenu.modules.css";
+import { FiArrowDownLeft, FiArrowDownRight, FiSettings } from "react-icons/fi";
+import { BsCalendar3Week } from "react-icons/bs";
+import { MdOutlineBeenhere, MdOutlineViewWeek } from "react-icons/md";
+import { GiCornerFlag } from "react-icons/gi";
 
 function SideMenu(user_id) {
+  // Side Menu states
+  const [open, setopen] = useState(true);
+  const toggleOpen = () => {
+    console.log(open);
+    setopen((prev) => !prev);
+  };
+  const navLinks = [
+    {
+      name: "Today List",
+      link: "/",
+      icon: <MdOutlineBeenhere size={"24"} />,
+    },
+    {
+      name: "Weekly List",
+      link: `/user/${user_id}`,
+      icon: <MdOutlineViewWeek size={"24"} />,
+    },
+    {
+      name: "Events",
+      link: `/events/${user_id}`,
+      icon: <BsCalendar3Week size={"24"} />,
+    },
+    {
+      name: "Yearly Goals",
+      link: "/",
+      icon: <GiCornerFlag size={"24"} />,
+    },
+    {
+      name: "Settings",
+      link: "/",
+      icon: <FiSettings size={"24"} />,
+    },
+  ];
+
   // Default motion style props for usage
   const motionProps = {
     initial: { scale: 1 },
     whileHover: { scale: 1.1 },
     whileTap: { scale: 0.9 },
   };
+  // Start Here: Deal with sticky menu
 
   // TODO: Stick the side menu to be locked on the left
+  //min-w-[15%]
 
   return (
-    <div className="side-menu z-2 flex p-6 bg-white min-w-[15%]">
+    <div className={open ? styles.sidenav : styles.sidenavClosed}>
+      <button className={styles.menuBtn} onClick={toggleOpen}>
+        {open ? <FiArrowDownLeft /> : <FiArrowDownRight />}
+      </button>
       <div className="space-y-3">
         <div className="flex items-center">
           <h2 className="text-xl font-bold">Dashboard</h2>
@@ -51,7 +95,21 @@ function SideMenu(user_id) {
         </motion.div>
         <div className="flex-1">
           <ul className="pt-2 pb-4 space-y-1 text-sm">
-            <motion.li {...motionProps} className="rounded-sm">
+            {navLinks.map((curr) => {
+              return (
+                <motion.li {...motionProps} className="rounded-sm">
+                  <Link
+                    to={curr.link}
+                    className="flex items-center p-2 space-x-3 rounded-md"
+                  >
+                    <span>{curr.icon}</span>
+                    <span>{curr.name}</span>
+                  </Link>
+                </motion.li>
+              );
+            })}
+
+            {/* <motion.li {...motionProps} className="rounded-sm">
               <a
                 href="#!"
                 className="flex items-center p-2 space-x-3 rounded-md"
@@ -168,7 +226,7 @@ function SideMenu(user_id) {
                 </svg>
                 <span>Logout</span>
               </a>
-            </motion.li>
+            </motion.li> */}
           </ul>
         </div>
       </div>

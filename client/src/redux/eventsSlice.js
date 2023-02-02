@@ -36,14 +36,18 @@ export const addEventAsync = createAsyncThunk(
 export const removeEventAsync = createAsyncThunk(
   "removeEventAsync",
   async (payload) => {
-    // payload => {user_id, day(number) month_year(string: "dd/mm/yyyy"), eventIdx}
+    // payload => {user_id, day_idx, month_idx, event_id}
     try {
       return await axios.delete("/api/events/remove-event", {
-        user_id: payload.user_id,
-        event_name: payload.event_name,
-        day: payload.day,
-        month_year: payload.month_year,
-        notes: payload.notes,
+        headers: {
+          Authorization: "***",
+        },
+        data: {
+          user_id: payload.user_id,
+          day_idx: payload.day_idx,
+          month_idx: payload.month_idx,
+          event_id: payload.event_id,
+        },
       });
     } catch (err) {
       return err.message;
@@ -68,6 +72,17 @@ export const eventsSlice = createSlice({
     // Add an event to a specific date
     builder.addCase(addEventAsync.fulfilled, (_, action) => {
       // Make sure you return the correct state
+      const { userTodoList, error } = action.payload.data;
+      if (error === "undefined") {
+        alert(error);
+        return;
+      }
+      return userTodoList;
+    });
+
+    // Remove an event from a specific date
+    builder.addCase(removeEventAsync.fulfilled, (_, action) => {
+      console.log("action.payload.data:", action.payload.data);
       const { userTodoList, error } = action.payload.data;
       if (error === "undefined") {
         alert(error);

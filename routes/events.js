@@ -11,10 +11,10 @@ const {
   getEventsDateIdx,
 } = require("./helper_funcs");
 
-// @route   GET EVENTS /events/
+// @route   GET EVENTS /api/events
 // @desc    Fetch all user events for the current month
 // @access  Private
-router.get("/:user_id/", async (req, res) => {
+router.get("/:user_id", async (req, res) => {
   const user_id = req.params.user_id;
   if (!user_id) return res.send({ error: "No user ID found" });
 
@@ -24,10 +24,10 @@ router.get("/:user_id/", async (req, res) => {
   res.send({ userTodoList });
 });
 
-// @route   POST EVENT /events/add-event
+// @route   POST EVENT /api/events/add-event
 // @desc    Add an event to a specific day
 // @access  Private
-router.post("/add-event/", async (req, res) => {
+router.post("/add-event", async (req, res) => {
   const user_id = req.body.user_id;
   const event_name = req.body.event_name;
   const day = req.body.day;
@@ -68,6 +68,37 @@ router.post("/add-event/", async (req, res) => {
   await userTodoList.save();
 
   res.send({ userTodoList });
+});
+
+// @route   DELETE EVENT /api/events/remove-event
+// @desc    Remove an event from a specific day
+// @access  Private
+router.delete("/remove-event", async (req, res) => {
+  const user_id = req.body.user_id;
+  console.log("user_id:", user_id);
+
+  const day_idx = req.body.day_idx;
+  console.log("day_idx:", day_idx);
+
+  const month_idx = req.body.month_idx;
+  console.log("month_idxtypeof:", typeof month_idx);
+  console.log("month_idx:", month_idx);
+
+  const event_id = req.body.event_id;
+  console.log("event_id:", event_id);
+
+  const key = "date." + month_idx + ".days." + day_idx + ".events";
+  console.log("key:", key);
+
+  const updatedTodoList = await Todos.findOneAndUpdate(
+    { user_id },
+    { $pull: { [key]: { _id: event_id } } },
+    { new: true }
+  );
+
+  console.log("updatedTodoList:", updatedTodoList);
+
+  res.send({ userTodoList: updatedTodoList });
 });
 
 module.exports = router;

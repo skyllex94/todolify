@@ -10,7 +10,7 @@ import loader from "../assets/loader.gif";
 import { useHorizontalScroll } from "../hooks/horizontalScroll";
 // Framer Motion
 import { motion, AnimatePresence } from "framer-motion";
-import SideMenu from "../components/SideMenu";
+import SideMenu from "../components/SideMenu/SideMenu";
 
 function Main() {
   const navigate = useNavigate();
@@ -95,7 +95,6 @@ function Main() {
         style={{ overflow: "auto" }}
       >
         <SideMenu user_id={id} />
-
         <div>
           <div className="flex mb-5">
             <div className="flex ml-5 relative items-center space-x-1 text-lg px-2 bg-gray-200 text-gray-800 rounded-full">
@@ -146,7 +145,7 @@ function Main() {
                   todos.date.map((currDate) => {
                     if (currDate.month_year === month_year) {
                       currDate.days.map((curr) => {
-                        if (curr.day === day) {
+                        if (curr.day === day && curr?.categories.length > 0) {
                           dayWtData = true;
                           categories = curr.categories;
                         }

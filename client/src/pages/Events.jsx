@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CalendarMonth from "../components/EventsComponents/CalendarMonth";
-import SideMenu from "../components/SideMenu";
+import SideMenu from "../components/SideMenu/SideMenu";
 import { getMonth } from "../utils/functions";
 import Header from "./Header";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,7 +48,7 @@ function Events() {
     <div>
       <Header />
 
-      <div className="flex p-24">
+      <div className="flex pt-24">
         <SideMenu />
         {loadEvents ? (
           <CalendarMonth

@@ -11,9 +11,13 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   // Start here: check why in the hell doesn't it update the state correctly
   let { monthMatrix, currMonthIdx, monthName } = monthObj;
 
-  let month_year = monthMatrix[2][2];
-  const { $M, $y } = month_year;
-  month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
+  const month_year = formatMonthYear();
+
+  function formatMonthYear() {
+    let month_year = monthMatrix[2][2];
+    const { $M, $y } = month_year;
+    return ("0" + ($M + 1)).slice(-2) + "/" + $y;
+  }
 
   const eventsMonth = events.date.find(
     (curr) => curr.month_year === month_year
@@ -142,8 +146,8 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
                         sm:w-20 w-10 transition cursor-pointer ease-out hover:border-red-500/50`}
                       >
                         <CalendarDay
-                          className=""
                           day={day}
+                          month_year={month_year}
                           events={dayEventsList}
                           addEventModal={addEventModal}
                         />

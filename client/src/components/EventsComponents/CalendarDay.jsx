@@ -3,23 +3,38 @@ import { FiPlusCircle } from "react-icons/fi";
 import EventInfoModal from "./EventInfoModal";
 import { motion } from "framer-motion";
 import { MdPersonRemove } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { removeEventAsync } from "../../redux/eventsSlice";
 
-function CalendarDay({ day, events, addEventModal }) {
-  const { $D } = day;
+function CalendarDay({ day, events, month_year, addEventModal }) {
+  // Local and global states
   const [addEventButton, setAddEventButton] = useState("hidden");
   const [showEventInfoModal, setShowInfoEventModal] = useState(false);
-
+  const user_id = useSelector((state) => state.auth.user_id);
+  const global = useSelector((state) => state.events);
   const [eventInfo, setEventInfo] = useState({ name: "", notes: "" });
+
+  const { $D } = day;
+  const dispatch = useDispatch();
 
   function openEventInfo(name, notes) {
     setShowInfoEventModal(true);
     setEventInfo({ name, notes });
   }
 
-  function removeEvent(event, idx) {
-    console.log(event, idx);
-    console.log(day.$D);
-    // Start here: I need day and month
+  function removeEvent(event_id) {
+    const month_idx = global.date.findIndex((i) => i.month_year === month_year);
+    console.log("monthIdx:", month_idx);
+
+    const day_idx = global.date[month_idx].days.findIndex(
+      (curr) => curr.day === $D
+    );
+
+    try {
+      dispatch(removeEventAsync({ user_id, day_idx, month_idx, event_id }));
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   return (
@@ -68,7 +83,7 @@ function CalendarDay({ day, events, addEventModal }) {
                   <div className="text-gray-700 mr-3">{curr.event}</div>
                 </motion.button>
                 <div
-                  onClick={() => removeEvent(curr.event, idx)}
+                  onClick={() => removeEvent(curr._id)}
                   className="text-gray-700"
                 >
                   <MdPersonRemove />
