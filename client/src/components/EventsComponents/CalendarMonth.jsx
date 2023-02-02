@@ -46,7 +46,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   const nextMonth = () => setCurrMonthIdx((prev) => prev + 1);
 
   return (
-    <div className="container mx-auto ml-2">
+    <div className="container mx-auto mt-20 ml-2">
       <AnimatePresence mode="wait">
         <motion.div
           key={currMonthIdx}
@@ -55,7 +55,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
           exit={{ opacity: 0, scale: 0.7 }}
           className="wrapper bg-white rounded shadow w-full "
         >
-          <div className="header flex justify-between border-b p-2">
+          <div className="flex justify-between border-b p-2">
             <span className="text-lg font-bold">{monthTitle}</span>
             <div className="buttons">
               <button className="p-1" onClick={() => previousMonth()}>

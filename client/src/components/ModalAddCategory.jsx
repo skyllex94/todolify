@@ -149,7 +149,7 @@ export default function ModalAddCategory({
             </form>
             <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
               <button
-                className="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                className="bg-red-500 mr-3 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
                 onClick={onSubmit}
               >
@@ -157,7 +157,9 @@ export default function ModalAddCategory({
               </button>
 
               <button
-                className="text-gray-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                className="bg-white-500 text-black active:bg-white-600 font-bold 
+              uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
+              focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
                 onClick={() => setShowModal(false)}
               >

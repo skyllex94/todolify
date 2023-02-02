@@ -3,12 +3,12 @@ import CategoryItem from "./CategoryItem";
 import loader from "../assets/loader.gif";
 import AddCategory from "./AddCategory";
 import { useTodoList } from "../hooks/useTodoList";
-import { useDispatch } from "react-redux";
-import { addDateAsync } from "../redux/todosSlice";
+import EventsInTodos from "./EventsInTodos";
 
 const TodoList = ({
   user_id,
   todos,
+  events,
   day,
   month_year,
   dayOfWeek,
@@ -16,12 +16,6 @@ const TodoList = ({
 }) => {
   // Hook fetching redux state for todo list of auth user
   const { loadedTodos } = useTodoList();
-
-  const dispatch = useDispatch();
-  // First adjusted DB accounting for date (day & month)
-  const reachDB = () => {
-    dispatch(addDateAsync({ user_id, month_year, day }));
-  };
 
   return (
     <div className="todo-list ml-5 min-w-[20%] max-w-[20%]">
@@ -66,6 +60,8 @@ const TodoList = ({
             month_year={month_year}
             dayWtData={dayWtData}
           />
+
+          {events && <EventsInTodos events={events} />}
         </ul>
       </div>
     </div>

@@ -29,7 +29,7 @@ function Header() {
               <div className="w-full items-center flex justify-between lg:w-auto">
                 <Link
                   to="/"
-                  className="relative z-10 dark:bg-gray-300 "
+                  className="relative z-20 dark:bg-gray-300 "
                   href="#!"
                   aria-label="logo"
                 >

@@ -33,6 +33,25 @@ export const addEventAsync = createAsyncThunk(
   }
 );
 
+export const updateEventAsync = createAsyncThunk(
+  "updateEventAsync",
+  async (payload) => {
+    // payload => { user_id, event_idx, event_name, event_notes, day_idx, month_idx}
+    try {
+      return await axios.patch("/api/events/update-event", {
+        user_id: payload.user_id,
+        event_idx: payload.event_idx,
+        event_name: payload.event_name,
+        event_notes: payload.event_notes,
+        day_idx: payload.day_idx,
+        month_idx: payload.month_idx,
+      });
+    } catch (err) {
+      return err.message;
+    }
+  }
+);
+
 export const removeEventAsync = createAsyncThunk(
   "removeEventAsync",
   async (payload) => {
@@ -74,6 +93,16 @@ export const eventsSlice = createSlice({
       // Make sure you return the correct state
       const { userTodoList, error } = action.payload.data;
       if (error === "undefined") {
+        alert(error);
+        return;
+      }
+      return userTodoList;
+    });
+
+    // Update an event to a specific date
+    builder.addCase(updateEventAsync.fulfilled, (_, action) => {
+      const { userTodoList, error } = action.payload.data;
+      if (error !== undefined) {
         alert(error);
         return;
       }

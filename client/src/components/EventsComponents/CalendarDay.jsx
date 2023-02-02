@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
-import EventInfoModal from "./EventInfoModal";
+import EventInfoModal from "./UpdateEventModal";
 import { motion } from "framer-motion";
-import { MdPersonRemove } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { removeEventAsync } from "../../redux/eventsSlice";
+import { GrFormClose } from "react-icons/gr";
 
 function CalendarDay({ day, events, month_year, addEventModal }) {
   // Local and global states
@@ -12,28 +12,52 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
   const [showEventInfoModal, setShowInfoEventModal] = useState(false);
   const user_id = useSelector((state) => state.auth.user_id);
   const global = useSelector((state) => state.events);
-  const [eventInfo, setEventInfo] = useState({ name: "", notes: "" });
+  const [eventInfo, setEventInfo] = useState({
+    id: "",
+    idx: null,
+    name: "",
+    notes: "",
+  });
+  const [monthIdx] = useState(getMonthIdx(month_year, global));
+  const [dayIdx] = useState(getDayIdx(day.$D, monthIdx, global));
 
   const { $D } = day;
   const dispatch = useDispatch();
 
-  function openEventInfo(name, notes) {
+  function openEventInfo(id, idx, name, notes) {
     setShowInfoEventModal(true);
-    setEventInfo({ name, notes });
+    setEventInfo({ id, idx, name, notes });
+  }
+
+  function getMonthIdx(month_year, globalState) {
+    return globalState.date.findIndex((i) => i.month_year === month_year);
+  }
+
+  function getDayIdx(day, monthIdx, globalState) {
+    return globalState.date[monthIdx].days.findIndex(
+      (curr) => curr.day === day
+    );
   }
 
   function removeEvent(event_id) {
-    const month_idx = global.date.findIndex((i) => i.month_year === month_year);
-    console.log("monthIdx:", month_idx);
+    if ((monthIdx, dayIdx === null))
+      return alert("Mistake fetching month and/or day index");
 
-    const day_idx = global.date[month_idx].days.findIndex(
-      (curr) => curr.day === $D
-    );
-
-    try {
-      dispatch(removeEventAsync({ user_id, day_idx, month_idx, event_id }));
-    } catch (err) {
-      alert(err.message);
+    if (
+      window.confirm("Are you sure you want to delete this event?") === true
+    ) {
+      try {
+        dispatch(
+          removeEventAsync({
+            user_id,
+            day_idx: dayIdx,
+            month_idx: monthIdx,
+            event_id,
+          })
+        );
+      } catch (err) {
+        alert(err.message);
+      }
     }
   }
 
@@ -60,7 +84,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
         {events &&
           events.map((curr, idx) => {
             return (
-              <div className="flex mb-1 text-gray-500" key={idx}>
+              <div className="flex mb-1 items-center text-gray-500" key={idx}>
                 <motion.button
                   initial={{ scale: 1 }}
                   whileHover={{
@@ -69,7 +93,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                   }}
                   whileTap={{
                     scale: 0.9,
-                    rotate: 15,
+                    rotate: 5,
                   }}
                   transition={{
                     type: "spring",
@@ -77,7 +101,9 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                     mass: 0.75,
                     stiffness: 100,
                   }}
-                  onClick={() => openEventInfo(curr.event, curr.notes)}
+                  onClick={() =>
+                    openEventInfo(curr._id, idx, curr.event, curr.notes)
+                  }
                   className="relative flex w-full justify-between px-2 rounded border border-red-200 text-sm font-medium"
                 >
                   <div className="text-gray-700 mr-3">{curr.event}</div>
@@ -86,7 +112,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                   onClick={() => removeEvent(curr._id)}
                   className="text-gray-700"
                 >
-                  <MdPersonRemove />
+                  <GrFormClose />
                 </div>
               </div>
             );
@@ -94,6 +120,10 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       </div>
       {showEventInfoModal && (
         <EventInfoModal
+          day_idx={dayIdx}
+          day={day}
+          month_year={month_year}
+          month_idx={monthIdx}
           eventInfo={eventInfo}
           setShowInfoEventModal={setShowInfoEventModal}
         />

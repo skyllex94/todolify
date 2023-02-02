@@ -67,7 +67,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
           initial={{ y: 300, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 300, opacity: 0 }}
-          className="justify-center z-3 items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
         >
           <div className="relative w-auto max-w-xl">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -80,7 +80,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
               </div>
 
               <form className="p-8" onSubmit={onSubmit}>
-                <div className="flex items-center border p-6">
+                <div className="flex items-center mb-4">
                   <label
                     className="block text-gray-700 text-md font-bold mb-2 mr-3"
                     htmlFor="category_name"
@@ -96,23 +96,22 @@ function AddEventModal({ monthInfo, setShowModal }) {
                   />
                 </div>
 
-                <div className="border p-6">
-                  <label
-                    className="block text-gray-700 text-md font-bold mb-2"
-                    htmlFor="Notes"
-                  >
-                    Notes:
-                  </label>
-                  <textarea
-                    className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
-                    value={notes}
-                    maxLength="200"
-                    onChange={(e) => setNotes(e.target.value)}
-                  />
-                </div>
+                <label
+                  className="block text-gray-700 text-md font-bold mb-2"
+                  htmlFor="Notes"
+                >
+                  Notes:
+                </label>
+                <textarea
+                  className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                  value={notes}
+                  rows={4}
+                  maxLength="200"
+                  onChange={(e) => setNotes(e.target.value)}
+                />
               </form>
 
-              <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+              <div className="flex items-center justify-between p-6 border-t border-solid border-slate-200 rounded-b">
                 <button
                   className="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
@@ -122,7 +121,9 @@ function AddEventModal({ monthInfo, setShowModal }) {
                 </button>
 
                 <button
-                  className="text-gray-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="bg-white-500 text-black active:bg-white-600 font-bold 
+                  uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
+                  focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
                   onClick={() => setShowModal(false)}
                 >
@@ -134,7 +135,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="opacity-25 bg-black fixed inset-0 z-100"></div>
+      <div className="opacity-25 bg-black fixed inset-0"></div>
     </div>
   );
 }

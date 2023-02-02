@@ -70,22 +70,41 @@ router.post("/add-event", async (req, res) => {
   res.send({ userTodoList });
 });
 
+// @route   PATCH EVENT /api/events/update-event
+// @desc    Update an event from a specific day
+// @access  Private
+router.patch("/update-event", async (req, res) => {
+  const user_id = req.body.user_id;
+  const event_idx = req.body.event_idx;
+  const event_name = req.body.event_name;
+  const event_notes = req.body.event_notes;
+  const day_idx = req.body.day_idx;
+  const month_idx = req.body.month_idx;
+
+  const updatedEvent = { event: event_name, notes: event_notes };
+
+  const key = "date." + month_idx + ".days." + day_idx + ".events." + event_idx;
+
+  const updatedEvents = await Todos.findOneAndUpdate(
+    { user_id },
+    { $set: { [key]: [updatedEvent] } },
+    { new: true }
+  );
+
+  if (!updatedEvents)
+    return res.send({ error: "Error occured while updating the database" });
+
+  res.send({ userTodoList: updatedEvents });
+});
+
 // @route   DELETE EVENT /api/events/remove-event
 // @desc    Remove an event from a specific day
 // @access  Private
 router.delete("/remove-event", async (req, res) => {
   const user_id = req.body.user_id;
-  console.log("user_id:", user_id);
-
   const day_idx = req.body.day_idx;
-  console.log("day_idx:", day_idx);
-
   const month_idx = req.body.month_idx;
-  console.log("month_idxtypeof:", typeof month_idx);
-  console.log("month_idx:", month_idx);
-
   const event_id = req.body.event_id;
-  console.log("event_id:", event_id);
 
   const key = "date." + month_idx + ".days." + day_idx + ".events";
   console.log("key:", key);

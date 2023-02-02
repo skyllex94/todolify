@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import styles from "./sidemenu.modules.css";
-import { FiArrowDownLeft, FiArrowDownRight, FiSettings } from "react-icons/fi";
+import styles from "./sidemenu.module.css";
+import { FiSettings } from "react-icons/fi";
 import { BsCalendar3Week } from "react-icons/bs";
-import { MdOutlineBeenhere, MdOutlineViewWeek } from "react-icons/md";
+import {
+  MdOutlineBeenhere,
+  MdOutlineDoubleArrow,
+  MdOutlineViewWeek,
+} from "react-icons/md";
 import { GiCornerFlag } from "react-icons/gi";
 
-function SideMenu(user_id) {
+function SideMenu({ user_id }) {
   // Side Menu states
   const [open, setopen] = useState(true);
   const toggleOpen = () => {
@@ -48,62 +52,70 @@ function SideMenu(user_id) {
     whileHover: { scale: 1.1 },
     whileTap: { scale: 0.9 },
   };
-  // Start Here: Deal with sticky menu
-
-  // TODO: Stick the side menu to be locked on the left
-  //min-w-[15%]
 
   return (
-    <div className={open ? styles.sidenav : styles.sidenavClosed}>
+    <motion.div
+      // layout
+      // style={{ width: open ? "450px" : "100px" }}
+      // onClick={() => setopen(!open)}
+      className={open ? styles.sidenav : styles.sidenavClosed}
+    >
       <button className={styles.menuBtn} onClick={toggleOpen}>
-        {open ? <FiArrowDownLeft /> : <FiArrowDownRight />}
+        {open ? (
+          <MdOutlineDoubleArrow
+            size={24}
+            style={{ transform: "rotate(180deg)", textAlign: "right" }}
+          />
+        ) : (
+          <MdOutlineDoubleArrow size={24} />
+        )}
       </button>
       <div className="space-y-3">
         <div className="flex items-center">
-          <h2 className="text-xl font-bold">Dashboard</h2>
+          <h2 className={open ? "text-xl font-bold" : "hidden"}>Dashboard</h2>
         </div>
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          onHoverStart={(e) => {}}
-          onHoverEnd={(e) => {}}
-          className="relative"
-        >
-          <span className="absolute inset-y-0 left-0 flex items-center py-4">
-            <button type="submit" className="p-2 focus:outline-none focus:ring">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+        <motion.div whileHover={{ scale: 1.05 }} className="relative">
+          <div className={open ? "text-xl" : "hidden"}>
+            <span className="absolute inset-y-0 left-0 flex items-center">
+              <button
+                type="submit"
+                className="p-2 focus:outline-none focus:ring"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </span>
-          <input
-            type="search"
-            name="Search"
-            placeholder="Search Task..."
-            className="w-full py-2 pl-10 text-sm rounded-md focus:outline-none"
-          />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6 h-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </span>
+            <input
+              type="search"
+              name="Search"
+              placeholder="Search Task..."
+              className="text-sm mr-5 rounded-md focus:outline-none"
+            />
+          </div>
         </motion.div>
         <div className="flex-1">
           <ul className="pt-2 pb-4 space-y-1 text-sm">
-            {navLinks.map((curr) => {
+            {navLinks.map((curr, idx) => {
               return (
-                <motion.li {...motionProps} className="rounded-sm">
+                <motion.li key={idx} {...motionProps} className="rounded-sm">
                   <Link
                     to={curr.link}
-                    className="flex items-center p-2 space-x-3 rounded-md"
+                    className={"flex items-center p-2 space-x-3 rounded-md"}
                   >
                     <span>{curr.icon}</span>
-                    <span>{curr.name}</span>
+                    <span className={open ? "" : "hidden"}>{curr.name}</span>
                   </Link>
                 </motion.li>
               );
@@ -230,7 +242,7 @@ function SideMenu(user_id) {
           </ul>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
