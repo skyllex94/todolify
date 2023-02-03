@@ -8,10 +8,9 @@ const {
   idxIsValid,
   getDayIdx,
   getUserTodoList,
-  getEventsDateIdx,
 } = require("./helper_funcs");
 
-// @route   GET EVENTS /api/events
+// @route   GET EVENTS /api/events/user_id
 // @desc    Fetch all user events for the current month
 // @access  Private
 router.get("/:user_id", async (req, res) => {
@@ -81,8 +80,12 @@ router.patch("/update-event", async (req, res) => {
   const day_idx = req.body.day_idx;
   const month_idx = req.body.month_idx;
 
-  const updatedEvent = { event: event_name, notes: event_notes };
+  if (month_idx || day_idx < 0)
+    return res.send({
+      error: "Could not locate element to delete, please try again",
+    });
 
+  const updatedEvent = { event: event_name, notes: event_notes };
   const key = "date." + month_idx + ".days." + day_idx + ".events." + event_idx;
 
   const updatedEvents = await Todos.findOneAndUpdate(
@@ -107,15 +110,12 @@ router.delete("/remove-event", async (req, res) => {
   const event_id = req.body.event_id;
 
   const key = "date." + month_idx + ".days." + day_idx + ".events";
-  console.log("key:", key);
 
   const updatedTodoList = await Todos.findOneAndUpdate(
     { user_id },
     { $pull: { [key]: { _id: event_id } } },
     { new: true }
   );
-
-  console.log("updatedTodoList:", updatedTodoList);
 
   res.send({ userTodoList: updatedTodoList });
 });

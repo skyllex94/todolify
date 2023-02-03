@@ -96,19 +96,13 @@ const TodoSchema = new mongoose.Schema({
     },
   ],
 
-  events: [
+  goals: [
     {
-      month_year: { type: String },
-      days: [
+      year: { type: Number },
+      list: [
         {
-          day: { type: Number },
-          eventList: [
-            {
-              event: { type: String },
-              done: { type: Boolean },
-              notes: { type: String },
-            },
-          ],
+          goal: { type: String },
+          done: { type: Boolean },
         },
       ],
     },

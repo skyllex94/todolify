@@ -6,6 +6,7 @@
   margin-top: 75px;
   padding-top: 15px;
   padding-left: 15px;
+  /* padding-bottom: 50vh; */
 }
 .sidenavClosed {
   transition: 0.3s ease-in-out;
@@ -15,6 +16,8 @@
   padding-top: 15px;
   background-color: rgb(75, 35, 54);
   color: whitesmoke;
+  padding-left: 4px;
+  /* padding-bottom: 50vh; */
 }
 .sideitem {
   display: flex;

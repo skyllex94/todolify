@@ -44,13 +44,11 @@ function Events() {
     if (!user_id) navigate("/");
   }, [navigate, user_id]);
 
-  // TODO: Fix on loading the Events page for the sidebar to stay with height until the end of the page
-
   return (
     <React.Fragment>
       <Header />
 
-      <div className="flex">
+      <div className="flex h-screen">
         <SideMenu />
         {loadEvents ? (
           <CalendarMonth

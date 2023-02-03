@@ -14,6 +14,12 @@ body {
   @apply bg-white dark:bg-gray-900;
 }
 
+@media (min-width: 1280px) {
+  .container {
+    max-width: 2048px;
+  }
+}
+
 .navbar-active .hamburger div:first-child {
   @apply rotate-45 translate-y-1.5;
 }
@@ -49,6 +55,10 @@ code {
 
 .add-task-label {
   cursor: pointer;
+}
+
+.table {
+  min-height: 85vh;
 }
 
 .alert-hidden {
@@ -97,5 +107,10 @@ code {
   display: inline-block;
   vertical-align: top;
   padding: 5px 15px;
-  margin: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+.border-double {
+  border-style: double;
 }

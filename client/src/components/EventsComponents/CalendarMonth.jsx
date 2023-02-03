@@ -11,10 +11,11 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   // Start here: check why in the hell doesn't it update the state correctly
   let { monthMatrix, currMonthIdx, monthName } = monthObj;
 
-  const month_year = formatMonthYear();
+  const unformattedCurrMonth = monthMatrix[2][2];
+  const month_year = formatMonthYear(unformattedCurrMonth);
 
-  function formatMonthYear() {
-    let month_year = monthMatrix[2][2];
+  function formatMonthYear(unformattedCurrMonth) {
+    let month_year = unformattedCurrMonth;
     const { $M, $y } = month_year;
     return ("0" + ($M + 1)).slice(-2) + "/" + $y;
   }
@@ -22,7 +23,6 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   const eventsMonth = events.date.find(
     (curr) => curr.month_year === month_year
   );
-  console.log("eventsMonth:", eventsMonth);
 
   const weekDays = [
     "Sunday",
@@ -45,17 +45,30 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   const previousMonth = () => setCurrMonthIdx((prev) => prev - 1);
   const nextMonth = () => setCurrMonthIdx((prev) => prev + 1);
 
+  const scrollChange = (e) => {
+    // The AnimatePresence will be triggered each time the state is changed
+    if (e.deltaY < 0) {
+      previousMonth();
+    } else {
+      nextMonth();
+    }
+  };
+
   return (
-    <div className="container mx-auto mt-20 ml-2">
+    <div
+      onWheel={(e) => scrollChange(e)}
+      className="container mx-auto pt-20 h-screen w-full"
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={currMonthIdx}
-          initial={{ opacity: 0, scale: 0.7 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.7 }}
-          className="wrapper bg-white rounded shadow w-full "
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.2 }}
+          className="wrapper bg-white rounded shadow w-full"
         >
-          <div className="flex justify-between border-b p-2">
+          <div className="flex justify-between p-2">
             <span className="text-lg font-bold">{monthTitle}</span>
             <div className="buttons">
               <button className="p-1" onClick={() => previousMonth()}>
@@ -106,7 +119,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
               </button>
             </div>
           </div>
-          <table className="w-full">
+          <table className="table w-full">
             <thead>
               <tr>
                 {weekDays.map((day, idx) => (
@@ -123,7 +136,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
             </thead>
             <tbody>
               {monthMatrix.map((row, i) => (
-                <tr className="text-center h-20" key={i}>
+                <tr className="text-center" key={i}>
                   {row.map((day, idx) => {
                     const { $M, $D } = day;
 
@@ -132,25 +145,35 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
                       const day = eventsMonth.days.find(
                         (curr) => curr.day === $D
                       );
-                      if (day?.events.length > 0) dayEventsList = day.events;
+                      if (
+                        day?.events.length > 0 &&
+                        unformattedCurrMonth.$M === $M
+                      )
+                        dayEventsList = day.events;
                     }
 
                     let dimDay;
-                    if (currMonthIdx !== parseInt($M)) dimDay = "bg-gray-100";
+                    let white = "bg-white";
+                    if (currMonthIdx !== parseInt($M)) {
+                      dimDay = "bg-gray-100";
+                      white = dimDay;
+                    }
                     // TODO: Fix the dimming on years in the past
 
                     return (
                       <td
                         key={idx}
-                        className={`border p-1 ${dimDay} h-40 xl:w-40 lg:w-30 md:w-30 
-                        sm:w-20 w-10 transition cursor-pointer ease-out hover:border-red-500/50`}
+                        className={`border ${dimDay} h-36 xl:w-40 px-2 lg:w-30 md:w-30 
+                          sm:w-20 w-10 transition cursor-pointer ease-out`}
                       >
-                        <CalendarDay
-                          day={day}
-                          month_year={month_year}
-                          events={dayEventsList}
-                          addEventModal={addEventModal}
-                        />
+                        <div className={white}>
+                          <CalendarDay
+                            day={day}
+                            month_year={month_year}
+                            events={dayEventsList}
+                            addEventModal={addEventModal}
+                          />
+                        </div>
                       </td>
                     );
                   })}

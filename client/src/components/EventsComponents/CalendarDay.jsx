@@ -18,8 +18,8 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
     name: "",
     notes: "",
   });
-  const [monthIdx] = useState(getMonthIdx(month_year, global));
-  const [dayIdx] = useState(getDayIdx(day.$D, monthIdx, global));
+  const monthIdx = getMonthIdx(month_year, global);
+  const dayIdx = getDayIdx(day.$D, monthIdx, global);
 
   const { $D } = day;
   const dispatch = useDispatch();
@@ -33,7 +33,11 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
     return globalState.date.findIndex((i) => i.month_year === month_year);
   }
 
+  // TODO: Fix the edge case of when you don't have a monthIdx in the the global state
+
   function getDayIdx(day, monthIdx, globalState) {
+    if (monthIdx < 0) return -1;
+
     return globalState.date[monthIdx].days.findIndex(
       (curr) => curr.day === day
     );
@@ -69,9 +73,10 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       onMouseLeave={() => {
         setAddEventButton("hidden");
       }}
-      className="h-40 mx-auto xl:w-40 lg:w-30 md:w-30 sm:w-full w-10 mx-auto overflow-hidden"
+      className="mx-auto h-36 xl:w-full lg:w-full md:w-full sm:w-full
+      w-10 mx-auto overflow-hidden"
     >
-      <div className="flex justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex text-red-500">{$D}</div>
         <div
           onClick={() => addEventModal(day)}
@@ -80,7 +85,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
           <FiPlusCircle />
         </div>
       </div>
-      <div className="top h-5 w-full">
+      <div className="top w-full">
         {events &&
           events.map((curr, idx) => {
             return (
@@ -88,7 +93,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                 <motion.button
                   initial={{ scale: 1 }}
                   whileHover={{
-                    scale: 1.1,
+                    scale: 1.05,
                     backgroundColor: "#fff",
                   }}
                   whileTap={{
@@ -106,7 +111,9 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                   }
                   className="relative flex w-full justify-between px-2 rounded border border-red-200 text-sm font-medium"
                 >
-                  <div className="text-gray-700 mr-3">{curr.event}</div>
+                  <div className="text-gray-700 text-left mr-3">
+                    {curr.event}
+                  </div>
                 </motion.button>
                 <div
                   onClick={() => removeEvent(curr._id)}

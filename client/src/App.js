@@ -9,6 +9,7 @@ import { decodeJWT } from "./utils/functions";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { saveUserId } from "./redux/authSlice";
+import Goals from "./pages/Goals";
 
 function App() {
   const savedJWT = window.localStorage.getItem("jwt");
@@ -33,6 +34,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path={`/events/:id`} element={<Events />} />
+          <Route path={`/goals/:id`} element={<Goals />} />
         </Routes>
       </div>
     </Router>

@@ -11,6 +11,7 @@ import { useHorizontalScroll } from "../hooks/horizontalScroll";
 // Framer Motion
 import { motion, AnimatePresence } from "framer-motion";
 import SideMenu from "../components/SideMenu/SideMenu";
+import { saveUserData } from "../redux/authSlice";
 
 function Main() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ function Main() {
     todoList,
   ];
 
-  // // URl change if coming from a different route
+  // URl change if coming from a different route
   // const urlValidation = () => {
   //   const currentUrl = window.location.href;
   //   const pathArray = currentUrl.split("/");
@@ -60,6 +61,8 @@ function Main() {
       const respFromDB = await dispatch(getTodosAsync(id));
 
       if (respFromDB.type === "getTodosAsync/fulfilled") {
+        // Save the user data locally after being loaded
+        dispatch(saveUserData(respFromDB));
         setLoadedTodoList(true);
       }
     };
@@ -85,6 +88,8 @@ function Main() {
   const loadNexWeek = () => {
     setDateIdx(dateIdx + 7);
   };
+
+  // TODO: Make sure you give a checkbox for the whole category, if the all tasks are done
 
   return (
     <React.Fragment>

@@ -10,7 +10,7 @@ export const alertSlice = createSlice({
         type: action.payload.type,
       };
     },
-    clearAlert: (state, action) => {
+    clearAlert: (state, _) => {
       state.alert = {};
     },
   },

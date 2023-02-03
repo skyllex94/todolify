@@ -12,18 +12,19 @@ const { getDayIdx } = require("./helper_funcs");
 router.get("/:id", async (req, res) => {
   try {
     // Fetch the userTodoList by finding the user_id in the Todo Collection
-    // const userTodoList = await Todos.findOne({ user_id: req.params.id });
-
-    // const populateCategories = userTodoList.categories;
-    // res.send(populateCategories);
-
     const userTodoList = await Todos.findOne({ user_id: req.params.id });
 
-    const date = userTodoList.date;
-    const categories = userTodoList.categories;
-    res.send({ date, categories });
+    if (!userTodoList)
+      return res.send({ error: "Could not find user todo list" });
+
+    // Returning them as objects to fetch whicheven one you need for the different fields
+    res.send({
+      date: userTodoList.date,
+      categories: userTodoList.categories,
+      goals: userTodoList.goals,
+    });
   } catch (error) {
-    console.log("Error in fetching TodoList...");
+    console.log("Error while fetching TodoList...");
   }
 });
 
