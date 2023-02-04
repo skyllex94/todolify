@@ -18,25 +18,46 @@ router.get("/:user_id", async (req, res) => {
 // @access  Private
 router.post("/add-goal", async (req, res) => {
   const user_id = req.body.user_id;
-  const year = req.body.year;
+  const year_idx = req.body.year_idx;
   const goal = req.body.goal;
-  let user_goals_from_state = req.body.user_goals;
 
-  // Start here: think about how you would go about doing this in a good and error safe manner
+  const key = "goals." + year_idx + ".list";
 
-  const yearIdx = user_goals_from_state.findIndex((curr) => curr.year === year);
+  const updatedData = await Todos.findOneAndUpdate(
+    { user_id },
+    { $push: { [key]: { goal, done: false } } },
+    { new: true }
+  );
 
-  user_goals_from_state = user_goals_from_state[yearIdx].list.push({
-    goal,
-    done: false,
-  });
-  //   user_goals_from_state.save();
+  res.send({ userData: updatedData });
+});
 
-  res.send(console.log(user_goals_from_state));
+// @route   REMOVE YEARLY GOAL /api/goals/remove-goal
+// @desc    Remove a yearly goal from the current year
+// @access  Private
+router.delete("/remove-goal", async (req, res) => {
+  const user_id = req.body.user_id;
+  const year_idx = req.body.year_idx;
+  const goal_id = req.body.goal_id;
+  const local_data = req.body.local_data;
 
-  //   const userData = await Todos.findOne({ user_id });
-  //   if (!userData) return { error: "User data could not be fetched" };
-  //   return res.send({ userData });
+  if (user_id === null || year_idx === null || goal_id === null)
+    // Fetch the localData, so that if there is an error,
+    // you can return back the old state - unit tested
+    return res.send({
+      userData: local_data,
+      error: "Essential values missing",
+    });
+
+  const key = "goals." + year_idx + ".list";
+
+  const updatedData = await Todos.findOneAndUpdate(
+    { user_id },
+    { $pull: { [key]: { _id: goal_id } } },
+    { new: true }
+  );
+
+  res.send({ userData: updatedData });
 });
 
 module.exports = router;

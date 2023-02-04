@@ -5,6 +5,7 @@ import alertSlice from "./alertSlice";
 import eventsSlice from "./eventsSlice";
 import settingsSlice from "./settingsSlice";
 import goalsSlice from "./goalsSlice";
+import dataSlice from "./dataSlice";
 
 export default configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export default configureStore({
     events: eventsSlice,
     settings: settingsSlice,
     goals: goalsSlice,
+    data: dataSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

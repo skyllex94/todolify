@@ -15,13 +15,32 @@ export const getGoalsAsync = createAsyncThunk(
 export const addGoalAsync = createAsyncThunk(
   "addGoalAsync",
   async (payload) => {
-    console.log("payload.user_goals:", payload.user_goals);
     try {
       return await axios.post(`/api/goals/add-goal`, {
         user_id: payload.user_id,
-        year: payload.year,
+        year_idx: payload.year_idx,
         goal: payload.goal,
-        user_goals: payload.user_goals,
+      });
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+
+export const removeGoalAsync = createAsyncThunk(
+  "removeGoalAsync",
+  async (payload) => {
+    try {
+      return await axios.delete(`/api/goals/remove-goal`, {
+        headers: {
+          Authorization: "***",
+        },
+        data: {
+          user_id: payload.user_id,
+          year_idx: payload.year_idx,
+          goal_id: payload.goal_id,
+          local_data: payload.local_data,
+        },
       });
     } catch (error) {
       return error.message;
@@ -95,6 +114,7 @@ export const goalsSlice = createSlice({
     // Get all of the goals from DB
     builder.addCase(getGoalsAsync.fulfilled, (_, action) => {
       const { userData, error } = action.payload.data;
+      console.log("userData:", userData);
       if (error === "undefined") {
         alert(error);
         return;
@@ -102,37 +122,23 @@ export const goalsSlice = createSlice({
       return userData;
     });
 
-    // // Add an event to a specific date
-    // builder.addCase(addEventAsync.fulfilled, (_, action) => {
-    //   // Make sure you return the correct state
-    //   const { userTodoList, error } = action.payload.data;
-    //   if (error === "undefined") {
-    //     alert(error);
-    //     return;
-    //   }
-    //   return userTodoList;
-    // });
+    // Add the new goal to the list
+    builder.addCase(addGoalAsync.fulfilled, (_, action) => {
+      const { userData, error } = action.payload.data;
+      if (error === "undefined") {
+        alert(error);
+        return;
+      }
+      return userData;
+    });
 
-    // // Update an event to a specific date
-    // builder.addCase(updateEventAsync.fulfilled, (_, action) => {
-    //   const { userTodoList, error } = action.payload.data;
-    //   if (error !== undefined) {
-    //     alert(error);
-    //     return;
-    //   }
-    //   return userTodoList;
-    // });
-
-    // // Remove an event from a specific date
-    // builder.addCase(removeEventAsync.fulfilled, (_, action) => {
-    //   console.log("action.payload.data:", action.payload.data);
-    //   const { userTodoList, error } = action.payload.data;
-    //   if (error === "undefined") {
-    //     alert(error);
-    //     return;
-    //   }
-    //   return userTodoList;
-    // });
+    // Remove a given goal from the year
+    builder.addCase(removeGoalAsync.fulfilled, (_, action) => {
+      const { userData, error } = action.payload.data;
+      if (error) alert(error);
+      // Returns the updatedData if successful or same data if not
+      return userData;
+    });
   },
 });
 

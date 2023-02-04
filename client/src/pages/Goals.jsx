@@ -6,24 +6,29 @@ import loader from "../assets/loader.gif";
 import GoalsList from "../components/YearlyGoals/GoalsList";
 import { useDispatch, useSelector } from "react-redux";
 import { getGoalsAsync } from "../redux/goalsSlice";
+import { saveUserData } from "../redux/dataSlice";
 
 function Goals() {
   const [loadGoals, setLoadGoals] = useState(false);
-  const user = useSelector((state) => state.auth);
-  const [goalsList, setGoalsList] = useState(null);
+  const localData = useSelector((state) => state.data);
+  const user_id = useSelector((state) => state.auth.user_id);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     async function fetchGoals() {
-      if (user.userData !== null) return setGoalsList(user.userData.payload);
-      let respFromDB = await dispatch(getGoalsAsync(user.user_id));
-      console.log("respFromDBGoals:", respFromDB);
+      // If there's data already loaded from another DB fetch, populate it
+      if (localData !== null) return;
+
+      // Else make a post request to the DB
+      let respFromDB = await dispatch(getGoalsAsync(user_id));
       if (!respFromDB.type === "getTodosAsync/fulfilled") {
         // Retry DB request
-        respFromDB = dispatch(getGoalsAsync(user.user_id));
+        respFromDB = await dispatch(getGoalsAsync(user_id));
       }
-      return setGoalsList(respFromDB.payload.data.userData);
+
+      // Update user data with result from the request
+      dispatch(saveUserData(respFromDB.payload.data.userData));
     }
 
     fetchGoals();
@@ -36,8 +41,8 @@ function Goals() {
 
       <div className="flex h-screen">
         <SideMenu />
-        {loadGoals && goalsList ? (
-          <GoalsList goalsList={goalsList} />
+        {loadGoals ? (
+          <GoalsList user_id={user_id} />
         ) : (
           <div>
             <img src={loader} alt="loader" />

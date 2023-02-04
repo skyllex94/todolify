@@ -11,7 +11,7 @@ import { useHorizontalScroll } from "../hooks/horizontalScroll";
 // Framer Motion
 import { motion, AnimatePresence } from "framer-motion";
 import SideMenu from "../components/SideMenu/SideMenu";
-import { saveUserData } from "../redux/authSlice";
+import { saveUserData } from "../redux/dataSlice";
 
 function Main() {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ function Main() {
 
       if (respFromDB.type === "getTodosAsync/fulfilled") {
         // Save the user data locally after being loaded
-        dispatch(saveUserData(respFromDB));
+        dispatch(saveUserData(respFromDB.payload));
         setLoadedTodoList(true);
       }
     };
