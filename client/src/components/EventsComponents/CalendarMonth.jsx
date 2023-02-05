@@ -8,7 +8,6 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   const [showModal, setShowModal] = useState(false);
   const [monthInfo, setMonthInfo] = useState(null);
 
-  // Start here: check why in the hell doesn't it update the state correctly
   let { monthMatrix, currMonthIdx, monthName } = monthObj;
 
   const unformattedCurrMonth = monthMatrix[2][2];

@@ -7,6 +7,7 @@ import GoalsList from "../components/YearlyGoals/GoalsList";
 import { useDispatch, useSelector } from "react-redux";
 import { getGoalsAsync } from "../redux/goalsSlice";
 import { saveUserData } from "../redux/dataSlice";
+import AddNewYear from "../components/YearlyGoals/AddNewYear";
 
 function Goals() {
   const [loadGoals, setLoadGoals] = useState(false);
@@ -42,7 +43,12 @@ function Goals() {
       <div className="flex h-screen">
         <SideMenu />
         {loadGoals ? (
-          <GoalsList user_id={user_id} />
+          <div className="flex w-full justify-start">
+            <GoalsList user_id={user_id} />
+            <div className="pt-28">
+              <AddNewYear user_id={user_id} />
+            </div>
+          </div>
         ) : (
           <div>
             <img src={loader} alt="loader" />
