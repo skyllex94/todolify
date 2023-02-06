@@ -62,6 +62,10 @@ router.post(
         },
       };
 
+      // Get current year
+      const date = new Date();
+      const currYear = parseInt(date.getFullYear());
+
       // Create the initial todoList configuration for the new user
       try {
         const userTodoList = new TodoSchema({
@@ -120,6 +124,13 @@ router.post(
                   done: false,
                 },
               ],
+            },
+          ],
+
+          goals: [
+            {
+              year: currYear,
+              list: [],
             },
           ],
         });
