@@ -18,11 +18,6 @@ function SideMenu({ user_id }) {
   const isOpen = useSelector((state) => state.settings.isOpenSideMenu);
   const navLinks = [
     {
-      name: "Today List",
-      link: "/",
-      icon: <MdOutlineBeenhere size={"24"} />,
-    },
-    {
       name: "Weekly List",
       link: `/user/${user_id}`,
       icon: <MdOutlineViewWeek size={"24"} />,

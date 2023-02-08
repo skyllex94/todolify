@@ -20,6 +20,14 @@ function CategoryItem({
 }) {
   const [enableEdit, setEnableEdit] = useState(false);
   const [currIcon, setCurrIcon] = useState(icon ?? null);
+  const [categoryCompleted, setCategoryCompleted] = useState(false);
+
+  useEffect(() => {
+    if (categoryCompleted)
+      setTimeout(() => {
+        setCategoryCompleted(false);
+      }, 3000);
+  }, [categoryCompleted]);
 
   // Rerender the new icon when the week is changed
   useEffect(() => {
@@ -56,7 +64,10 @@ function CategoryItem({
         </div>
 
         <div className="wrapper-right-elements flex inline">
-          <DoneTasks tasks={tasks} />
+          <DoneTasks
+            tasks={tasks}
+            setCategoryCompleted={setCategoryCompleted}
+          />
           <EnableEditCategory setEnableEdit={setEnableEdit} />
 
           <DeleteCategory
@@ -70,7 +81,29 @@ function CategoryItem({
       </div>
 
       <div className="items-center my-1">
-        {tasks &&
+        {categoryCompleted ? (
+          <div className="flex justify-center">
+            <svg
+              class="checkmark"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 52 52"
+            >
+              <circle
+                class="checkmark__circle"
+                cx="26"
+                cy="26"
+                r="25"
+                fill="none"
+              />
+              <path
+                class="checkmark__check"
+                fill="none"
+                d="M14.1 27.2l7.1 7.2 16.7-16.8"
+              />
+            </svg>
+          </div>
+        ) : (
+          tasks &&
           tasks.map((curr, index) => {
             const { _id, task, done } = curr;
 
@@ -92,7 +125,8 @@ function CategoryItem({
                 />
               </div>
             );
-          })}
+          })
+        )}
         <AddTask
           user_id={user_id}
           category_id={category_id}

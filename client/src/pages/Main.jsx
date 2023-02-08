@@ -223,7 +223,6 @@ function Main() {
                       const date = getDate(dateIdx + idx);
                       const { day, month_year, dayOfWeek } = date;
                       let categories = todos.categories;
-                      console.log("categories:", categories);
                       let events = null;
                       let dayWtData = false;
 

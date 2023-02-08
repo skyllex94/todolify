@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import DeleteTask from "./DeleteTask";
 import EditTask from "./EditTask";
 import EnableEditTask from "./EnableEditTask";
+import PushToNextDay from "./PushToNextDay";
+import TaskOptions from "./TaskOptions";
 import ToggleTask from "./ToggleTask";
 
 const TaskItem = ({
@@ -45,7 +47,7 @@ const TaskItem = ({
         )}
       </div>
 
-      <div className="flex item-center">
+      <div className="flex">
         <EnableEditTask setEnableEdit={setEnableEdit} />
         <DeleteTask
           user_id={user_id}

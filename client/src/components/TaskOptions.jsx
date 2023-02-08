@@ -1,29 +1,36 @@
 import React from "react";
+import DeleteTask from "./DeleteTask";
+import { OverlayTrigger, Popover } from "react-bootstrap";
 import { AiOutlineEdit } from "react-icons/ai";
 import { GrFormClose } from "react-icons/gr";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useDispatch } from "react-redux";
-import { saveUserData } from "../../redux/dataSlice";
-import { removeGoalAsync } from "../../redux/goalsSlice";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import { deleteTaskAsync } from "../redux/todosSlice";
 
-function GoalsOptions({
+function TaskOptions({
   user_id,
-  year_idx,
-  curr,
-  localData,
-  enableRename,
-  setEnableRename,
+  category_id,
+  id,
+  day,
+  month_year,
+  setEnableEdit,
 }) {
   const dispatch = useDispatch();
 
-  const removeYearlyGoal = async (goal_id) => {
-    const res = await dispatch(
-      removeGoalAsync({ user_id, goal_id, year_idx, local_data: localData })
-    );
-
-    if (res.payload.status === 200)
-      dispatch(saveUserData(res.payload.data.userData));
+  const handleDeleteTask = async () => {
+    try {
+      dispatch(
+        deleteTaskAsync({
+          user_id,
+          category_id,
+          day,
+          month_year,
+          id,
+        })
+      );
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   const popover = (
@@ -32,27 +39,35 @@ function GoalsOptions({
         <Popover.Body>
           <button
             className="flex items-center w-full justify-between p-1 hover:bg-gray-100"
-            onClick={() => setEnableRename(!enableRename)}
+            onClick={() => setEnableEdit((prev) => !prev)}
           >
-            <p>Rename Goal</p>
+            <p>Rename Task</p>
             <AiOutlineEdit className="ml-3" />
           </button>
+
           <button
             className="flex items-center w-full justify-between p-1 hover:bg-gray-100"
-            onClick={() => removeYearlyGoal(curr._id)}
+            onClick={() => handleDeleteTask()}
           >
-            <p>Delete Goal</p>
-            <GrFormClose className="ml-3 right" />
+            <p>Delete Task</p>
+            <GrFormClose />
           </button>
+
+          <DeleteTask
+            user_id={user_id}
+            category_id={category_id}
+            id={id}
+            day={day}
+            month_year={month_year}
+          />
         </Popover.Body>
       </Popover>
     </div>
   );
 
   return (
-    <div>
+    <div className="absolute">
       <OverlayTrigger
-        className=""
         trigger="click"
         key="bottom"
         rootClose
@@ -67,4 +82,4 @@ function GoalsOptions({
   );
 }
 
-export default GoalsOptions;
+export default TaskOptions;

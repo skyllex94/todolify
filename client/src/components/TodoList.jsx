@@ -2,7 +2,6 @@ import React from "react";
 import CategoryItem from "./CategoryItem";
 import loader from "../assets/loader.gif";
 import AddCategory from "./AddCategory";
-import { useTodoList } from "../hooks/useTodoList";
 import EventsInTodos from "./EventsInTodos";
 
 const TodoList = ({
@@ -14,9 +13,6 @@ const TodoList = ({
   dayOfWeek,
   dayWtData,
 }) => {
-  // Hook fetching redux state for todo list of auth user
-  const { loadedTodos } = useTodoList();
-
   return (
     <div className="todo-list ml-5 min-w-[16%] ">
       <div className="rounded-lg shadow-lg bg-white pr-5 justify-between">

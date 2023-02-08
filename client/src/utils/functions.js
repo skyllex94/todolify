@@ -51,7 +51,7 @@ export const formatDate = (date) => {
   return dd + "/" + mm + "/" + yyyy;
 };
 
-export const getDate = (addedDays) => {
+export const getDate = (addedDays = 0) => {
   const today = new Date();
 
   const addedDaysDate = addDays(today, addedDays);
