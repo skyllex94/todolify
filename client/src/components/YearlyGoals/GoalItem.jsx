@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { MdRemoveCircle, MdSystemUpdateAlt } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { saveUserData } from "../../redux/dataSlice";
-import {
-  removeGoalAsync,
-  renameGoalAsync,
-  toggleGoalAsync,
-} from "../../redux/goalsSlice";
+import { renameGoalAsync, toggleGoalAsync } from "../../redux/goalsSlice";
+
+import GoalsOptions from "./GoalsOptions";
 
 function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
   const [enableRename, setEnableRename] = useState(false);
@@ -14,15 +11,6 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
   const [toggleDone, setToggleDone] = useState(curr.done);
 
   const dispatch = useDispatch();
-
-  const removeYearlyGoal = async (goal_id) => {
-    const res = await dispatch(
-      removeGoalAsync({ user_id, goal_id, year_idx, local_data: localData })
-    );
-
-    if (res.payload.status === 200)
-      dispatch(saveUserData(res.payload.data.userData));
-  };
 
   const renameYearlyGoal = async (e) => {
     e.preventDefault();
@@ -78,23 +66,28 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
       ) : (
         <div className="flex items-center">
           <input
-            id="red-checkbox"
+            id="orange-checkbox"
             type="checkbox"
-            className="accent-orange-600 mx-3"
             onChange={toggleYearlyGoal}
             checked={toggleDone}
+            className="w-4 h-4 mx-3 text-orange-600 bg-gray-100 border-gray-200 rounded focus:ring-orange-600 
+            dark:focus:ring-orange-600 dark:ring-offset-gray-200 focus:ring-2 dark:bg-gray-600 
+            dark:border-gray-100 cursor-pointer"
           />
-          <div className="px-3">{curr.goal}</div>
+
+          <div>{curr.goal}</div>
         </div>
       )}
 
       <div className="flex">
-        <button onClick={() => setEnableRename(!enableRename)}>
-          <MdSystemUpdateAlt />
-        </button>
-        <button onClick={() => removeYearlyGoal(curr._id)}>
-          <MdRemoveCircle />
-        </button>
+        <GoalsOptions
+          user_id={user_id}
+          year_idx={year_idx}
+          curr={curr}
+          enableRename={enableRename}
+          setEnableRename={setEnableRename}
+          localData={localData}
+        />
       </div>
     </div>
   );

@@ -1,20 +1,25 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import AddYearlyGoal from "./AddYearlyGoal";
+import CompletedGoals from "./CompletedGoals";
 import GoalItem from "./GoalItem";
 
 function GoalsList({ user_id }) {
   const localData = useSelector((state) => state.data);
 
+  // TODO: Make sure that the current month in events updates
+
   return (
     localData &&
     localData.goals.map((yearlyGoals, idx) => (
-      <div key={idx} className="flex pt-24 min-w-[25%] ml-5">
-        <div className="todo-list ml-5 ">
+      <div key={idx} className="flex pt-24 min-w-[30%] max-w-[30%] ml-5">
+        <div className="todo-list ml-5 w-full">
           <div className="rounded-lg shadow-lg bg-white pr-5">
             <ul className="list-group pt-5">
-              <h3 className="text-center">
-                <span>Year {yearlyGoals.year}</span>
+              <h3 className="text-center mb-5">
+                <span>
+                  <b>Year {yearlyGoals.year}</b>
+                </span>
               </h3>
 
               {yearlyGoals.list.map((curr, index) => {
@@ -31,6 +36,12 @@ function GoalsList({ user_id }) {
               })}
 
               <AddYearlyGoal localData={localData} year={yearlyGoals.year} />
+
+              <CompletedGoals
+                year_idx={idx}
+                goals={yearlyGoals.list}
+                local_data={localData}
+              />
             </ul>
           </div>
         </div>

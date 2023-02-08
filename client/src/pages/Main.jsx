@@ -16,6 +16,7 @@ import { saveUserData } from "../redux/dataSlice";
 function Main() {
   const navigate = useNavigate();
   const savedJWT = window.localStorage.getItem("jwt");
+
   const user_id = decodeJWT(savedJWT);
   const { id } = user_id.user;
 
@@ -25,10 +26,12 @@ function Main() {
   const [loadedTodoList, setLoadedTodoList] = useState(false);
   const [dateIdx, setDateIdx] = useState(0);
   const scrollRef = useHorizontalScroll();
+  const [focusToday, setFocusToday] = useState(false);
 
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.todos);
-  const weeklyTodoList = [
+
+  const week = [
     todoList,
     todoList,
     todoList,
@@ -37,6 +40,8 @@ function Main() {
     todoList,
     todoList,
   ];
+
+  const weeklyTodoList = week;
 
   // URl change if coming from a different route
   // const urlValidation = () => {
@@ -65,14 +70,15 @@ function Main() {
         dispatch(saveUserData(respFromDB.payload));
         setLoadedTodoList(true);
       }
+      return respFromDB;
     };
 
     getUserTodoList(id).catch(console.error);
     // urlValidation();
-  }, [dispatch, id]);
+  }, []);
 
   useEffect(() => {
-    // If there's no JWT passed from App.js, then navigate back to landing page
+    // If there's no JWT passed from App.js, navigate to landing page
     if (!id) navigate("/");
   }, [navigate, id]);
 
@@ -89,7 +95,10 @@ function Main() {
     setDateIdx(dateIdx + 7);
   };
 
-  // TODO: Make sure you give a checkbox for the whole category, if the all tasks are done
+  // TODO: Make sure you give a checkbox for the whole category, if all tasks are done
+  const toggleFocusOnToday = () => {
+    setFocusToday(!focusToday);
+  };
 
   return (
     <React.Fragment>
@@ -105,12 +114,18 @@ function Main() {
         >
           <div>
             <div className="flex mb-5">
-              <div className="flex ml-5 relative items-center space-x-1 text-lg px-2 bg-gray-200 text-gray-800 rounded-full">
+              <div
+                className={`${
+                  focusToday ? "bg-white-400" : "bg-gray-200"
+                } flex ml-5 relative items-center space-x-1 
+              text-lg px-2 border hover:bg-red-100 text-gray-800 rounded-full`}
+              >
                 <motion.button
                   initial={{ scale: 1 }}
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
-                  className="mr-5"
+                  className="pr-5"
+                  disabled={focusToday ? true : false}
                   onClick={loadPreviousWeek}
                 >
                   <AiOutlineArrowLeft />
@@ -129,8 +144,27 @@ function Main() {
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
                   className="pl-5"
+                  disabled={focusToday ? true : false}
+                  onClick={loadNexWeek}
                 >
-                  <AiOutlineArrowRight onClick={loadNexWeek} />
+                  <AiOutlineArrowRight />
+                </motion.button>
+              </div>
+
+              <div
+                className={`flex ml-5 relative ${
+                  focusToday ? "bg-gray-200" : "bg-white-400"
+                } 
+          items-center space-x-1 text-lg px-2 text-gray-800 rounded-full hover:bg-red-100 border`}
+              >
+                <motion.button
+                  initial={{ scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={"px-3"}
+                  onClick={toggleFocusOnToday}
+                >
+                  Focus on Today
                 </motion.button>
               </div>
             </div>
@@ -144,40 +178,87 @@ function Main() {
                 className="flex"
               >
                 {loadedTodoList ? (
-                  weeklyTodoList.map((todos, idx) => {
-                    const date = getDate(dateIdx + idx);
-                    const { day, month_year, dayOfWeek } = date;
-                    let categories = todos.categories;
-                    let events = null;
-                    let dayWtData = false;
+                  focusToday ? (
+                    [todoList].map((todos, idx) => {
+                      const date = getDate(dateIdx);
+                      const { day, month_year, dayOfWeek } = date;
+                      let categories = todos.categories;
+                      console.log("categories:", categories);
+                      let events = null;
+                      let dayWtData = false;
 
-                    todos.date.map((currDate) => {
-                      if (currDate.month_year === month_year) {
-                        currDate.days.map((curr) => {
-                          if (curr.day === day && curr?.categories.length > 0) {
-                            dayWtData = true;
-                            categories = curr.categories;
-                          }
-                          if (curr.day === day && curr?.events.length > 0) {
-                            events = curr.events;
-                          }
-                        });
-                      }
-                    });
+                      todos.date.map((currDate) => {
+                        if (currDate.month_year === month_year) {
+                          currDate.days.map((curr) => {
+                            if (
+                              curr.day === day &&
+                              curr?.categories.length > 0
+                            ) {
+                              dayWtData = true;
+                              categories = curr.categories;
+                            }
+                            if (curr.day === day && curr?.events.length > 0) {
+                              events = curr.events;
+                            }
+                          });
+                        }
+                      });
 
-                    return (
-                      <TodoList
-                        key={idx}
-                        user_id={id}
-                        todos={categories}
-                        events={events}
-                        day={day}
-                        month_year={month_year}
-                        dayOfWeek={dayOfWeek}
-                        dayWtData={dayWtData}
-                      />
-                    );
-                  })
+                      return (
+                        <TodoList
+                          data={todos}
+                          key={idx}
+                          user_id={id}
+                          todos={categories}
+                          events={events}
+                          day={day}
+                          month_year={month_year}
+                          dayOfWeek={dayOfWeek}
+                          dayWtData={dayWtData}
+                        />
+                      );
+                    })
+                  ) : (
+                    weeklyTodoList.map((todos, idx) => {
+                      const date = getDate(dateIdx + idx);
+                      const { day, month_year, dayOfWeek } = date;
+                      let categories = todos.categories;
+                      console.log("categories:", categories);
+                      let events = null;
+                      let dayWtData = false;
+
+                      todos.date.map((currDate) => {
+                        if (currDate.month_year === month_year) {
+                          currDate.days.map((curr) => {
+                            if (
+                              curr.day === day &&
+                              curr?.categories.length > 0
+                            ) {
+                              dayWtData = true;
+                              categories = curr.categories;
+                            }
+                            if (curr.day === day && curr?.events.length > 0) {
+                              events = curr.events;
+                            }
+                          });
+                        }
+                      });
+
+                      return (
+                        <TodoList
+                          data={todos}
+                          key={idx}
+                          user_id={id}
+                          todos={categories}
+                          events={events}
+                          day={day}
+                          month_year={month_year}
+                          dayOfWeek={dayOfWeek}
+                          dayWtData={dayWtData}
+                        />
+                      );
+                    })
+                  )
                 ) : (
                   <div>
                     <img src={loader} alt="loader" />

@@ -33,8 +33,26 @@ export const addEventAsync = createAsyncThunk(
   }
 );
 
-// TODO: When you click on update and try to confirm it, it gives an error wince it's going to
+// TODO: When you click on update and try to confirm it, it gives an error since it's going to
 // the delete request instead of the update
+
+export const toggleEventAsync = createAsyncThunk(
+  "toggleEventAsync",
+  async (payload) => {
+    // payload => { user_id, event_idx, day_idx, month_idx, updated_toggle}
+    try {
+      return await axios.patch("/api/events/toggle-event", {
+        user_id: payload.user_id,
+        event_idx: payload.event_idx,
+        day_idx: payload.day_idx,
+        month_idx: payload.month_idx,
+        updated_toggle: payload.updated_toggle,
+      });
+    } catch (err) {
+      return err.message;
+    }
+  }
+);
 
 export const updateEventAsync = createAsyncThunk(
   "updateEventAsync",

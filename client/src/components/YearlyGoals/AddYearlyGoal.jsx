@@ -35,7 +35,7 @@ export default function AddYearlyGoal({ year, localData }) {
   }
 
   return (
-    <form onSubmit={addGoal}>
+    <form onSubmit={addGoal} className="mt-4">
       <div className="flex items-center pb-5">
         <div className="ml-6 mr-4">
           <AiOutlinePlus />
@@ -46,8 +46,8 @@ export default function AddYearlyGoal({ year, localData }) {
           placeholder="Add Yearly Goal..."
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
-          className="w-full text-black-500 ml-3 h-12 
-            pl-5 pr-5 rounded-lg border hover:border-red-500 focus:shadow focus:border-red-500 block"
+          className="w-full text-black-500 h-12 
+            pr-5 rounded-lg border hover:border-red-500 focus:shadow focus:border-red-500 block"
         />
       </div>
     </form>

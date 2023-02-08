@@ -69,6 +69,30 @@ router.post("/add-event", async (req, res) => {
   res.send({ userTodoList });
 });
 
+// @route   PATCH TOGGLE EVENT /api/events/toggle-event
+// @desc    Toggle an event from a specific day
+// @access  Private
+router.patch("/toggle-event", async (req, res) => {
+  const user_id = req.body.user_id;
+  const event_idx = req.body.event_idx;
+  const updated_toggle = req.body.updated_toggle;
+  const day_idx = req.body.day_idx;
+  const month_idx = req.body.month_idx;
+
+  const key =
+    "date." + month_idx + ".days." + day_idx + ".events." + event_idx + ".done";
+
+  console.log("key:", key);
+
+  const userData = await Todos.findOneAndUpdate(
+    { user_id },
+    { $set: { [key]: updated_toggle } },
+    { new: true }
+  );
+
+  res.send({ userData });
+});
+
 // @route   PATCH EVENT /api/events/update-event
 // @desc    Update an event from a specific day
 // @access  Private

@@ -134,13 +134,16 @@ function SelectIcon({
 
   return (
     <OverlayTrigger
+      className=""
       trigger="click"
       key="top"
       rootClose
       placement="top-start"
       overlay={popover}
     >
-      <Form.Label className="optionsStyle p-1">{icon}</Form.Label>
+      <Form.Label className="optionsStyle cursor-pointer p-1">
+        {icon}
+      </Form.Label>
     </OverlayTrigger>
   );
 }

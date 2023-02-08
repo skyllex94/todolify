@@ -32,15 +32,15 @@ function ToggleTask({
   };
 
   return (
-    <React.Fragment>
-      <input
-        id="red-checkbox"
-        type="checkbox"
-        className="accent-orange-600 mx-3"
-        onChange={toggleCompletedTask}
-        checked={toggleChecked}
-      />
-    </React.Fragment>
+    <input
+      id="orange-checkbox"
+      type="checkbox"
+      onChange={toggleCompletedTask}
+      checked={toggleChecked}
+      className="w-4 cursor-pointer h-4 mx-3 text-orange-600 bg-gray-100 border-gray-200 rounded focus:ring-orange-600 
+            dark:focus:ring-orange-600 dark:ring-offset-gray-200 focus:ring-2 dark:bg-gray-600 
+            dark:border-gray-100"
+    />
   );
 }
 

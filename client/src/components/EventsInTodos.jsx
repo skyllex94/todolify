@@ -4,17 +4,18 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { openEventsInTodoList } from "../redux/settingsSlice";
+import ToggleEventInTodos from "./ToggleEventInTodos";
 
-function EventsInTodos({ events }) {
+function EventsInTodos({ events, day, month_year }) {
   // Make sure you pass the correct object to update wt useSelector
   const isOpen = useSelector((state) => state.settings.isOpenEventsInTodoList);
   const dispatch = useDispatch();
-  const toggleOpen = () => dispatch(openEventsInTodoList(!isOpen));
+  const openPanel = () => dispatch(openEventsInTodoList(!isOpen));
 
   return (
     <AnimatePresence mode="wait">
       <div className="brackets-events min-w-[93%]">
-        <div onClick={toggleOpen} className="flex items-center justify-between">
+        <div onClick={openPanel} className="flex items-center justify-between">
           <div className="flex title">
             <div className="p-1">
               <AiOutlineStar />
@@ -38,7 +39,7 @@ function EventsInTodos({ events }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              onClick={toggleOpen}
+              onClick={openPanel}
             >
               <IoIosArrowDown />
             </motion.div>
@@ -56,12 +57,11 @@ function EventsInTodos({ events }) {
             <div className="flex flex-col">
               {events.map((curr, idx) => (
                 <div key={idx} className="flex mb-1 items-center">
-                  <input
-                    id="red-checkbox"
-                    type="checkbox"
-                    className="accent-orange-600 mx-3"
-                    // onChange={toggleCompletedTask}
-                    // checked={toggleChecked}
+                  <ToggleEventInTodos
+                    curr={curr}
+                    event_idx={idx}
+                    day={day}
+                    month_year={month_year}
                   />
                   <label>{curr.event}</label>
                 </div>

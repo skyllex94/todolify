@@ -5,7 +5,6 @@ export const dataSlice = createSlice({
   initialState: null,
   reducers: {
     saveUserData: (_, action) => {
-      console.log("action:", action);
       return action.payload;
     },
   },

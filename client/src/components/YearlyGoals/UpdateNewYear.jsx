@@ -5,11 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { saveUserData } from "../../redux/dataSlice";
 import { addYearAsync, removeYearAsync } from "../../redux/goalsSlice";
 
-function AddNewYear({ user_id }) {
+function UpdateNewYear({ user_id }) {
   const dispatch = useDispatch();
   const local_data = useSelector((state) => state.data);
-
-  // TODO: Rename this component
 
   const addNewYear = async () => {
     const goals = local_data.goals;
@@ -38,7 +36,7 @@ function AddNewYear({ user_id }) {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mr-5">
       <button onClick={addNewYear} className="border rounded p-3 ml-5">
         <BsPlusLg />
       </button>
@@ -63,4 +61,4 @@ function AddNewYear({ user_id }) {
   );
 }
 
-export default AddNewYear;
+export default UpdateNewYear;

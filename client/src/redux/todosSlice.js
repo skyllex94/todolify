@@ -7,7 +7,10 @@ export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
   try {
     const resp = await axios.get(`/api/user/${id}`);
     // If everything okay wt response, return the data from the DB
-    if (resp.status === 200) return resp.data;
+    if (resp.status === 200) {
+      console.log("NEVER", resp.data);
+      return resp.data;
+    }
   } catch (err) {
     console.log(err.message);
   }
@@ -235,6 +238,7 @@ export const todosSlice = createSlice({
     // Fetch all of the todo list from the DB and return it to the UI for displaying
     builder.addCase(getTodosAsync.fulfilled, (state, action) => {
       // Fething the state wt the data from the DB for current user
+
       return action.payload;
     });
 

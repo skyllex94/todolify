@@ -7,7 +7,8 @@ import GoalsList from "../components/YearlyGoals/GoalsList";
 import { useDispatch, useSelector } from "react-redux";
 import { getGoalsAsync } from "../redux/goalsSlice";
 import { saveUserData } from "../redux/dataSlice";
-import AddNewYear from "../components/YearlyGoals/AddNewYear";
+import UpdateNewYear from "../components/YearlyGoals/UpdateNewYear";
+import { useHorizontalScroll } from "../hooks/horizontalScroll";
 
 function Goals() {
   const [loadGoals, setLoadGoals] = useState(false);
@@ -15,6 +16,7 @@ function Goals() {
   const user_id = useSelector((state) => state.auth.user_id);
 
   const dispatch = useDispatch();
+  const scrollRef = useHorizontalScroll();
 
   useEffect(() => {
     async function fetchGoals() {
@@ -43,10 +45,14 @@ function Goals() {
       <div className="flex h-screen">
         <SideMenu />
         {loadGoals ? (
-          <div className="flex w-full justify-start">
+          <div
+            ref={scrollRef}
+            style={{ overflow: "auto" }}
+            className="flex w-full justify-start "
+          >
             <GoalsList user_id={user_id} />
             <div className="pt-28">
-              <AddNewYear user_id={user_id} />
+              <UpdateNewYear user_id={user_id} />
             </div>
           </div>
         ) : (
