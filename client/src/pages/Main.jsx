@@ -259,7 +259,7 @@ function Main() {
                   )
                 ) : (
                   <div>
-                    <img src={loader} alt="loader" />
+                    <img src={loader} className="loader" alt="loader" />
                   </div>
                 )}
               </motion.div>

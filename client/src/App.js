@@ -10,6 +10,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { saveUserId } from "./redux/authSlice";
 import Goals from "./pages/Goals";
+import Settings from "./components/Settings/Settings";
 
 function App() {
   const savedJWT = window.localStorage.getItem("jwt");
@@ -35,6 +36,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path={`/events/:id`} element={<Events />} />
           <Route path={`/goals/:id`} element={<Goals />} />
+          <Route path={`/settings`} element={<Settings />} />
         </Routes>
       </div>
     </Router>

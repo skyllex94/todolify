@@ -115,6 +115,12 @@ code {
   border-style: double;
 }
 
+.loader {
+  width: 75px;
+  height: auto;
+  margin-left: 30px;
+}
+
 /* Check box css modules */
 
 .checkmark {

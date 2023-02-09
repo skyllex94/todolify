@@ -60,7 +60,7 @@ function Goals() {
             </React.Fragment>
           ) : (
             <div>
-              <img src={loader} className="pt-24" alt="loader" />
+              <img src={loader} className="pt-24 loader" alt="loader" />
             </div>
           )}
         </div>
