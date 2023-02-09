@@ -624,8 +624,6 @@ router.delete("/:user_id/:category_id/:id", async (req, res) => {
   // Finding userTodolist object
   const userTodoList = await Todos.findOne({ user_id });
 
-  // TODO: try to get the monthIdx and dayIdx from the UI before you start the backend request
-
   // Try-out to do another abstraction with creating getValidMonthAndDayIdx()
   const monthIdx = userTodoList.date.findIndex(
     (curr) => curr.month_year === month_year

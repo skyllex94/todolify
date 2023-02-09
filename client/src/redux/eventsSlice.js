@@ -4,10 +4,8 @@ import axios from "axios";
 export const getEventsAsync = createAsyncThunk(
   "getEventsAsync",
   async (user_id) => {
-    console.log("user_id:", user_id);
     try {
       const res = await axios.get(`/api/events/${user_id}`);
-      console.log("res:", res);
       return res;
     } catch (err) {
       return { err };
@@ -132,7 +130,6 @@ export const eventsSlice = createSlice({
 
     // Remove an event from a specific date
     builder.addCase(removeEventAsync.fulfilled, (_, action) => {
-      console.log("action.payload.data:", action.payload.data);
       const { userTodoList, error } = action.payload.data;
       if (error === "undefined") {
         alert(error);

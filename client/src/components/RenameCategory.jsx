@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateCategoryAsync } from "../redux/todosSlice";
 
-function EditCategory({
+function RenameCategory({
   user_id,
   category_index,
   day,
@@ -47,4 +47,4 @@ function EditCategory({
   );
 }
 
-export default EditCategory;
+export default RenameCategory;

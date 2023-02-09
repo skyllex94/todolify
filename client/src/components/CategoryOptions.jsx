@@ -7,7 +7,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { useDispatch } from "react-redux";
 import { deleteTaskAsync } from "../redux/todosSlice";
 
-function TaskOptions({
+function CategoryOptions({
   user_id,
   category_id,
   id,
@@ -82,4 +82,4 @@ function TaskOptions({
   );
 }
 
-export default TaskOptions;
+export default CategoryOptions;

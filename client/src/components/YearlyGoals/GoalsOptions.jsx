@@ -27,7 +27,7 @@ function GoalsOptions({
   };
 
   const popover = (
-    <div className="bg-white border-solid border-2 border-red-600 rounded p-2">
+    <div className="bg-white border-solid border-2 border-red-600 rounded mt-2 mr-1 p-2">
       <Popover id="popover-positioned-top">
         <Popover.Body>
           <button
@@ -52,11 +52,10 @@ function GoalsOptions({
   return (
     <div>
       <OverlayTrigger
-        className=""
         trigger="click"
         key="bottom"
         rootClose
-        placement="bottom-start"
+        placement="bottom-end"
         overlay={popover}
       >
         <button>

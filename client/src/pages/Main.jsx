@@ -95,7 +95,6 @@ function Main() {
     setDateIdx(dateIdx + 7);
   };
 
-  // TODO: Make sure you give a checkbox for the whole category, if all tasks are done
   const toggleFocusOnToday = () => {
     setFocusToday(!focusToday);
   };
@@ -180,7 +179,7 @@ function Main() {
                 {loadedTodoList ? (
                   focusToday ? (
                     [todoList].map((todos, idx) => {
-                      const date = getDate(dateIdx);
+                      const date = getDate(0);
                       const { day, month_year, dayOfWeek } = date;
                       let categories = todos.categories;
                       console.log("categories:", categories);

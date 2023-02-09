@@ -38,28 +38,32 @@ function Goals() {
     setLoadGoals(true);
   }, []);
 
+  // TODO: When add goals, fix the mistake of error being printed up
+
   return (
     <React.Fragment>
       <Header />
 
       <div className="flex h-screen">
         <SideMenu />
-        {loadGoals ? (
-          <div
-            ref={scrollRef}
-            style={{ overflow: "auto" }}
-            className="flex w-full justify-start "
-          >
-            <GoalsList user_id={user_id} />
-            <div className="pt-28">
-              <UpdateNewYear user_id={user_id} />
+        <div
+          ref={scrollRef}
+          style={{ overflow: "auto" }}
+          className="flex w-full"
+        >
+          {loadGoals ? (
+            <React.Fragment>
+              <GoalsList user_id={user_id} />
+              <div className="pt-28">
+                <UpdateNewYear user_id={user_id} />
+              </div>
+            </React.Fragment>
+          ) : (
+            <div>
+              <img src={loader} className="pt-24" alt="loader" />
             </div>
-          </div>
-        ) : (
-          <div>
-            <img src={loader} alt="loader" />
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </React.Fragment>
   );

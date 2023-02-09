@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import DoneTasks from "./DoneTasks";
 import TaskItem from "./TaskItem";
 import DeleteCategory from "./DeleteCategory";
-import EditCategory from "./EditCategory";
+import RenameCategory from "./RenameCategory";
 import AddTask from "./AddTask";
 import EnableEditCategory from "./EnableEditCategory";
 import SelectIcon from "./SelectIcon";
+import { motion } from "framer-motion";
 
 function CategoryItem({
   user_id,
@@ -22,17 +23,10 @@ function CategoryItem({
   const [currIcon, setCurrIcon] = useState(icon ?? null);
   const [categoryCompleted, setCategoryCompleted] = useState(false);
 
-  useEffect(() => {
-    if (categoryCompleted)
-      setTimeout(() => {
-        setCategoryCompleted(false);
-      }, 3000);
-  }, [categoryCompleted]);
-
   // Rerender the new icon when the week is changed
   useEffect(() => {
     setCurrIcon(icon);
-  }, [currIcon, setCurrIcon, icon]);
+  }, [icon]);
 
   return (
     <ul className={`list-group`}>
@@ -41,6 +35,7 @@ function CategoryItem({
           <SelectIcon
             user_id={user_id}
             category_id={category_id}
+            categoryCompleted={categoryCompleted}
             category_index={category_index}
             day={day}
             month_year={month_year}
@@ -49,7 +44,7 @@ function CategoryItem({
             setCurrIcon={setCurrIcon}
           />
           {enableEdit ? (
-            <EditCategory
+            <RenameCategory
               user_id={user_id}
               category_index={category_index}
               day={day}
@@ -80,30 +75,13 @@ function CategoryItem({
         </div>
       </div>
 
-      <div className="items-center my-1">
-        {categoryCompleted ? (
-          <div className="flex justify-center">
-            <svg
-              class="checkmark"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 52 52"
-            >
-              <circle
-                class="checkmark__circle"
-                cx="26"
-                cy="26"
-                r="25"
-                fill="none"
-              />
-              <path
-                class="checkmark__check"
-                fill="none"
-                d="M14.1 27.2l7.1 7.2 16.7-16.8"
-              />
-            </svg>
-          </div>
-        ) : (
-          tasks &&
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -100, opacity: 0 }}
+        className="items-center my-1"
+      >
+        {tasks &&
           tasks.map((curr, index) => {
             const { _id, task, done } = curr;
 
@@ -125,8 +103,7 @@ function CategoryItem({
                 />
               </div>
             );
-          })
-        )}
+          })}
         <AddTask
           user_id={user_id}
           category_id={category_id}
@@ -135,7 +112,7 @@ function CategoryItem({
           month_year={month_year}
           dayWtData={dayWtData}
         />
-      </div>
+      </motion.div>
     </ul>
   );
 }

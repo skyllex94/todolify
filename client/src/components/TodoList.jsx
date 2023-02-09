@@ -1,6 +1,5 @@
 import React from "react";
 import CategoryItem from "./CategoryItem";
-import loader from "../assets/loader.gif";
 import AddCategory from "./AddCategory";
 import EventsInTodos from "./EventsInTodos";
 
