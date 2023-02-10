@@ -13,7 +13,7 @@ const TodoSchema = require("../schemas/TodoSchema");
 // @access  Public
 router.post(
   "/",
-  // This is the middleware validation for verifying the input data type
+  // Middleware validation for verifying the input data
   [
     // Type cheking each field on the back end
     check("name", "Name is required").not().isEmpty(),
@@ -134,7 +134,6 @@ router.post(
             },
           ],
         });
-        console.log(userTodoList);
         await userTodoList.save();
       } catch (error) {
         console.log(error.message);

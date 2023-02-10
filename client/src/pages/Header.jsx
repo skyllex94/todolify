@@ -83,7 +83,10 @@ function Header() {
                   {userId ? (
                     <button
                       onClick={logoutUser}
-                      className="pl-3 relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-sky-600 dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                      className="pl-3 relative flex h-9 ml-auto items-center justify-center 
+                      sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-red-600 
+                      dark:before:bg-red-400 before:transition before:duration-300 hover:before:scale-105 
+                      active:duration-75 active:before:scale-95"
                     >
                       <span className="relative text-sm font-semibold text-white dark:text-gray-900">
                         Logout

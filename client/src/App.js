@@ -36,7 +36,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path={`/events/:id`} element={<Events />} />
           <Route path={`/goals/:id`} element={<Goals />} />
-          <Route path={`/settings`} element={<Settings />} />
+          <Route path={`/settings/:${user_id}`} element={<Settings />} />
         </Routes>
       </div>
     </Router>

@@ -131,7 +131,7 @@ function Register() {
                   htmlFor="name"
                   className="block text-gray-700 text-sm font-bold mb-2"
                 >
-                  Name
+                  Full Name
                 </label>
                 <input
                   name="name"

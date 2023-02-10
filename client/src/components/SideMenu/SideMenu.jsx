@@ -34,7 +34,7 @@ function SideMenu({ user_id }) {
     },
     {
       name: "Settings",
-      link: "/settings",
+      link: `/settings/${user_id}`,
       icon: <FiSettings size={"24"} />,
     },
   ];

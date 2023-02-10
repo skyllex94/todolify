@@ -10,13 +10,15 @@ export default function AddYearlyGoal({ year, localData }) {
   const dispatch = useDispatch();
   const user_id = useSelector((state) => state.auth.user_id);
 
+  // TODO: There's a bug with having an event for a day and having more than one task for this day
+  // it stops the request from going through
+
   async function addGoal(e) {
     e.preventDefault();
     // Checks before committing dispatch
     if (goal === "") return alert("Please write a yearly goal.");
 
-    if (!user_id || !year || !goal || !localData)
-      return alert("Essential data missing");
+    if (!user_id || !year || !localData) return alert("Essential data missing");
 
     const year_idx = localData.goals.findIndex((curr) => curr.year === year);
     if (year_idx < 0) return alert("Year was not found");
