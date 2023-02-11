@@ -11,6 +11,8 @@ import loader from "../assets/loader.gif";
 function Events() {
   // Declare required global and local states
   const user_id = useSelector((state) => state.auth.user_id);
+  const fromSunday = useSelector((state) => state.settings.startFromSunday);
+
   const [currMonth, setCurrMonth] = useState(getMonth());
   const [currMonthIdx, setCurrMonthIdx] = useState(0);
   const [loadEvents, setLoadEvents] = useState(false);
@@ -21,15 +23,14 @@ function Events() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setCurrMonth(getMonth(currMonthIdx));
-  }, [currMonthIdx]);
+    setCurrMonth(getMonth(currMonthIdx, fromSunday));
+  }, [currMonthIdx, fromSunday]);
 
   // Load all the events for the current month
   useEffect(() => {
     // You need to await the async response to display the data after fetched
     const getEvents = async (user_id) => {
       const fetchedEvents = await dispatch(getEventsAsync(user_id));
-      console.log("fetchedEvents:", fetchedEvents);
 
       if (fetchedEvents.type === "getEventsAsync/fulfilled")
         setLoadEvents(true);

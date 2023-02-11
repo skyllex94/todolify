@@ -12,8 +12,11 @@ export const authSlice = createSlice({
       // state.user_id = action.payload.user_id;
       return { ...state, user_id: action.payload.user_id };
     },
+    removeUserId: (state, _) => {
+      return { ...state, user_id: null };
+    },
   },
 });
 
-export const { storeJWT, saveUserId } = authSlice.actions;
+export const { storeJWT, saveUserId, removeUserId } = authSlice.actions;
 export default authSlice.reducer;

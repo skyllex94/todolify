@@ -13,9 +13,10 @@ export function useDisplayAlert() {
     }
   }, [enableAlert]);
 
-  const displayAlert = (type, message, status) => {
+  const displayAlert = (type, message, status, error_message) => {
     if (type.includes("AxiosError")) type = "error";
-    if (status === 400) message = "Invalid user credentials, please try again";
+    if (status === 400)
+      message = error_message ?? "Invalid user credentials, please try again";
     dispatch(createAlert({ type, message }));
     setEnableAlert(true);
   };

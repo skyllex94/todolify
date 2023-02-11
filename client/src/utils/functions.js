@@ -66,13 +66,18 @@ export const getDate = (addedDays = 0) => {
   return { day, month_year, dayOfWeek };
 };
 
-export function getMonth(month = dayjs().month()) {
+export function getMonth(month = dayjs().month(), startFromSunday) {
+  console.log("startFromSunday:", startFromSunday);
   month = Math.floor(month);
 
   const year = dayjs().year();
   const monthName = dayjs().month(month);
 
-  const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
+  let firstDayOfTheMonth;
+  if (startFromSunday)
+    firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
+  else firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day() - 1;
+
   let currMonthIdx = 0 - firstDayOfTheMonth;
 
   const rows = 5;

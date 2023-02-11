@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import { updateUserPassAsync } from "../../redux/settingsSlice";
+import Alert from "../Alert";
 
 export default function PassChange({ user_id, setEnablePassChange }) {
   const [pass, setPass] = useState("");
   const [passRepeat, setPassRepeat] = useState("");
   const dispatch = useDispatch();
-
-  // Start here: figure out why when updating the password it's giving an error when
-  // login back in
+  // TODO: Might wanna work on alert and check how to best display them.
+  const { alert, enableAlert, displayAlert } = useDisplayAlert();
 
   const updatePassword = async (e) => {
     console.log("sdf");
@@ -25,7 +26,13 @@ export default function PassChange({ user_id, setEnablePassChange }) {
 
     try {
       const res = await dispatch(updateUserPassAsync({ user_id, new_pass }));
-      console.log("res:", res);
+
+      displayAlert(
+        "success",
+        "Successfully updated password",
+        res.payload.status,
+        "Could not finish the request, please try again later."
+      );
     } catch (err) {
       alert(err.message);
     }
@@ -33,10 +40,9 @@ export default function PassChange({ user_id, setEnablePassChange }) {
     setEnablePassChange(false);
   };
 
-  // TODO: Change the "Change" buttons when being clicked to "Confirm" buttons
-
   return (
     <div>
+      {enableAlert && <Alert type={alert.type} message={alert.message} />}
       <form onSubmit={updatePassword}>
         <label className="mr-3" htmlFor="user_password_change">
           New Password:

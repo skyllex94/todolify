@@ -3,12 +3,12 @@ import axios from "axios";
 
 // Not used for now since async fetching the todo list wt state through Main and passing to TodoList
 export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
+  console.log("id:", id);
   // Fetch array of todos from DB and return (through res.send() on the backend) a resp value
   try {
     const resp = await axios.get(`/api/user/${id}`);
     // If everything okay wt response, return the data from the DB
     if (resp.status === 200) {
-      console.log("NEVER", resp.data);
       return resp.data;
     }
   } catch (err) {

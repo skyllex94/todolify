@@ -4,23 +4,28 @@ import Header from "../../pages/Header";
 import { getUserConfigAsync } from "../../redux/settingsSlice";
 import SideMenu from "../SideMenu/SideMenu";
 import EmailChange from "./EmailChange";
+import EventsInTodoChange from "./EventsInTodoChange";
+import LogoutUser from "./LogoutUser";
 import NameChange from "./NameChange";
 import PassChange from "./PassChange";
+import RemoveUser from "./RemoveUser";
+import StartWeekChange from "./StartWeekChange";
 
 export default function Settings() {
   const user_id = useSelector((state) => state.auth.user_id);
   const userConfig = useSelector((state) => state.settings.userConfig);
   const [loadedConfig, setLoadedConfig] = useState(false);
+
   const [enableNameChange, setEnableNameChange] = useState(false);
   const [enableEmailChange, setEnableEmailChange] = useState(false);
   const [enablePassChange, setEnablePassChange] = useState(false);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getUserConf = async () => {
       try {
         const res = await dispatch(getUserConfigAsync(user_id));
-        console.log("res:", res);
         if (res.payload.status === 200) setLoadedConfig(true);
       } catch (err) {
         console.log(err.message);
@@ -28,7 +33,7 @@ export default function Settings() {
     };
 
     getUserConf();
-  }, []);
+  }, [dispatch, user_id]);
 
   return (
     <React.Fragment>
@@ -130,32 +135,13 @@ export default function Settings() {
             <div className="border rounded-md">
               <div className="flex items-center justify-between px-10 pt-10 h-10">
                 <label>Include Events is Weekly List:</label>
-
-                <input
-                  id="orange-checkbox"
-                  type="checkbox"
-                  // onChange={toggleCompletedTask}
-                  // checked={toggleChecked}
-                  className="w-4 cursor-pointer h-4 mx-3 text-orange-600 border-gray-600 
-                    rounded focus:ring-orange-600 
-                    dark:focus:ring-orange-600 dark:ring-offset-gray-200 focus:ring-2 dark:bg-gray-600 
-                    dark:border-gray-100"
-                />
+                <EventsInTodoChange />
               </div>
 
               <div className="flex items-center justify-between p-10 h-10">
-                <label>Start Week from Monday:</label>
+                <label>Start Week from Sunday:</label>
 
-                <input
-                  id="orange-checkbox"
-                  type="checkbox"
-                  // onChange={toggleCompletedTask}
-                  // checked={toggleChecked}
-                  className="w-4 cursor-pointer h-4 mx-3 text-orange-600 border-gray-600 
-                    rounded focus:ring-orange-600 
-                    dark:focus:ring-orange-600 dark:ring-offset-gray-200 focus:ring-2 dark:bg-gray-600 
-                    dark:border-gray-100"
-                />
+                <StartWeekChange />
               </div>
             </div>
           </div>
@@ -166,21 +152,8 @@ export default function Settings() {
             </p>
             <div className="border rounded-md">
               <div className="flex items-center justify-between p-10 pt-10 h-10">
-                <button
-                  className="bg-white text-black active:bg-white-600 font-bold 
-                  uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg border
-                  focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                >
-                  Sign-out
-                </button>
-
-                <button
-                  className="bg-red-500 ml-60 text-white active:bg-red-600 font-bold 
-                uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                >
-                  Permanently Delete User
-                </button>
+                <LogoutUser />
+                <RemoveUser />
               </div>
             </div>
           </div>

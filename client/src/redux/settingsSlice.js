@@ -43,11 +43,24 @@ export const updateUserEmailAsync = createAsyncThunk(
 export const updateUserPassAsync = createAsyncThunk(
   "updateUserPassAsync",
   async (payload) => {
-    console.log("payload:", payload);
     try {
       return await axios.post(`/api/settings/change-pass`, {
         user_id: payload.user_id,
         new_pass: payload.new_pass,
+      });
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+);
+
+export const permanentlyDeleteUserAsync = createAsyncThunk(
+  "permanentlyDeleteUserAsync",
+  async (user_id) => {
+    try {
+      return await axios.delete(`/api/settings/delete-user`, {
+        headers: { Athorization: "***" },
+        data: { user_id },
       });
     } catch (err) {
       console.log(err.message);
@@ -60,6 +73,8 @@ export const settingsSlice = createSlice({
   initialState: {
     isOpenSideMenu: true,
     isOpenEventsInTodoList: true,
+    showEventsInTodoList: true,
+    startFromSunday: false,
     userConfig: {},
   },
   reducers: {
@@ -69,6 +84,12 @@ export const settingsSlice = createSlice({
     },
     openEventsInTodoList: (state, action) => {
       return { ...state, isOpenEventsInTodoList: action.payload };
+    },
+    showEventsInTodoList: (state, action) => {
+      return { ...state, showEventsInTodoList: action.payload };
+    },
+    startFromSunday: (state, action) => {
+      return { ...state, startFromSunday: action.payload };
     },
     updateUserEmail: (state, action) => {
       return { ...state, userEmail: action.payload };
@@ -104,8 +125,20 @@ export const settingsSlice = createSlice({
       if (error) return alert(error);
       return { ...state, userConfig };
     });
+
+    // // Permanently delete the user and all his todos and data
+    // builder.addCase(permanentlyDeleteUserAsync.fulfilled, (state, action) => {
+    //   const { permanentlyDeleted, error } = action.payload.data;
+    //   if (error) return alert(error);
+    //   return { ...state, userConfig };
+    // });
   },
 });
 
-export const { openSideMenu, openEventsInTodoList } = settingsSlice.actions;
+export const {
+  openSideMenu,
+  openEventsInTodoList,
+  showEventsInTodoList,
+  startFromSunday,
+} = settingsSlice.actions;
 export default settingsSlice.reducer;

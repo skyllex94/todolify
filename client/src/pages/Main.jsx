@@ -27,6 +27,9 @@ function Main() {
   const [dateIdx, setDateIdx] = useState(0);
   const scrollRef = useHorizontalScroll();
   const [focusToday, setFocusToday] = useState(false);
+  const showEventsInTodoList = useSelector(
+    (state) => state.settings.showEventsInTodoList
+  );
 
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.todos);
@@ -196,7 +199,11 @@ function Main() {
                               dayWtData = true;
                               categories = curr.categories;
                             }
-                            if (curr.day === day && curr?.events.length > 0) {
+                            if (
+                              showEventsInTodoList &&
+                              curr.day === day &&
+                              curr?.events.length > 0
+                            ) {
                               events = curr.events;
                             }
                           });
@@ -235,7 +242,11 @@ function Main() {
                               dayWtData = true;
                               categories = curr.categories;
                             }
-                            if (curr.day === day && curr?.events.length > 0) {
+                            if (
+                              showEventsInTodoList &&
+                              curr.day === day &&
+                              curr?.events.length > 0
+                            ) {
                               events = curr.events;
                             }
                           });

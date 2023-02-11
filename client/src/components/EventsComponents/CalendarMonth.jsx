@@ -4,10 +4,15 @@ import AddEventModal from "./AddEventModal";
 import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
+import { useSelector } from "react-redux";
+import { weekdays } from "moment/moment";
 
 function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   const [showModal, setShowModal] = useState(false);
   const [monthInfo, setMonthInfo] = useState(null);
+  const startFromSunday = useSelector(
+    (state) => state.settings.startFromSunday
+  );
 
   let { monthMatrix, currMonthIdx, monthName } = monthObj;
 
@@ -24,14 +29,14 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
     (curr) => curr.month_year === month_year
   );
 
-  const weekDays = [
-    "Sunday",
+  let weekDays = [
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
+    "Sunday",
   ];
 
   const addEventModal = (day) => {
@@ -52,6 +57,12 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
     } else {
       nextMonth();
     }
+  };
+
+  // Take the last day of the week pop it and include it in the beginning
+  const handleStartFromSunday = () => {
+    const sunday = weekDays.pop();
+    weekDays.unshift(sunday);
   };
 
   return (
@@ -85,6 +96,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
           <table className="table w-full">
             <thead>
               <tr>
+                {startFromSunday && handleStartFromSunday()}
                 {weekDays.map((day, idx) => (
                   <th
                     key={idx}
