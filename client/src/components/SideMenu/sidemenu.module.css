@@ -6,8 +6,21 @@
   margin-top: 75px;
   padding-top: 15px;
   padding-left: 15px;
-  /* padding-bottom: 50vh; */
 }
+@media only screen and (max-width: 600px) {
+  .sidenavClosed {
+    position: absolute;
+    z-index: 15;
+    top: 5px;
+    height: 50px;
+    width: 50px;
+    border-end-end-radius: 10px;
+  }
+  .sideitem {
+    display: none;
+  }
+}
+
 .sidenavClosed {
   transition: 0.3s ease-in-out;
   padding-right: 15px;
@@ -21,6 +34,7 @@
 }
 .sideitem {
   display: flex;
+  position: absolute;
   align-items: center;
   padding: 10px 20px;
   cursor: pointer;

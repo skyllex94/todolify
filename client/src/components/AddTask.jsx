@@ -18,7 +18,6 @@ function AddTask({
     event.preventDefault();
     if (addTaskValue) {
       try {
-        console.log("day/Month: ", day, month_year);
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
         dispatch(
           addTaskAsync({
@@ -64,7 +63,8 @@ function AddTask({
                     value={addTaskValue}
                     onChange={(event) => setAddTaskValue(event.target.value)}
                     onBlur={() => setEnableAddTask(false)}
-                    className="text-black-500 ml-3 h-12 focus:outline-none pl-10 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
+                    className="text-black-500 ml-3 w-60 h-12 focus:outline-none pl-10 pr-5 
+                    rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
                   />
                 </div>
               </div>

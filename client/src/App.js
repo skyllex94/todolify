@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { saveUserId } from "./redux/authSlice";
 import Goals from "./pages/Goals";
 import Settings from "./components/Settings/Settings";
+import About from "./pages/About";
 
 function App() {
   const savedJWT = window.localStorage.getItem("jwt");
@@ -37,6 +38,7 @@ function App() {
           <Route path={`/events/:id`} element={<Events />} />
           <Route path={`/goals/:id`} element={<Goals />} />
           <Route path={`/settings/:${user_id}`} element={<Settings />} />
+          <Route path={"/about"} element={<About />} />
         </Routes>
       </div>
     </Router>

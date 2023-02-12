@@ -73,7 +73,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       onMouseLeave={() => {
         setAddEventButton("hidden");
       }}
-      className="mx-auto h-36 xl:w-full lg:w-full md:w-full sm:w-full
+      className="mx-auto h-32 xl:h-36 lg:h-36 md:h-36 sm:h-36 xl:w-full lg:w-full md:w-full sm:w-full
       w-10 mx-auto overflow-hidden"
     >
       <div className="flex items-center justify-between">

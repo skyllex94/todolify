@@ -42,13 +42,13 @@ export default function Settings() {
       <div className="flex h-screen">
         <SideMenu />
 
-        <div className="pl-5 pt-28 w-50">
+        <div className="pl-5 mt-28 w-96 xl:w-1/3 lg:w-1/3 md:w-1/2 ">
           <div className="profile-settings">
             <p className="mb-4 ml-1">
               <b>Profile:</b>
             </p>
             <div className="border rounded-md">
-              <div className="flex items-center justify-between px-10 pt-10 pb-5 h-10 text-black">
+              <div className="flex items-center justify-between px-5 pt-10 pb-5 h-10 text-black">
                 <div>
                   <label htmlFor="user_name" className="pr-3">
                     Name:
@@ -66,7 +66,7 @@ export default function Settings() {
                 </div>
                 <button
                   onClick={() => setEnableNameChange((prev) => !prev)}
-                  className="bg-red-500 ml-60 text-white active:bg-red-600 font-bold 
+                  className="bg-red-500 ml-4 text-white active:bg-red-600 font-bold 
                   uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
                   focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 >
@@ -74,7 +74,7 @@ export default function Settings() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between px-10 pt-10 pb-5 h-10 text-black">
+              <div className="flex items-center justify-between px-5 pt-10 pb-5 h-10 text-black">
                 <div>
                   <label htmlFor="email" className="pr-3">
                     Email:
@@ -93,7 +93,7 @@ export default function Settings() {
                 </div>
                 <button
                   onClick={() => setEnableEmailChange((prev) => !prev)}
-                  className="bg-red-500 ml-60 text-white active:bg-red-600 font-bold 
+                  className="bg-red-500 text-white active:bg-red-600 font-bold 
                   uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
                   focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 >
@@ -101,7 +101,7 @@ export default function Settings() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between px-10 py-5 text-black">
+              <div className="flex items-center justify-between px-5 py-5 text-black">
                 {enablePassChange ? (
                   <PassChange
                     user_id={user_id}
@@ -118,7 +118,7 @@ export default function Settings() {
 
                 <button
                   onClick={() => setEnablePassChange(!enablePassChange)}
-                  className="bg-red-500 ml-60 text-white active:bg-red-600 font-bold 
+                  className="bg-red-500 text-white active:bg-red-600 font-bold 
                   uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
                   focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 >
@@ -133,12 +133,18 @@ export default function Settings() {
               <b>Customization:</b>
             </p>
             <div className="border rounded-md">
-              <div className="flex items-center justify-between px-10 pt-10 h-10">
+              <div
+                className="flex items-center justify-start lg:justify-between
+              md:justify-between sm:justify-between px-10 pt-10 h-10"
+              >
                 <label>Include Events is Weekly List:</label>
                 <EventsInTodoChange />
               </div>
 
-              <div className="flex items-center justify-between p-10 h-10">
+              <div
+                className="flex items-center justify-start lg:justify-between
+              md:justify-between sm:justify-between p-10 h-10"
+              >
                 <label>Start Week from Sunday:</label>
 
                 <StartWeekChange />
@@ -151,7 +157,10 @@ export default function Settings() {
               <b>Deletion:</b>
             </p>
             <div className="border rounded-md">
-              <div className="flex items-center justify-between p-10 pt-10 h-10">
+              <div
+                className="flex items-center justify-start lg:justify-between
+              md:justify-between sm:justify-between p-10 pt-10 h-10"
+              >
                 <LogoutUser />
                 <RemoveUser />
               </div>

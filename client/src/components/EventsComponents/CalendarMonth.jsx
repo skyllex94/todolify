@@ -5,7 +5,6 @@ import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 import { useSelector } from "react-redux";
-import { weekdays } from "moment/moment";
 
 function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   const [showModal, setShowModal] = useState(false);
@@ -68,7 +67,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
   return (
     <div
       onWheel={(e) => scrollChange(e)}
-      className="container mx-auto pt-20 h-screen w-full"
+      className="container mx-auto pt-20 max-h-screen"
     >
       <AnimatePresence mode="wait">
         <motion.div
@@ -79,7 +78,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
           transition={{ duration: 0.2 }}
           className="wrapper bg-white rounded shadow w-full"
         >
-          <div className="flex justify-between p-2">
+          <div className="flex justify-between px-14 py-2">
             <span className="text-lg font-bold">{monthTitle}</span>
             <div className="buttons">
               <button
@@ -146,7 +145,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
                     return (
                       <td
                         key={idx}
-                        className={`border ${dimDay} h-36 xl:w-40 px-2 lg:w-30 md:w-30 
+                        className={`border ${dimDay} h-30 xl:w-40 px-2 lg:w-30 md:w-30 
                           sm:w-20 w-10 transition cursor-pointer ease-out`}
                       >
                         <div className={white}>

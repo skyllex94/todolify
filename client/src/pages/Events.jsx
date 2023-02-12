@@ -7,6 +7,7 @@ import Header from "./Header";
 import { useDispatch, useSelector } from "react-redux";
 import { getEventsAsync } from "../redux/eventsSlice";
 import loader from "../assets/loader.gif";
+import { useHorizontalScroll } from "../hooks/horizontalScroll";
 
 function Events() {
   // Declare required global and local states
@@ -17,6 +18,7 @@ function Events() {
   const [currMonthIdx, setCurrMonthIdx] = useState(0);
   const [loadEvents, setLoadEvents] = useState(false);
   const events = useSelector((state) => state.events);
+  const scrollRef = useHorizontalScroll();
 
   // UI Manipulation requirements
   const navigate = useNavigate();
@@ -51,6 +53,7 @@ function Events() {
 
       <div className="flex h-screen">
         <SideMenu />
+
         {loadEvents ? (
           <CalendarMonth
             monthObj={currMonth}

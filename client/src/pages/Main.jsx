@@ -119,7 +119,7 @@ function Main() {
               <div
                 className={`${
                   focusToday ? "bg-white-400" : "bg-gray-200"
-                } flex ml-5 relative items-center space-x-1 
+                } flex ml-20 lg:ml-5 md:ml-5 sm:ml-5 relative items-center space-x-1 
               text-lg px-2 border hover:bg-red-100 text-gray-800 rounded-full`}
               >
                 <motion.button
