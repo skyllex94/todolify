@@ -23,10 +23,10 @@ function Landing() {
       <Header />
       <div className="bg-white relative pt-40 pb-20 lg:pt-44 dark:bg-gray-900">
         <div className="relative xl:container m-auto px-6 md:px-12 lg:px-6">
-          <h1 className="sm:mx-auto sm:w-10/12 md:w-2/3 font-black text-red-900 text-4xl text-center sm:text-5xl md:text-6xl lg:w-auto lg:text-left xl:text-7xl dark:text-white">
+          <h1 className="sm:mx-auto sm:w-10/12 md:w-2/3 font-black text-red-900 text-4xl text-center sm:text-5xl md:text-6xl lg:w-auto lg:text-left xl:text-7xl">
             Want to be 30% more productive?
             <br className="lg:block hidden" />{" "}
-            <span className="relative text-transparent bg-clip-text bg-gradient-to-b from-red-700 to-orange-500 dark:from-blue-400 dark:to-cyan-300">
+            <span className="relative text-transparent bg-clip-text bg-gradient-to-b from-red-700 to-orange-500 dark:from-red-400 dark:to-red-300">
               Try our timeblock & categorization to-do list
             </span>
             .
@@ -47,7 +47,7 @@ function Landing() {
               <div className="grid gap-2 md:space-x-6 md:flex md:justify-center lg:justify-start">
                 <Link
                   to={userId ? `user/${userId}` : "/login"}
-                  className="p-4 block border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-full duration-300 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-600/20 dark:hover:border-cyan-300/30"
+                  className="p-4 block border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-full duration-300 hover:border-red-400 hover:shadow-lg hover:shadow-red-600/20 dark:hover:border-red-300/30"
                 >
                   <div className="flex justify-center space-x-3 ">
                     <RiLinkUnlinkM className="mt-0.5" />

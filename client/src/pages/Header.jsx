@@ -77,14 +77,7 @@ function Header() {
                           <span>Home</span>
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to={userId ? `/user/${userId}` : "/"}
-                          className="navlinks md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
-                        >
-                          <span>Portfolio</span>
-                        </Link>
-                      </li>
+
                       <li>
                         <Link
                           to={userId ? `/about` : "/"}
@@ -149,20 +142,13 @@ function Header() {
                     <ul className="space-y-6 font-medium text-base lg:text-sm lg:flex lg:space-y-0">
                       <li className="relative navlinks">
                         <Link
-                          to={userId ? `/user/${userId}` : "/"}
+                          to={user_id ? `/user/${user_id}` : "/"}
                           className=" md:px-4 lis dark:hover:text-primaryLight hidden lg:block"
                         >
                           <span>Home</span>
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to={userId ? `/user/${userId}` : "/"}
-                          className="navlinks md:px-4 transition hidden lg:block hover:text-primary dark:hover:text-primaryLight"
-                        >
-                          <span>Portfolio</span>
-                        </Link>
-                      </li>
+
                       <li>
                         <Link
                           to={userId ? `/about` : "/"}
