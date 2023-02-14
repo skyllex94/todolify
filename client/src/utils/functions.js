@@ -67,7 +67,6 @@ export const getDate = (addedDays = 0) => {
 };
 
 export function getMonth(month = dayjs().month(), startFromSunday) {
-  console.log("startFromSunday:", startFromSunday);
   month = Math.floor(month);
 
   const year = dayjs().year();

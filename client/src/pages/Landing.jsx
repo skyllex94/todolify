@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import landingImage from "../assets/landing-image.png";
+import landingImage from "../assets/landing.png";
 import { RiLinkUnlinkM } from "react-icons/ri";
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -72,7 +72,7 @@ function Landing() {
               <div className="dark:text-gray-300  font-semibold">
                 🔥🌟
                 <span className="pl-2">
-                  Secure encryption without a need for registration.
+                  Personalize your categories and containerize your talks
                 </span>
               </div>
             </div>

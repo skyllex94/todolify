@@ -78,7 +78,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
           transition={{ duration: 0.2 }}
           className="wrapper bg-white rounded shadow w-full"
         >
-          <div className="flex justify-between px-14 py-2">
+          <div className="flex justify-between pl-14 py-2">
             <span className="text-lg font-bold">{monthTitle}</span>
             <div className="buttons">
               <button

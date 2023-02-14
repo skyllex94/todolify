@@ -42,9 +42,9 @@ export default function Settings() {
       <div className="flex h-screen">
         <SideMenu />
 
-        <div className="pl-5 mt-28 w-96 xl:w-1/3 lg:w-1/3 md:w-1/2 ">
+        <div className="pl-5 mt-28 w-96 xl:w-1/2 lg:w-1/2 md:w-1/2">
           <div className="profile-settings">
-            <p className="mb-4 ml-1">
+            <p className="mb-4 ml-10 sm:ml-1 md:ml-1 lg:ml-1 xl:ml-1">
               <b>Profile:</b>
             </p>
             <div className="border rounded-md">

@@ -118,7 +118,7 @@ function Header() {
                             className="relative flex w-24 ml-3 block text-sm font-semibold text-primary 
                           dark:text-primaryLight"
                           >
-                            Sign
+                            Register
                           </span>
                         </Link>
                         <Link
@@ -188,7 +188,7 @@ function Header() {
                             className="relative w-24 block mt-2 ml-2 flex text-sm font-semibold text-primary 
                         dark:text-primaryLight"
                           >
-                            Sign
+                            Register
                           </span>
                         </Link>
                         <Link

@@ -74,56 +74,25 @@ router.post(
           date: [
             {
               month_year: "01/2023",
-              days: [
-                {
-                  day: 16,
-                  categories: [
-                    {
-                      category: "Skillset to Build",
-                      icon: 0,
-                      tasks: [
-                        {
-                          task: "Daily tasks",
-                          done: false,
-                        },
-                      ],
-                    },
-                    {
-                      category: "Mundane",
-                      icon: 1,
-                      tasks: [
-                        {
-                          task: "Your everyday tasks",
-                          done: false,
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
+              days: [],
             },
           ],
 
           categories: [
             {
-              category: "Skillset to Build",
+              category: "Category 1",
               icon: 0,
-              tasks: [
-                {
-                  task: "Daily tasks",
-                  done: false,
-                },
-              ],
+              tasks: [],
+            },
+            {
+              category: "Category 2",
+              icon: 1,
+              tasks: [],
             },
             {
               category: "Mundane",
-              icon: 1,
-              tasks: [
-                {
-                  task: "Your everyday tasks",
-                  done: false,
-                },
-              ],
+              icon: 4,
+              tasks: [],
             },
           ],
 

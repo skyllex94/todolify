@@ -272,7 +272,6 @@ export const todosSlice = createSlice({
     });
 
     builder.addCase(updateIconAsync.fulfilled, (_, action) => {
-      console.log(action.payload);
       const { userTodoList, error } = action.payload.data;
       if (error) return console.log(error);
 

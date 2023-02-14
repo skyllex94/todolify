@@ -4,11 +4,7 @@ import { Link } from "react-router-dom";
 import styles from "./sidemenu.module.css";
 import { FiSettings } from "react-icons/fi";
 import { BsCalendar3Week } from "react-icons/bs";
-import {
-  MdOutlineBeenhere,
-  MdOutlineDoubleArrow,
-  MdOutlineViewWeek,
-} from "react-icons/md";
+import { MdOutlineDoubleArrow, MdOutlineViewWeek } from "react-icons/md";
 import { GiCornerFlag } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { openSideMenu } from "../../redux/settingsSlice";
@@ -66,7 +62,7 @@ function SideMenu({ user_id }) {
           <h2 className={isOpen ? "text-xl font-bold" : "hidden"}>Dashboard</h2>
         </div>
         <motion.div whileHover={{ scale: 1.05 }} className="relative">
-          <div className={isOpen ? "text-xl" : "hidden"}>
+          <div className={isOpen ?? undefined ? "text-xl" : "hidden"}>
             <span className="absolute inset-y-0 left-0 flex items-center">
               <button
                 type="submit"
@@ -81,7 +77,11 @@ function SideMenu({ user_id }) {
             />
           </div>
         </motion.div>
-        <div className={!isOpen && "hidden xl:block lg:block md:block"}>
+        <div
+          className={
+            !isOpen ? "hidden rounded-br xl:block lg:block md:block" : undefined
+          }
+        >
           <ul className="pt-2 pb-4 space-y-1 text-s">
             {navLinks.map((curr, idx) => {
               return (

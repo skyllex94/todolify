@@ -76,6 +76,7 @@ export const settingsSlice = createSlice({
     showEventsInTodoList: true,
     startFromSunday: false,
     userConfig: {},
+    changeCategoryDoneIcon: false,
   },
   reducers: {
     openSideMenu: (state, action) => {
@@ -140,5 +141,6 @@ export const {
   openEventsInTodoList,
   showEventsInTodoList,
   startFromSunday,
+  changeCategoryIconToDone,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

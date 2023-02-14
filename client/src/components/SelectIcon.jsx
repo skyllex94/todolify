@@ -113,7 +113,7 @@ function SelectIcon({
 
   useEffect(() => {
     setIcon(icons[currIcon]);
-  }, [currIcon]);
+  }, [currIcon]); // Don't include icon dependency since they fight over
 
   const popover = (
     <div className="bg-white border-solid border-2 border-red-600 rounded p-2">
