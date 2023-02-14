@@ -27,11 +27,7 @@ router.get("/:user_id", async (req, res) => {
 // @desc    Add an event to a specific day
 // @access  Private
 router.post("/add-event", async (req, res) => {
-  const user_id = req.body.user_id;
-  const event_name = req.body.event_name;
-  const day = req.body.day;
-  const month_year = req.body.month_year;
-  const notes = req.body.notes;
+  const { user_id, event_name, day, month_year, notes } = req.body;
 
   // Make sure you await the fetching of the userTodoList
   const userTodoList = await getUserTodoList(user_id);

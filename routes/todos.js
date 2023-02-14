@@ -208,14 +208,10 @@ function getCategoryIdx(ctgryId, dayIdx, monthIdx, userTodoList) {
 // @desc    Add task to a certain category to an auth user
 // @access  Private
 router.post("/:id/:category_id", async (req, res) => {
-  const dayWtData = req.body.dayWtData;
-  const day = req.body.day;
-  const month_year = req.body.month_year;
+  const { id, category_id } = req.params;
+  const { day, month_year, category_name, category_index } = req.body;
 
-  const category_id = req.params.category_id;
-  const default_category_idx = req.body.category_index;
-
-  const userTodoList = await getUserTodoList(req.params.id);
+  const userTodoList = await getUserTodoList(id);
 
   const newTask = {
     task: req.body.task,
@@ -230,6 +226,7 @@ router.post("/:id/:category_id", async (req, res) => {
       month_year,
       days: [],
     };
+
     const arrLength = userTodoList.date.push(newMonthYear);
     const newlyCreatedMonth = userTodoList.date[arrLength - 1];
     monthIdx = userTodoList.date.indexOf(newlyCreatedMonth);
@@ -245,21 +242,46 @@ router.post("/:id/:category_id", async (req, res) => {
     return res.send(userTodoList);
   }
 
-  // TODO: Return back an object with the updated todo list and error
-  // in order to be able to check and display an error message to the UI if there's any
-  // res.send({ userTodoList, error: "Error while deleting, monthIdx doesn't exist" });
+  const dayIdx = getDayIdx(day, monthIdx, userTodoList);
 
-  if (dayWtData) {
-    const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+  if (dayIdx === null) console.log("User data could not be retrieved");
 
-    if (dayIdx === null || dayIdx === "No day found in DB") {
-      console.log(
-        "Index of the day could not be found or missing userTodoList when deleting"
-      );
-      return res.send(userTodoList);
+  // If there's no data, take default categories create day and include the new task
+  if (dayIdx === "No day found in DB") {
+    // Use parse and strigify in order to make a full copy of the array wt objects
+    // if trying to spread, it won't work, because it only creates a shallow copy without copying the inner objects
+    const categories = JSON.parse(JSON.stringify(userTodoList.categories));
+    categories[category_index].tasks.push(newTask);
+
+    // New day structure including the fetched default categories
+    const newDay = { day, categories };
+
+    userTodoList.date[monthIdx].days.push(newDay);
+    await userTodoList.save();
+    return res.send(userTodoList);
+  }
+
+  if (userTodoList.date[monthIdx]?.days[dayIdx]?.categories !== null) {
+    console.log("dayIdx:", dayIdx);
+    const updated_categories = JSON.parse(
+      JSON.stringify(userTodoList.categories)
+    );
+
+    const newDay = { day, categories };
+    // Start here: Figure out how to get the fucking array of objects and populate it
+
+    if (newDay.day === userTodoList.date[monthIdx]?.days[dayIdx].day) {
+      userTodoList.date[monthIdx]?.days[dayIdx]?.categories;
     }
 
-    // Find category index in which to input the task when comparing ids
+    // updated_categories[category_index].tasks.push(newTask);
+    // console.log("updated_categories:", updated_categories);
+
+    // userTodoList.date[monthIdx].days.push(newDay);
+
+    // await userTodoList.save();
+    // return res.send(userTodoList);
+
     const categoryIdx = getCategoryIdx(
       category_id,
       dayIdx,
@@ -267,32 +289,83 @@ router.post("/:id/:category_id", async (req, res) => {
       userTodoList
     );
 
-    // Use !== null, since again return false for the 0th index
-    if (categoryIdx !== null) {
-      // Push the new task to the existing array of task for the correct category / returned array length
-      userTodoList.date[monthIdx].days[dayIdx].categories[
-        categoryIdx
-      ].tasks.push(newTask);
-      // Save the new task to MongoDB
-      await userTodoList.save();
-    }
+    // updated_categories[category_index].tasks.push(newTask);
 
-    // If there's no data for current day, take default categories and create the new day
-  } else {
-    // Use parse and strigifify in order to make a full copy of the array wt objects
-    // if trying to spread, it won't work, because it only creates a shallow copy without copying the inner objects
-    const categories = JSON.parse(JSON.stringify(userTodoList.categories));
+    // const newCategory = {
+    //   category: category_name,
+    //   icon: 1,
+    //   tasks: [{ newTask }],
+    // };
+    // console.log("newCategory:", newCategory);
+  }
 
-    categories[default_category_idx].tasks.push(newTask);
+  // TODO: Return back an object with the updated todo list and error
+  // in order to be able to check and display an error message to the UI if there's any
+  // res.send({ userTodoList, error: "Error while deleting, monthIdx doesn't exist" });
 
-    // New day structure including the fetched default categories
-    const newDay = { day, categories };
+  // Find category index in which to input the task when comparing ids
+  const categoryIdx = getCategoryIdx(
+    category_id,
+    dayIdx,
+    monthIdx,
+    userTodoList
+  );
 
-    userTodoList.date[monthIdx].days.push(newDay);
+  if (categoryIdx !== null) {
+    // Push the new task to the existing array of task for the correct category / returned array length
+    userTodoList.date[monthIdx].days[dayIdx].categories[categoryIdx].tasks.push(
+      newTask
+    );
+    // Save the new task to MongoDB
     await userTodoList.save();
   }
 
   res.send(userTodoList);
+
+  // if (dayWtData) {
+  //   const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+
+  //   if (dayIdx === null || dayIdx === "No day found in DB") {
+  //     console.log(
+  //       "Index of the day could not be found or missing userTodoList when deleting"
+  //     );
+  //     return res.send(userTodoList);
+  //   }
+
+  //   // Find category index in which to input the task when comparing ids
+  //   const categoryIdx = getCategoryIdx(
+  //     category_id,
+  //     dayIdx,
+  //     monthIdx,
+  //     userTodoList
+  //   );
+
+  //   // Use !== null, since it will return false for the 0th index
+  //   if (categoryIdx !== null) {
+  //     // Push the new task to the existing array of task for the correct category / returned array length
+  //     userTodoList.date[monthIdx].days[dayIdx].categories[
+  //       categoryIdx
+  //     ].tasks.push(newTask);
+  //     // Save the new task to MongoDB
+  //     await userTodoList.save();
+  //   }
+
+  //   // If there's no data for current day, take default categories and create the new day
+  // } else {
+  //   // Use parse and strigifify in order to make a full copy of the array wt objects
+  //   // if trying to spread, it won't work, because it only creates a shallow copy without copying the inner objects
+  //   const categories = JSON.parse(JSON.stringify(userTodoList.categories));
+
+  //   categories[category_index].tasks.push(newTask);
+
+  //   // New day structure including the fetched default categories
+  //   const newDay = { day, categories };
+
+  //   userTodoList.date[monthIdx].days.push(newDay);
+  //   await userTodoList.save();
+  // }
+
+  // res.send(userTodoList);
 });
 
 async function getDayAndMonthIdx(day, month_year, user_id) {

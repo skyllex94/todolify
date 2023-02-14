@@ -66,7 +66,9 @@ export const addTaskAsync = createAsyncThunk(
           day: payload.day,
           month_year: payload.month_year,
           dayWtData: payload.dayWtData,
+          category_name: payload.category_name,
           category_index: payload.category_index,
+          local_data: payload.local_data,
         }
       );
     } catch (err) {
