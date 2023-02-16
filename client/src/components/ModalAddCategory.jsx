@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addCategoryAsync } from "../redux/todosSlice";
@@ -11,24 +11,27 @@ export default function ModalAddCategory({
   month_year,
   dayWtData,
 }) {
-  const dispatch = useDispatch();
-
   const [category, setCategory] = useState("");
   const [activeFrom, setActiveFrom] = useState("");
   const [activeUntil, setActiveUntil] = useState("");
   const [timeDuration, setTimeDuration] = useState(0);
 
-  // Trigger removing modal on escape key pressed
-  useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.keyCode === 27) {
-        setShowModal(false);
-      }
-    };
-    window.addEventListener("keydown", handleEsc);
+  const dispatch = useDispatch();
+  const closeModalRef = useRef();
 
+  // Trigger removing modal on outside click or escape key pressed
+  useEffect(() => {
+    const closeModal = (e) => {
+      if (e.keyCode === 27) setShowModal(false);
+      if (closeModalRef.current && !closeModalRef.current.contains(e.target))
+        setShowModal(false);
+    };
+
+    window.addEventListener("keydown", closeModal);
+    window.addEventListener("mousedown", closeModal);
     return () => {
-      window.removeEventListener("keydown", handleEsc);
+      window.removeEventListener("keydown", closeModal);
+      window.removeEventListener("mousedown", closeModal);
     };
   }, [setShowModal]);
 
@@ -71,7 +74,7 @@ export default function ModalAddCategory({
         exit={{ y: 300, opacity: 0 }}
         className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
       >
-        <div className="relative w-auto max-w-xl">
+        <div ref={closeModalRef} className="relative w-auto max-w-xl">
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
               <h3 className="text-3xl font-semibold">Add Category</h3>

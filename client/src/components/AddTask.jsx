@@ -5,7 +5,6 @@ import { addTaskAsync } from "../redux/todosSlice";
 function AddTask({
   user_id,
   category_id,
-  category_name,
   category_index,
   day,
   month_year,
@@ -19,7 +18,8 @@ function AddTask({
     event.preventDefault();
     if (addTaskValue) {
       try {
-        // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
+        // Dispatch addingTask async and return an object from DB wt new id,
+        // task name and done keys
         dispatch(
           addTaskAsync({
             user_id,

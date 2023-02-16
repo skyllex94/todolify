@@ -101,6 +101,8 @@ router.patch("/update-event", async (req, res) => {
   const month_idx = req.body.month_idx;
   console.log("month_idx:", month_idx);
 
+  // TODO: Close the modal window on click outside
+
   if (month_idx < 0 || day_idx < 0)
     return res.send({
       error: "Could not locate element to update, please try again",

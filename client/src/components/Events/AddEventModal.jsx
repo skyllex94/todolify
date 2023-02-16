@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
   const [eventName, setEventName] = useState("");
   const [notes, setNotes] = useState("");
   const user_id = useSelector((state) => state.auth.user_id);
+  const closeModalRef = useRef();
 
   // Actions and Destructuring
   const dispatch = useDispatch();
@@ -19,17 +20,34 @@ function AddEventModal({ monthInfo, setShowModal }) {
   const navigate = useNavigate();
   if (!user_id) navigate("/");
 
-  // Trigger removing modal on escape key pressed
+  // useEffect(() => {
+  //   const closeModal = (e) => {
+  //     if (closeModalRef.current && !closeModalRef.current.contains(e.target))
+  //       setShowModal(false);
+  //   };
+
+  //   document.addEventListener("mousedown", closeModal);
+  //   return () => {
+  //     window.removeEventListener("mousedown", closeModal);
+  //   };
+  // }, [setShowModal]);
+
+  // Trigger removing modal on outside click or escape key pressed
   useEffect(() => {
     const keyPressed = (e) => {
-      if (e.keyCode === 27) {
-        setShowModal(false);
-      }
+      if (e.keyCode === 27) setShowModal(false);
     };
 
+    const closeModal = (e) => {
+      if (closeModalRef.current && !closeModalRef.current.contains(e.target))
+        setShowModal(false);
+    };
+
+    window.addEventListener("mousedown", closeModal);
     window.addEventListener("keydown", keyPressed);
     return () => {
       window.removeEventListener("keydown", keyPressed);
+      window.removeEventListener("mousedown", closeModal);
     };
   }, [setShowModal]);
 
@@ -73,7 +91,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
           exit={{ y: 300, opacity: 0 }}
           className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
         >
-          <div className="relative w-auto max-w-xl">
+          <div ref={closeModalRef} className="relative w-auto max-w-xl">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                 <h3 className="text-3xl font-semibold">Add Event</h3>

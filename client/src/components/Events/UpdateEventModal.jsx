@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { saveUserData } from "../../redux/dataSlice";
 import { removeEventAsync, updateEventAsync } from "../../redux/eventsSlice";
@@ -19,19 +19,22 @@ function UpdateEventModal({
   const [eventNotes, setEventNotes] = useState(eventInfo.notes);
   const user_id = useSelector((state) => state.auth.user_id);
 
+  const closeModalRef = useRef();
   const dispatch = useDispatch();
 
-  // Trigger removing modal on escape key pressed
+  // Trigger removing modal on outside click or escape key pressed
   useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.keyCode === 27) {
+    const closeModal = (e) => {
+      if (e.keyCode === 27) setShowInfoEventModal(false);
+      if (closeModalRef.current && !closeModalRef.current.contains(e.target))
         setShowInfoEventModal(false);
-      }
     };
-    window.addEventListener("keydown", handleEsc);
 
+    window.addEventListener("keydown", closeModal);
+    window.addEventListener("mousedown", closeModal);
     return () => {
-      window.removeEventListener("keydown", handleEsc);
+      window.removeEventListener("keydown", closeModal);
+      window.removeEventListener("mousedown", closeModal);
     };
   }, [setShowInfoEventModal]);
 
@@ -49,7 +52,6 @@ function UpdateEventModal({
           month_idx,
         })
       );
-      console.log("res:", res);
 
       if (res.type === "updateEventAsync/fulfilled")
         dispatch(saveUserData(res.payload.data.userTodoList));
@@ -81,8 +83,6 @@ function UpdateEventModal({
     }
   }
 
-  // TODO: When trying to update, it does to deleting instead, fix it please
-
   return (
     <div>
       <AnimatePresence>
@@ -92,7 +92,7 @@ function UpdateEventModal({
           exit={{ y: 300, opacity: 0 }}
           className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
         >
-          <div className="relative w-auto max-w-xl">
+          <div ref={closeModalRef} className="relative w-auto max-w-xl">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                 <h3 className="text-3xl font-semibold">{eventInfo.name}</h3>

@@ -79,7 +79,7 @@ function SideMenu() {
                 className="p-2 focus:outline-none focus:ring"
               />
             </span>
-            <input
+            {/* <input
               type="search"
               name="Search"
               placeholder="Search Task..."
@@ -87,7 +87,7 @@ function SideMenu() {
               onChange={(e) => handleSearch(e)}
               onClick={() => navigate(`/user/${user_id}`)}
               className="text-sm mr-5 text-black rounded-md focus:outline-none"
-            />
+            /> */}
           </div>
         </motion.div>
         <div

@@ -84,12 +84,15 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
             <span className="text-lg font-bold">{monthTitle}</span>
             <div className="buttons">
               <button
-                className="p-1 border mr-2"
+                className="py-1 px-5 md:px-1 lg:px-1 xl:px-1 border mr-2"
                 onClick={() => previousMonth()}
               >
                 <AiOutlineArrowUp />
               </button>
-              <button className="p-1 border" onClick={() => nextMonth()}>
+              <button
+                className="py-1 px-5 md:px-1 lg:px-1 xl:px-1 border"
+                onClick={() => nextMonth()}
+              >
                 <AiOutlineArrowDown />
               </button>
             </div>
@@ -166,7 +169,11 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
             </tbody>
           </table>
           {showModal && (
-            <AddEventModal monthInfo={monthInfo} setShowModal={setShowModal} />
+            <AddEventModal
+              monthInfo={monthInfo}
+              showModal={showModal}
+              setShowModal={setShowModal}
+            />
           )}
         </motion.div>
       </AnimatePresence>

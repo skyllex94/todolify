@@ -132,7 +132,7 @@ function Main() {
             <div className="flex mb-5">
               <div
                 className={`${
-                  focusToday ? "bg-white-400" : "bg-gray-200"
+                  focusToday ? "bg-white-400" : "bg-gray-200 block"
                 } flex ml-20 lg:ml-5 md:ml-5 sm:ml-5 relative items-center space-x-1 
               text-lg px-2 border hover:bg-red-100 text-gray-800 rounded-full`}
               >
@@ -149,9 +149,16 @@ function Main() {
 
                 <div
                   style={{ width: "0.4rem", height: "0.4rem" }}
-                  className="bg-gray-500 rounded-full mr-5"
+                  className={`bg-gray-500 rounded-full mr-5`}
                 />
-                <motion.div layout>
+                <motion.div
+                  layout
+                  className={` ${
+                    focusToday
+                      ? `hidden bg-gray-500 rounded-full mr-5`
+                      : `block`
+                  } `}
+                >
                   Week ({getWeek(dateIdx)} - {getWeek(dateIdx + 6)})
                 </motion.div>
 
@@ -182,7 +189,7 @@ function Main() {
                 >
                   Focus on Today
                 </motion.button>
-                <button onClick={query}>Query</button>
+                {/* <button onClick={query}>Query</button> */}
               </div>
             </div>
             <AnimatePresence mode="wait">
