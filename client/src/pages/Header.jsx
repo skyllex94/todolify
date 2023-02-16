@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
@@ -11,6 +11,26 @@ function Header() {
   const dispatch = useDispatch();
   const { logoutUser } = useLogout();
   const [toggleNav, setToggleNav] = useState(false);
+
+  // Hide mobile menu when click away from it
+  const mobileMenuRef = useRef();
+
+  const closeOpenMenus = useCallback(
+    (e) => {
+      if (
+        mobileMenuRef.current &&
+        toggleNav &&
+        !mobileMenuRef.current.contains(e.target)
+      ) {
+        setToggleNav(false);
+      }
+    },
+    [toggleNav]
+  );
+
+  useEffect(() => {
+    document.addEventListener("mousedown", closeOpenMenus);
+  }, [closeOpenMenus]);
 
   useEffect(() => {
     if (user_id) {
@@ -28,7 +48,7 @@ function Header() {
 
   return (
     <div>
-      <header>
+      <header ref={mobileMenuRef}>
         <nav
           className="absolute z-20 w-full flex items-center bg-white/90 dark:bg-gray-900/80 backdrop-blur  
         shadow-2xl shadow-gray-600/5 border-b dark:border-gray-800 
@@ -80,7 +100,7 @@ function Header() {
 
                       <li>
                         <Link
-                          to={userId ? `/about` : "/"}
+                          to={"/about"}
                           className="navlinks block md:px-4 transition hover:brackets hover:text-primary 
                           dark:hover:text-primaryLight"
                         >
@@ -110,22 +130,23 @@ function Header() {
                       <div className="flex items-center justify-center">
                         <Link
                           to={userId ? `/user/${userId}` : "/register"}
-                          className="relative flex border h-9 ml-auto items-center mr-3 w-24 justify-center
-                          sm:px-6 before:absolute before:inset-0 rounded-full focus:before:bg-sky-600/10
-                           dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                          className="relative flex border pt-2 h-9 ml-auto mr-3 w-24 justify-center
+                           before:absolute before:inset-0 rounded-full focus:before:bg-sky-600/10
+                           dark:focus:before:bg-sky-400/10 before:transition before:duration-300 
+                           hover:before:scale-105 active:duration-75 active:before:scale-95"
                         >
                           <span
-                            className="relative flex w-24 ml-3 block text-sm font-semibold text-primary 
+                            className="relative flex w-24 ml-6 block text-sm font-semibold text-primary 
                           dark:text-primaryLight"
                           >
-                            Register
+                            Sign up
                           </span>
                         </Link>
                         <Link
                           to={userId ? `/user/${userId}` : "/login"}
-                          className="relative flex h-9 w-24 ml-auto items-center justify-center sm:px-6 
-                          before:absolute before:inset-0 before:rounded-full before:bg-sky-600 
-                          dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 
+                          className="pl-3 relative flex h-9 ml-auto w-24 items-center justify-center 
+                          sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-red-600 
+                          dark:before:bg-red-400 before:transition before:duration-300 hover:before:scale-105 
                           active:duration-75 active:before:scale-95"
                         >
                           <span className="relative text-sm font-semibold text-white dark:text-gray-900">
@@ -143,7 +164,7 @@ function Header() {
                       <li className="relative navlinks">
                         <Link
                           to={user_id ? `/user/${user_id}` : "/"}
-                          className=" md:px-4 lis dark:hover:text-primaryLight hidden lg:block"
+                          className="md:px-4 lis hidden lg:block"
                         >
                           <span>Home</span>
                         </Link>
@@ -151,7 +172,7 @@ function Header() {
 
                       <li>
                         <Link
-                          to={userId ? `/about` : "/"}
+                          to={"/about"}
                           className="navlinks block md:px-4 transition hidden lg:block hover:brackets hover:text-primary dark:hover:text-primaryLight"
                         >
                           <span>About</span>
@@ -161,16 +182,16 @@ function Header() {
                   </div>
 
                   <div
-                    className="w-full space-y-2 flex items-center border-primary/10 dark:border-gray-700 
+                    className="flex items-center border-primary/10 dark:border-gray-700 
                   flex flex-col -lg:space-y-0"
                   >
                     {userId ? (
                       <button
                         onClick={logoutUser}
                         className="pl-3 relative flex h-9 ml-auto w-24 hidden lg:block items-center justify-center 
-                    sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-red-600 
-                    dark:before:bg-red-400 before:transition before:duration-300 hover:before:scale-105 
-                    active:duration-75 active:before:scale-95"
+                      sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-red-600 
+                      dark:before:bg-red-400 before:transition before:duration-300 hover:before:scale-105 
+                      active:duration-75 active:before:scale-95"
                       >
                         <span className="relative text-sm font-semibold text-white dark:text-gray-900">
                           Logout
@@ -185,17 +206,17 @@ function Header() {
                          dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
                         >
                           <span
-                            className="relative w-24 block mt-2 ml-2 flex text-sm font-semibold text-primary 
+                            className="relative w-24 block mt-2 flex text-sm font-semibold text-primary 
                         dark:text-primaryLight"
                           >
-                            Register
+                            Sign up
                           </span>
                         </Link>
                         <Link
                           to={userId ? `/user/${userId}` : "/login"}
                           className="relative flex h-9 w-24 ml-auto pt-1.5 items-center justify-center sm:px-6 
-                          before:absolute before:inset-0 before:rounded-full before:bg-sky-600 
-                          dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 
+                          before:absolute before:inset-0 before:rounded-full before:bg-red-600 
+                          dark:before:bg-red-400 before:transition before:duration-300 hover:before:scale-105 
                           active:duration-75 active:before:scale-95 hidden lg:block"
                         >
                           <span className="relative text-sm font-semibold ml-2 text-white dark:text-gray-900">

@@ -56,7 +56,7 @@ export const addCategoryAsync = createAsyncThunk(
 
 export const addTaskAsync = createAsyncThunk(
   "addTaskAsync",
-  // payload => {user_id, category_id, category_index, task (name), day, month_year, dayWtData(boolean)}
+  // payload => {user_id, category_id, category_index, task(name), day, month_year, dayWtData}
   async (payload) => {
     try {
       return await axios.post(
@@ -66,9 +66,7 @@ export const addTaskAsync = createAsyncThunk(
           day: payload.day,
           month_year: payload.month_year,
           dayWtData: payload.dayWtData,
-          category_name: payload.category_name,
           category_index: payload.category_index,
-          local_data: payload.local_data,
         }
       );
     } catch (err) {
@@ -209,7 +207,7 @@ export const deleteTaskAsync = createAsyncThunk(
 
 export const todosSlice = createSlice({
   name: "todos",
-  initialState: [],
+  initialState: null,
   reducers: {
     addCategory: (state, action) => {
       const category = { category: action.payload.categoryName };
@@ -266,11 +264,13 @@ export const todosSlice = createSlice({
 
     // Add task to its category
     builder.addCase(addTaskAsync.fulfilled, (state, action) => {
-      // Returns {newTaskObj, categoryIndex}
-      // const catIndex = action.payload.data.categoryIndex;
-      // state[catIndex].tasks.push(action.payload.data.newTaskObj);
+      const { userTodoList, error } = action.payload.data;
+      if (error) {
+        alert(error);
+        return state;
+      }
 
-      return action.payload.data;
+      return userTodoList;
     });
 
     builder.addCase(updateIconAsync.fulfilled, (_, action) => {

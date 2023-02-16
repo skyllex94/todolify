@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import { useFormData } from "../../hooks/useFormData";
-// import { useLoginUser } from "../../hooks/useLoginUser";
 
 import { storeJWT } from "../../redux/authSlice";
 import { decodeJWT } from "../../utils/functions";
@@ -18,7 +17,27 @@ function LoginForm() {
   const { email, password } = formData;
   // Hangling and diplaying alert
   const { alert, enableAlert, displayAlert } = useDisplayAlert();
-  // const { onSubmit } = useLoginUser(formData, displayAlert);
+
+  // Google OAuth startup
+  // useEffect(() => {
+  //   // console.log(process.env.GOOGLE_CLIENT_ID);
+  //   /*  global google */
+  //   google.accounts.id.initialize({
+  //     client_id:
+  //       "210618004548-3hri404l5rvk77q0v4800vedav2ntonc.apps.googleusercontent.com",
+  //     callback: handleCallbackResponse,
+  //   });
+
+  //   google.accounts.id.renderButton(
+  //     document.getElementById("google-signin-button"),
+  //     { theme: "outline", size: "large" }
+  //   );
+  // }, []);
+
+  // function handleCallbackResponse(res) {
+  //   const google_user_data = jwt_decode(res.credential);
+  //   console.log("google_user_data:", google_user_data);
+  // }
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -42,14 +61,11 @@ function LoginForm() {
     <Fragment>
       {enableAlert && <Alert type={alert.type} message={alert.message} />}
 
-      <h2 className="text-2xl mt-4 font-semibold text-gray-700 text-center">
-        Todolify
-      </h2>
-      <p className="text-xl text-gray-600 text-center">Welcome back!</p>
       <form onSubmit={(e) => onSubmit(e)}>
-        <a
+        {/* <a
           href="#!"
-          className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
+          className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md
+           hover:bg-gray-100"
         >
           <div className="px-4 py-3">
             <svg className="h-6 w-6" viewBox="0 0 40 40">
@@ -71,15 +87,26 @@ function LoginForm() {
               />
             </svg>
           </div>
-          <h1 className="px-4 py-3 w-5/6 text-center text-gray-600 font-bold">
+          <div
+            id="google-signin-button"
+            className="px-4 py-3 w-5/6 text-center text-gray-600 
+          font-bold"
+          >
             Sign in with Google
-          </h1>
-        </a>
+          </div>
+        </a> */}
         <div className="mt-4 flex items-center justify-between">
           <span className="border-b w-1/5 lg:w-1/4"></span>
-          <a href="#!" className="text-xs text-center text-gray-500 uppercase">
+          {/* <div className="text-xs text-center text-gray-500 uppercase">
             or login with email
-          </a>
+          </div> */}
+
+          <div className="mb-3">
+            <h2 className="text-2xl mt-4 font-semibold text-gray-700 text-center">
+              Todolify
+            </h2>
+            <p className="text-xl text-gray-600 text-center">Welcome back!</p>
+          </div>
           <span className="border-b w-1/5 lg:w-1/4"></span>
         </div>
         <div className="mt-4">
@@ -90,7 +117,8 @@ function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => onChange(e, "email")}
-            className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+            className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
+            focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full"
           />
         </div>
         <div className="mt-4">
@@ -106,7 +134,8 @@ function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => onChange(e, "password")}
-            className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+            className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
+            focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full"
           />
         </div>
         <div className="mt-8">

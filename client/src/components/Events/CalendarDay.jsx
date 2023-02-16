@@ -11,7 +11,8 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
   const [addEventButton, setAddEventButton] = useState("hidden");
   const [showEventInfoModal, setShowInfoEventModal] = useState(false);
   const user_id = useSelector((state) => state.auth.user_id);
-  const global = useSelector((state) => state.events);
+  const global = useSelector((state) => state.data);
+
   const [eventInfo, setEventInfo] = useState({
     id: "",
     idx: null,
@@ -32,8 +33,6 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
   function getMonthIdx(month_year, globalState) {
     return globalState.date.findIndex((i) => i.month_year === month_year);
   }
-
-  // TODO: Fix the edge case of when you don't have a monthIdx in the the global state
 
   function getDayIdx(day, monthIdx, globalState) {
     if (monthIdx < 0) return -1;

@@ -60,7 +60,7 @@ export default function Settings() {
                     />
                   ) : (
                     <label htmlFor="user">
-                      {loadedConfig ? userConfig.name : "Loading..."}
+                      {loadedConfig ? userConfig.name : "..."}
                     </label>
                   )}
                 </div>
@@ -86,9 +86,7 @@ export default function Settings() {
                       setEnableEmailChange={setEnableEmailChange}
                     />
                   ) : (
-                    <label>
-                      {loadedConfig ? userConfig.email : "Loading..."}
-                    </label>
+                    <label>{loadedConfig ? userConfig.email : "..."}</label>
                   )}
                 </div>
                 <button

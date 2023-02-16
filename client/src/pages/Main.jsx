@@ -12,6 +12,7 @@ import { useHorizontalScroll } from "../hooks/horizontalScroll";
 import { motion, AnimatePresence } from "framer-motion";
 import SideMenu from "../components/SideMenu/SideMenu";
 import { saveUserData } from "../redux/dataSlice";
+var _ = require("lodash");
 
 function Main() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ function Main() {
   const showEventsInTodoList = useSelector(
     (state) => state.settings.showEventsInTodoList
   );
+  const [search, setSearch] = useState("fffff");
 
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.todos);
@@ -63,6 +65,10 @@ function Main() {
     // Async function triggered when page loaded to call a GET request
     // to specific user & fetch the todoList object of that user
     const getUserTodoList = async (id) => {
+      if (todoList) {
+        setLoadedTodoList(true);
+        return;
+      }
       // Trigger async GET request to the server, who fetch the data from MongoDB
       // Use await to get a response obj and compare the result in order to remove loader
       // and load all the data set since fetched in Redux if it does pass it
@@ -78,7 +84,7 @@ function Main() {
 
     getUserTodoList(id).catch(console.error);
     // urlValidation();
-  }, []);
+  }, [dispatch, id, todoList]);
 
   useEffect(() => {
     // If there's no JWT passed from App.js, navigate to landing page
@@ -100,6 +106,12 @@ function Main() {
 
   const toggleFocusOnToday = () => {
     setFocusToday(!focusToday);
+  };
+
+  const query = () => {
+    console.log("todoList:", todoList);
+    const result = _.filter(todoList.date, { day: "10" });
+    console.log("result:", result);
   };
 
   return (
@@ -168,6 +180,7 @@ function Main() {
                 >
                   Focus on Today
                 </motion.button>
+                <button onClick={query}>Query</button>
               </div>
             </div>
             <AnimatePresence mode="wait">

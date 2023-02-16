@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addTaskAsync } from "../redux/todosSlice";
 
 function AddTask({
@@ -14,29 +14,22 @@ function AddTask({
   const dispatch = useDispatch();
   const [addTaskValue, setAddTaskValue] = useState("");
   const [enableAddTask, setEnableAddTask] = useState(false);
-  const local_data = useSelector((state) => state.data);
 
   const onSubmit = async (event) => {
     event.preventDefault();
     if (addTaskValue) {
       try {
         // Dispatch addingTask async and return an object from DB wt new id, task name and done keys
-
-        console.log("local_data:", local_data);
         dispatch(
           addTaskAsync({
             user_id,
             category_id,
             category_index,
-            category_name,
             task: addTaskValue,
             day,
             month_year,
             dayWtData,
-            local_data,
           })
-
-          // TODO: dispatch(saveUserData())
         );
       } catch (err) {
         console.log(err.message);

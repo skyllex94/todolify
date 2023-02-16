@@ -82,28 +82,32 @@ function CategoryItem({
         className="items-center my-1"
       >
         {tasks &&
-          tasks.map((curr, index) => {
-            const { _id, task, done } = curr;
+          tasks
+            .filter((curr) =>
+              curr.task.toLowerCase().includes("Kamen".toLowerCase())
+            )
+            .map((curr, index) => {
+              const { _id, task, done } = curr;
 
-            return (
-              <div
-                className="flex items-center mb-1 justify-between group"
-                key={index}
-              >
-                <TaskItem
-                  user_id={user_id}
-                  category_id={category_id}
-                  category_index={category_index}
-                  day={day}
-                  month_year={month_year}
-                  id={_id}
-                  task={task}
-                  task_index={index}
-                  done={done}
-                />
-              </div>
-            );
-          })}
+              return (
+                <div
+                  className="flex items-center mb-1 justify-between group"
+                  key={index}
+                >
+                  <TaskItem
+                    user_id={user_id}
+                    category_id={category_id}
+                    category_index={category_index}
+                    day={day}
+                    month_year={month_year}
+                    id={_id}
+                    task={task}
+                    task_index={index}
+                    done={done}
+                  />
+                </div>
+              );
+            })}
         <AddTask
           user_id={user_id}
           category_id={category_id}

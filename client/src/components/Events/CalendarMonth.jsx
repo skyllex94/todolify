@@ -6,9 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 import { useSelector } from "react-redux";
 
-function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
+function CalendarMonth({ monthObj, setCurrMonthIdx }) {
   const [showModal, setShowModal] = useState(false);
   const [monthInfo, setMonthInfo] = useState(null);
+  const events = useSelector((state) => state.data);
+
   const startFromSunday = useSelector(
     (state) => state.settings.startFromSunday
   );
@@ -78,7 +80,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, events }) {
           transition={{ duration: 0.2 }}
           className="wrapper bg-white rounded shadow w-full"
         >
-          <div className="flex justify-between pl-14 py-2">
+          <div className="flex justify-between pl-14 md:pl-2 lg:pl-2 xl:pl-2 sm:pl-2 py-2">
             <span className="text-lg font-bold">{monthTitle}</span>
             <div className="buttons">
               <button

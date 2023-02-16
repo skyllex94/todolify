@@ -83,11 +83,7 @@ function Register() {
           <div className="w-full p-8 lg:w-1/2">
             {enableAlert && <Alert type={alert.type} message={alert.message} />}
 
-            <h2 className="mt-3 text-2xl font-semibold text-gray-700 text-center">
-              Todolify
-            </h2>
-
-            <a
+            {/* <a
               href="#!"
               className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
             >
@@ -114,17 +110,21 @@ function Register() {
               <h1 className=" py-3 w-3/6 text-center text-gray-600 font-bold">
                 Register with Google
               </h1>
-            </a>
+            </a> */}
             <div className="mt-4 flex items-center justify-between">
-              <span className="border-b w-1/5 lg:w-1/4"></span>
-              <a
-                href="#!"
-                className="text-xs text-center text-gray-500 uppercase"
-              >
-                or sign-up with email
-              </a>
-              <span className="border-b w-1/5 lg:w-1/4"></span>
+              <span className="border-b w-1/8 lg:w-1/6"></span>
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-700 text-center">
+                  Todolify
+                </h2>
+                <div className="text-center mt-2">
+                  <p>Your personalized todo app</p>
+                </div>
+              </div>
+
+              <span className="border-b w-1/8 lg:w-1/6"></span>
             </div>
+
             <form onSubmit={(e) => onSubmit(e)}>
               <div className="mt-4">
                 <label
@@ -137,7 +137,9 @@ function Register() {
                   name="name"
                   value={name}
                   onChange={(e) => onChange(e, "name")}
-                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
+                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
+                  w-full appearance-none"
                   type="text"
                 />
               </div>
@@ -152,7 +154,9 @@ function Register() {
                   name="email"
                   value={email}
                   onChange={(e) => onChange(e, "email")}
-                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
+                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
+                  w-full appearance-none"
                   type="email"
                 />
               </div>
@@ -169,7 +173,9 @@ function Register() {
                   name="password"
                   value={password}
                   onChange={(e) => onChange(e, "password")}
-                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
+                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
+                  w-full appearance-none"
                   type="password"
                 />
               </div>
@@ -186,7 +192,9 @@ function Register() {
                   name="repeat_password"
                   value={repeat_password}
                   onChange={(e) => onChange(e, "repeat_password")}
-                  className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
+                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
+                  w-full appearance-none"
                   type="password"
                 />
               </div>

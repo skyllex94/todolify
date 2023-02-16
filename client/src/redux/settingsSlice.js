@@ -77,6 +77,7 @@ export const settingsSlice = createSlice({
     startFromSunday: false,
     userConfig: {},
     changeCategoryDoneIcon: false,
+    searchForTask: "",
   },
   reducers: {
     openSideMenu: (state, action) => {
@@ -94,6 +95,9 @@ export const settingsSlice = createSlice({
     },
     updateUserEmail: (state, action) => {
       return { ...state, userEmail: action.payload };
+    },
+    searchForTask: (state, action) => {
+      return { ...state, searchForTask: action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -142,5 +146,6 @@ export const {
   showEventsInTodoList,
   startFromSunday,
   changeCategoryIconToDone,
+  searchForTask,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

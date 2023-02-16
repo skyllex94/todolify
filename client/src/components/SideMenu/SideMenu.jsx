@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./sidemenu.module.css";
 import { FiSettings } from "react-icons/fi";
 import { BsCalendar3Week } from "react-icons/bs";
 import { MdOutlineDoubleArrow, MdOutlineViewWeek } from "react-icons/md";
 import { GiCornerFlag } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
-import { openSideMenu } from "../../redux/settingsSlice";
+import { openSideMenu, searchForTask } from "../../redux/settingsSlice";
 
-function SideMenu({ user_id }) {
+function SideMenu() {
   // Side Menu states
   const isOpen = useSelector((state) => state.settings.isOpenSideMenu);
+  const user_id = useSelector((state) => state.auth.user_id);
+
+  const [search, setSearch] = useState("");
   const navLinks = [
     {
       name: "Weekly List",
@@ -36,6 +39,7 @@ function SideMenu({ user_id }) {
   ];
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const toggleOpen = () => dispatch(openSideMenu(!isOpen));
 
   // Default motion style props for usage
@@ -43,6 +47,11 @@ function SideMenu({ user_id }) {
     initial: { scale: 1 },
     whileHover: { scale: 1.1 },
     whileTap: { scale: 0.9 },
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    dispatch(searchForTask(search));
   };
 
   return (
@@ -57,6 +66,7 @@ function SideMenu({ user_id }) {
           <MdOutlineDoubleArrow size={24} />
         )}
       </button>
+
       <div className="space-y-3">
         <div className="flex items-center">
           <h2 className={isOpen ? "text-xl font-bold" : "hidden"}>Dashboard</h2>
@@ -67,13 +77,16 @@ function SideMenu({ user_id }) {
               <button
                 type="submit"
                 className="p-2 focus:outline-none focus:ring"
-              ></button>
+              />
             </span>
             <input
               type="search"
               name="Search"
               placeholder="Search Task..."
-              className="text-sm mr-5 rounded-md focus:outline-none"
+              value={search}
+              onChange={(e) => handleSearch(e)}
+              onClick={() => navigate(`/user/${user_id}`)}
+              className="text-sm mr-5 text-black rounded-md focus:outline-none"
             />
           </div>
         </motion.div>
