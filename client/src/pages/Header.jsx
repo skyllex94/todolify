@@ -117,7 +117,7 @@ function Header() {
                     {userId ? (
                       <button
                         onClick={logoutUser}
-                        className="pl-3 relative flex h-9 ml-auto w-24 items-center justify-center 
+                        className="relative flex h-9 ml-auto w-24 items-center justify-center 
                       sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-red-600 
                       dark:before:bg-red-400 before:transition before:duration-300 hover:before:scale-105 
                       active:duration-75 active:before:scale-95"
