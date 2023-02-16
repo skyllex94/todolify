@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import DeleteTask from "./DeleteTask";
 import EditTask from "./EditTask";
 import EnableEditTask from "./EnableEditTask";
-import PushToNextDay from "./PushToNextDay";
 import ToggleTask from "./ToggleTask";
 
 const TaskItem = ({

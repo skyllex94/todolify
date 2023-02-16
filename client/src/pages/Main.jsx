@@ -31,7 +31,6 @@ function Main() {
   const showEventsInTodoList = useSelector(
     (state) => state.settings.showEventsInTodoList
   );
-  const [search, setSearch] = useState("fffff");
 
   // Redux state for todo list of auth user
   const todoList = useSelector((state) => state.todos);
@@ -65,14 +64,11 @@ function Main() {
     // Async function triggered when page loaded to call a GET request
     // to specific user & fetch the todoList object of that user
     const getUserTodoList = async (id) => {
-      if (todoList) {
-        setLoadedTodoList(true);
-        return;
-      }
       // Trigger async GET request to the server, who fetch the data from MongoDB
       // Use await to get a response obj and compare the result in order to remove loader
       // and load all the data set since fetched in Redux if it does pass it
       const respFromDB = await dispatch(getTodosAsync(id));
+      console.log("respFromDB:", respFromDB);
 
       if (respFromDB.type === "getTodosAsync/fulfilled") {
         // Save the user data locally after being loaded
@@ -84,7 +80,7 @@ function Main() {
 
     getUserTodoList(id).catch(console.error);
     // urlValidation();
-  }, [dispatch, id, todoList]);
+  }, [id]);
 
   useEffect(() => {
     // If there's no JWT passed from App.js, navigate to landing page
@@ -108,9 +104,15 @@ function Main() {
     setFocusToday(!focusToday);
   };
 
+  // const result = _.filter(todoList.date, {
+  //   month_year: "02/2023",
+  //   days: [{ day: 10 }],
+  // });
+
   const query = () => {
-    console.log("todoList:", todoList);
-    const result = _.filter(todoList.date, { day: "10" });
+    const result = _.filter(todoList.date, {
+      days: [{ categories: [{ tasks: [{ task: "Kamen" }] }] }],
+    }).map((filtered) => filtered.days);
     console.log("result:", result);
   };
 

@@ -99,10 +99,11 @@ router.patch("/update-event", async (req, res) => {
   const event_notes = req.body.event_notes;
   const day_idx = req.body.day_idx;
   const month_idx = req.body.month_idx;
+  console.log("month_idx:", month_idx);
 
-  if (month_idx || day_idx < 0)
+  if (month_idx < 0 || day_idx < 0)
     return res.send({
-      error: "Could not locate element to delete, please try again",
+      error: "Could not locate element to update, please try again",
     });
 
   const updatedEvent = { event: event_name, notes: event_notes };

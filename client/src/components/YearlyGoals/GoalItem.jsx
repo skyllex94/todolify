@@ -50,7 +50,7 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
   };
 
   return (
-    <div className="flex items-center justify-between inline pl-2 mb-2 ">
+    <div className="flex group items-center justify-between inline pl-2 mb-2 ">
       {enableRename ? (
         <div className="flex ml-10 items-center">
           <form onSubmit={renameYearlyGoal}>
@@ -82,7 +82,7 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
         </div>
       )}
 
-      <div className="flex">
+      <div className="flex hidden group-hover:block">
         <GoalsOptions
           user_id={user_id}
           year_idx={year_idx}

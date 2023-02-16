@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addEventAsync } from "../../redux/eventsSlice";
+import { saveUserData } from "../../redux/dataSlice";
 
 function AddEventModal({ monthInfo, setShowModal }) {
   // States
@@ -50,9 +51,12 @@ function AddEventModal({ monthInfo, setShowModal }) {
     let event_name = eventName;
     try {
       // Add event for to a specific day
-      await dispatch(
+      const res = await dispatch(
         addEventAsync({ user_id, event_name, day, month_year, notes })
       );
+
+      if (res.payload.status === 200)
+        dispatch(saveUserData(res.payload.data.userTodoList));
 
       setShowModal(false);
     } catch (err) {

@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { saveUserData } from "../../redux/dataSlice";
 import { removeEventAsync, updateEventAsync } from "../../redux/eventsSlice";
 
 function UpdateEventModal({
@@ -48,9 +49,11 @@ function UpdateEventModal({
           month_idx,
         })
       );
+      console.log("res:", res);
 
       if (res.type === "updateEventAsync/fulfilled")
-        setShowInfoEventModal(false);
+        dispatch(saveUserData(res.payload.data.userTodoList));
+      setShowInfoEventModal(false);
     } catch (err) {
       alert(err.message);
     }
@@ -77,6 +80,8 @@ function UpdateEventModal({
       }
     }
   }
+
+  // TODO: When trying to update, it does to deleting instead, fix it please
 
   return (
     <div>

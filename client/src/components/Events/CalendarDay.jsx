@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { removeEventAsync } from "../../redux/eventsSlice";
 import { GrFormClose } from "react-icons/gr";
+import { saveUserData } from "../../redux/dataSlice";
 
 function CalendarDay({ day, events, month_year, addEventModal }) {
   // Local and global states
@@ -42,7 +43,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
     );
   }
 
-  function removeEvent(event_id) {
+  async function removeEvent(event_id) {
     if ((monthIdx, dayIdx === null))
       return alert("Mistake fetching month and/or day index");
 
@@ -50,7 +51,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       window.confirm("Are you sure you want to delete this event?") === true
     ) {
       try {
-        dispatch(
+        const res = await dispatch(
           removeEventAsync({
             user_id,
             day_idx: dayIdx,
@@ -58,6 +59,8 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
             event_id,
           })
         );
+        if (res.payload.status === 200)
+          dispatch(saveUserData(res.payload.data.userTodoList));
       } catch (err) {
         alert(err.message);
       }

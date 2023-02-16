@@ -263,6 +263,7 @@ router.post("/:id/:category_id", async (req, res) => {
 
   // IF - there's "events" object for the day, add the "categories" to it
   const dayIdx = getDayIdx(day, monthIdx, userTodoList);
+
   if (userTodoList.date[monthIdx]?.days[dayIdx]?.events) {
     // Push the category to this same object
     categories.map((curr) =>

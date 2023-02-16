@@ -3,7 +3,6 @@ import axios from "axios";
 
 // Not used for now since async fetching the todo list wt state through Main and passing to TodoList
 export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
-  console.log("id:", id);
   // Fetch array of todos from DB and return (through res.send() on the backend) a resp value
   try {
     const resp = await axios.get(`/api/user/${id}`);
@@ -66,7 +65,7 @@ export const addTaskAsync = createAsyncThunk(
           day: payload.day,
           month_year: payload.month_year,
           dayWtData: payload.dayWtData,
-          category_index: payload.category_index,
+          default_category_idx: payload.category_index,
         }
       );
     } catch (err) {

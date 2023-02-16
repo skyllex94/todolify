@@ -51,7 +51,6 @@ function Register() {
           const user = decodeJWT(res.data.token);
           console.log("user:", user);
           const { id } = user.user;
-          console.log("id:", id);
           navigate(`/user/${id}`);
         } catch (err) {
           displayAlert(err.name, err.message, err.response.status);
