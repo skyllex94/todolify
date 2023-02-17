@@ -12,6 +12,7 @@ import { useHorizontalScroll } from "../hooks/horizontalScroll";
 import { motion, AnimatePresence } from "framer-motion";
 import SideMenu from "../components/SideMenu/SideMenu";
 import { saveUserData } from "../redux/dataSlice";
+import WeeklyInstModal from "../components/InstructionModals/WeeklyInstModal";
 var _ = require("lodash");
 
 function Main() {
@@ -28,6 +29,13 @@ function Main() {
   const [dateIdx, setDateIdx] = useState(0);
   const scrollRef = useHorizontalScroll();
   const [focusToday, setFocusToday] = useState(false);
+  const [showInstModal, setShowInstModal] = useState(handleShowInstModal);
+
+  function handleShowInstModal() {
+    if (document.URL.toString().includes("/new")) return true;
+    return false;
+  }
+
   const showEventsInTodoList = useSelector(
     (state) => state.settings.showEventsInTodoList
   );
@@ -47,19 +55,6 @@ function Main() {
 
   const weeklyTodoList = week;
 
-  // URl change if coming from a different route
-  // const urlValidation = () => {
-  //   const currentUrl = window.location.href;
-  //   const pathArray = currentUrl.split("/");
-  //   const pathToCompare = pathArray.slice(3);
-  //   if (pathToCompare[1] !== id) {
-  //     const url = `/user/${id}`;
-  //     window.history.pushState({}, "", url);
-  //   }
-  // };
-
-  // Trigger async func on page load
-
   useEffect(() => {
     // Async function triggered when page loaded to call a GET request
     // to specific user & fetch the todoList object of that user
@@ -68,7 +63,6 @@ function Main() {
       // Use await to get a response obj and compare the result in order to remove loader
       // and load all the data set since fetched in Redux if it does pass it
       const respFromDB = await dispatch(getTodosAsync(id));
-      console.log("respFromDB:", respFromDB);
 
       if (respFromDB.type === "getTodosAsync/fulfilled") {
         // Save the user data locally after being loaded
@@ -299,6 +293,9 @@ function Main() {
             </AnimatePresence>
           </div>
         </div>
+        {showInstModal && (
+          <WeeklyInstModal setShowInstModal={setShowInstModal} />
+        )}
       </div>
     </React.Fragment>
   );

@@ -4,6 +4,7 @@ import axios from "axios";
 export const getUserConfigAsync = createAsyncThunk(
   "getUserConfigAsync",
   async (user_id) => {
+    console.log("user_id:", user_id);
     try {
       return await axios.get(`/api/settings/${user_id}`);
     } catch (err) {

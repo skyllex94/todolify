@@ -17,8 +17,9 @@ router.get(
   ],
   async (req, res) => {
     const user_id = req.params.user_id;
+    console.log("user_id:", user_id);
 
-    const userConfig = await User.findOne({ user_id });
+    const userConfig = await User.findOne({ _id: user_id });
 
     if (!userConfig) return { error: "No user found" };
     res.send({ userConfig });
@@ -29,11 +30,10 @@ router.get(
 // @desc    Rename the name of the user
 // @access  Private
 router.post("/change-name", async (req, res) => {
-  const user_id = req.body.user_id;
-  const new_name = req.body.new_name;
+  const { user_id, new_name } = req.body;
 
   const userConfig = await User.findOneAndUpdate(
-    { user_id },
+    { _id: user_id },
     { $set: { name: new_name } },
     { new: true }
   );
@@ -46,21 +46,34 @@ router.post("/change-name", async (req, res) => {
 // @route   POST /api/settings/change-email
 // @desc    Rename the email of a user
 // @access  Private
-router.post("/change-email", async (req, res) => {
-  const user_id = req.body.user_id;
-  const new_email = req.body.new_email;
-  console.log("new_email:", new_email);
+router.post(
+  "/change-email",
+  [
+    [
+      // Email check from middleware
+      check("email", "Please include a valid email").isEmail(),
+    ],
+  ],
+  async (req, res) => {
+    const { user_id, new_email } = req.body;
 
-  const userConfig = await User.findOneAndUpdate(
-    { user_id },
-    { $set: { email: new_email } },
-    { new: true }
-  );
+    // Check if new_email already exists in DB
+    let user = await User.findOne({ new_email });
+    if (user)
+      return res.status(400).json({ errors: [{ msg: "User already exists" }] });
 
-  if (!userConfig) return { error: "The query request could not be finished" };
+    const userConfig = await User.findOneAndUpdate(
+      { _id: user_id },
+      { $set: { email: new_email } },
+      { new: true }
+    );
 
-  res.send({ userConfig });
-});
+    if (!userConfig)
+      return { error: "The query request could not be finished" };
+
+    res.send({ userConfig });
+  }
+);
 
 // @route   POST /api/settings/change-pass
 // @desc    Update user's password
@@ -80,7 +93,7 @@ router.post("/change-pass", async (req, res) => {
 
   // Make sure the user_id does not change when updating password
   const userConfig = await User.findOneAndUpdate(
-    { user_id },
+    { _id: user_id },
     { $set: { _id: user_id, password: updated_pass } },
     { new: true }
   );
@@ -107,7 +120,7 @@ router.delete("/delete-user", async (req, res) => {
   }
 
   try {
-    const deletedTodos = await Todos.deleteOne({ user_id });
+    const deletedTodos = await Todos.deleteOne({ _id: user_id });
     const { acknowledged, deleteCount } = deletedTodos;
     if (acknowledged && deleteCount > 0) removedUserTodos = true;
   } catch (error) {
@@ -115,7 +128,6 @@ router.delete("/delete-user", async (req, res) => {
   }
 
   res.send({ permanentlyDeleted: true });
-  console.log("user_id:", user_id);
 });
 
 module.exports = router;

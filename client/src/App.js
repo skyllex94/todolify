@@ -26,13 +26,13 @@ function App() {
     dispatch(saveUserId({ user_id }));
   }
 
-  // TODO: Fix the user_id param for events and for re-clicking on weekly list
   return (
     <Router>
       <div className="App">
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path={`/user/:id`} element={<Main />} />
+          <Route path={`/user/:id/new`} element={<Main />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path={`/events/:id`} element={<Events />} />

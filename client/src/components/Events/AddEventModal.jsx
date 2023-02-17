@@ -20,33 +20,17 @@ function AddEventModal({ monthInfo, setShowModal }) {
   const navigate = useNavigate();
   if (!user_id) navigate("/");
 
-  // useEffect(() => {
-  //   const closeModal = (e) => {
-  //     if (closeModalRef.current && !closeModalRef.current.contains(e.target))
-  //       setShowModal(false);
-  //   };
-
-  //   document.addEventListener("mousedown", closeModal);
-  //   return () => {
-  //     window.removeEventListener("mousedown", closeModal);
-  //   };
-  // }, [setShowModal]);
-
   // Trigger removing modal on outside click or escape key pressed
   useEffect(() => {
-    const keyPressed = (e) => {
-      if (e.keyCode === 27) setShowModal(false);
-    };
-
     const closeModal = (e) => {
-      if (closeModalRef.current && !closeModalRef.current.contains(e.target))
-        setShowModal(false);
+      if (e.keyCode === 27) setShowModal(false);
+      if (!closeModalRef?.current.contains(e.target)) setShowModal(false);
     };
 
+    window.addEventListener("keydown", closeModal);
     window.addEventListener("mousedown", closeModal);
-    window.addEventListener("keydown", keyPressed);
     return () => {
-      window.removeEventListener("keydown", keyPressed);
+      window.removeEventListener("keydown", closeModal);
       window.removeEventListener("mousedown", closeModal);
     };
   }, [setShowModal]);

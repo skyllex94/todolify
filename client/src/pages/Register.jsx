@@ -49,9 +49,8 @@ function Register() {
           );
 
           const user = decodeJWT(res.data.token);
-          console.log("user:", user);
-          const { id } = user.user;
-          navigate(`/user/${id}`);
+          const { id } = user?.user;
+          navigate(`/user/${id}/new`);
         } catch (err) {
           displayAlert(err.name, err.message, err.response.status);
         }
@@ -59,9 +58,8 @@ function Register() {
         const errorArr = err.response.data.errors[0].msg;
         if (errorArr) {
           displayAlert(err.name, err.errorArr, err.response.status);
-        } else {
-          displayAlert(err.name, err.message, err.response.status);
         }
+        displayAlert(err.name, err.message, err.response.status);
       }
     }
   };
