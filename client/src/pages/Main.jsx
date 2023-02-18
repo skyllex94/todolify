@@ -2,7 +2,7 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
 import { decodeJWT, getDate } from "../utils/functions";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SideMenu from "../components/SideMenu/SideMenu";
 import { saveUserData } from "../redux/dataSlice";
 import WeeklyInstModal from "../components/InstructionModals/WeeklyInstModal";
+
 var _ = require("lodash");
 
 function Main() {
@@ -73,7 +74,6 @@ function Main() {
     };
 
     getUserTodoList(id).catch(console.error);
-    // urlValidation();
   }, [id]);
 
   useEffect(() => {

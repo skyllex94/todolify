@@ -36,9 +36,7 @@ function Goals() {
 
     fetchGoals();
     setLoadGoals(true);
-  }, []);
-
-  // TODO: When add goals, fix the mistake of error being printed up
+  }, [dispatch, localData, user_id]);
 
   return (
     <React.Fragment>

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
 import { saveUserId } from "../redux/authSlice";
 import { decodeJWT } from "../utils/functions";
+import logo from "../assets/brackets.png";
 
 function Header() {
   const [userId, setUserId] = useState(null);
@@ -59,10 +60,14 @@ function Header() {
               <div className="w-full items-center flex justify-between lg:w-auto">
                 <Link
                   to="/"
-                  className="relative pl-2 z-20 dark:bg-gray-300"
+                  className="flex items-center relative pl-2 z-20 dark:bg-gray-300"
                   aria-label="logo"
                 >
-                  Todolify
+                  <img className="w-6 mr-3" src={logo} alt="Logo" />
+
+                  <p className="font-medium leading-tight text-xl">
+                    <b>Todolify</b>
+                  </p>
                 </Link>
                 <button
                   onClick={() => setToggleNav(!toggleNav)}
