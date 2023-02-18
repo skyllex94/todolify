@@ -78,12 +78,12 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       className="mx-auto h-32 xl:h-36 lg:h-36 md:h-36 sm:h-36 xl:w-full lg:w-full md:w-full sm:w-full
       w-10 mx-auto overflow-hidden"
     >
-      <div className="flex items-center justify-between">
+      <div
+        className="flex items-center justify-between"
+        onClick={() => addEventModal(day)}
+      >
         <div className="flex text-red-500">{$D}</div>
-        <div
-          onClick={() => addEventModal(day)}
-          className={`flex ${addEventButton} text-red-500`}
-        >
+        <div className={`flex ${addEventButton} text-red-500`}>
           <FiPlusCircle />
         </div>
       </div>

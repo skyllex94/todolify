@@ -5,16 +5,18 @@ import { useHorizontalScroll } from "../hooks/horizontalScroll";
 import Header from "./Header";
 import img1 from "../assets/about1.png";
 import img2 from "../assets/about3.png";
+import { useSelector } from "react-redux";
 
 export default function About() {
   const scrollRef = useHorizontalScroll();
+  const user_id = useSelector((state) => state.auth.user_id);
 
   return (
     <React.Fragment>
       <Header />
 
       <div className="flex h-screen">
-        <SideMenu />
+        {user_id && <SideMenu />}
         <div
           ref={scrollRef}
           style={{ overflow: "auto" }}

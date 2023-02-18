@@ -7,8 +7,6 @@ import GoalItem from "./GoalItem";
 function GoalsList({ user_id }) {
   const localData = useSelector((state) => state.data);
 
-  // TODO: Make sure that the current month in events updates
-
   return (
     localData &&
     localData.goals.map((yearlyGoals, idx) => (

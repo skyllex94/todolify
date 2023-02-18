@@ -1,20 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./sidemenu.module.css";
 import { FiSettings } from "react-icons/fi";
 import { BsCalendar3Week } from "react-icons/bs";
 import { MdOutlineDoubleArrow, MdOutlineViewWeek } from "react-icons/md";
 import { GiCornerFlag } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
-import { openSideMenu, searchForTask } from "../../redux/settingsSlice";
+import { openSideMenu } from "../../redux/settingsSlice";
 
 function SideMenu() {
   // Side Menu states
   const isOpen = useSelector((state) => state.settings.isOpenSideMenu);
   const user_id = useSelector((state) => state.auth.user_id);
 
-  const [search, setSearch] = useState("");
   const navLinks = [
     {
       name: "Weekly List",
@@ -39,7 +38,6 @@ function SideMenu() {
   ];
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const toggleOpen = () => dispatch(openSideMenu(!isOpen));
 
   // Default motion style props for usage
@@ -49,10 +47,10 @@ function SideMenu() {
     whileTap: { scale: 0.9 },
   };
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-    dispatch(searchForTask(search));
-  };
+  // const handleSearch = (e) => {
+  //   setSearch(e.target.value);
+  //   dispatch(searchForTask(search));
+  // };
 
   return (
     <div className={isOpen ? styles.sidenav : styles.sidenavClosed}>

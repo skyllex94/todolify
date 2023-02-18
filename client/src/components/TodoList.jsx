@@ -13,7 +13,7 @@ const TodoList = ({
   dayWtData,
 }) => {
   return (
-    <div className="todo-list ml-5 min-w-[16%] ">
+    <div className="todo-list ml-5 min-w-[16%]">
       <div className="rounded-lg shadow-lg bg-white pr-5 justify-between">
         <ul className="list-group pt-5">
           <h3 className="text-center">

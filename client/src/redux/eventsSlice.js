@@ -31,9 +31,6 @@ export const addEventAsync = createAsyncThunk(
   }
 );
 
-// TODO: When you click on update and try to confirm it, it gives an error since it's going to
-// the delete request instead of the update
-
 export const toggleEventAsync = createAsyncThunk(
   "toggleEventAsync",
   async (payload) => {

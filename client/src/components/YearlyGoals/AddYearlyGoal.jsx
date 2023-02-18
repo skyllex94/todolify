@@ -10,9 +10,6 @@ export default function AddYearlyGoal({ year, localData }) {
   const dispatch = useDispatch();
   const user_id = useSelector((state) => state.auth.user_id);
 
-  // TODO: There's a bug with having an event for a day and having more than one task for this day
-  // it stops the request from going through
-
   async function addGoal(e) {
     e.preventDefault();
     // Checks before committing dispatch

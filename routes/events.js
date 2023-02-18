@@ -69,11 +69,7 @@ router.post("/add-event", async (req, res) => {
 // @desc    Toggle an event from a specific day
 // @access  Private
 router.patch("/toggle-event", async (req, res) => {
-  const user_id = req.body.user_id;
-  const event_idx = req.body.event_idx;
-  const updated_toggle = req.body.updated_toggle;
-  const day_idx = req.body.day_idx;
-  const month_idx = req.body.month_idx;
+  const { user_id, event_idx, updated_toggle, day_idx, month_idx } = req.body;
 
   const key =
     "date." + month_idx + ".days." + day_idx + ".events." + event_idx + ".done";
@@ -93,15 +89,8 @@ router.patch("/toggle-event", async (req, res) => {
 // @desc    Update an event from a specific day
 // @access  Private
 router.patch("/update-event", async (req, res) => {
-  const user_id = req.body.user_id;
-  const event_idx = req.body.event_idx;
-  const event_name = req.body.event_name;
-  const event_notes = req.body.event_notes;
-  const day_idx = req.body.day_idx;
-  const month_idx = req.body.month_idx;
-  console.log("month_idx:", month_idx);
-
-  // TODO: Close the modal window on click outside
+  const { user_id, event_idx, event_name, event_notes, day_idx, month_idx } =
+    req.body;
 
   if (month_idx < 0 || day_idx < 0)
     return res.send({
@@ -127,10 +116,7 @@ router.patch("/update-event", async (req, res) => {
 // @desc    Remove an event from a specific day
 // @access  Private
 router.delete("/remove-event", async (req, res) => {
-  const user_id = req.body.user_id;
-  const day_idx = req.body.day_idx;
-  const month_idx = req.body.month_idx;
-  const event_id = req.body.event_id;
+  const { user_id, event_id, day_idx, month_idx } = req.body;
 
   const key = "date." + month_idx + ".days." + day_idx + ".events";
 

@@ -2,7 +2,7 @@ import Header from "./Header";
 import TodoList from "../components/TodoList";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
 import { decodeJWT, getDate } from "../utils/functions";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
@@ -103,12 +103,12 @@ function Main() {
   //   days: [{ day: 10 }],
   // });
 
-  const query = () => {
-    const result = _.filter(todoList.date, {
-      days: [{ categories: [{ tasks: [{ task: "Kamen" }] }] }],
-    }).map((filtered) => filtered.days);
-    console.log("result:", result);
-  };
+  // const query = () => {
+  //   const result = _.filter(todoList.date, {
+  //     days: [{ categories: [{ tasks: [{ task: "Kamen" }] }] }],
+  //   }).map((filtered) => filtered.days);
+  //   console.log("result:", result);
+  // };
 
   return (
     <React.Fragment>
