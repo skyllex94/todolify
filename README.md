@@ -1,4 +1,4 @@
-# Description: Todolify - Productivity Timeblocking and Categorization Todo Web App
+# Todolify - Productivity Timeblocking and Categorization Todo Web App
 
 Todolify is a full-stack (MERN) productivity tool, designed to present a new way of looking at your daily tasks as putting them
 in things called 'buckets' (different categories) from which you separate concerns, and in terms focus on a single category at a time, which is time blocked to be able to focus on it. In addition there are several other productivity management tools available for managing long-scale projects and goals.
