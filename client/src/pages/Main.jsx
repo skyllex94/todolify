@@ -23,18 +23,17 @@ function Main() {
   const user_id = decodeJWT(savedJWT);
   const { id } = user_id.user;
 
-  const dispatch = useDispatch();
-  // TODO: Make priorities on the tasks
-
   const [loadedTodoList, setLoadedTodoList] = useState(false);
   const [dateIdx, setDateIdx] = useState(0);
   const scrollRef = useHorizontalScroll();
   const [focusToday, setFocusToday] = useState(false);
-  const [showInstModal, setShowInstModal] = useState(handleShowInstModal);
+  // const [showInstModal, setShowInstModal] = useState(handleShowInstModal);
+
+  const dispatch = useDispatch();
 
   function handleShowInstModal() {
     if (document.URL.toString().includes("/new")) return true;
-    return false;
+    return true;
   }
 
   const showEventsInTodoList = useSelector(
@@ -118,17 +117,17 @@ function Main() {
         <SideMenu user_id={id} />
 
         <div
-          className="flex pt-24 h-full"
+          className="flex h-full pt-24"
           ref={scrollRef}
           style={{ overflow: "auto" }}
         >
           <div>
-            <div className="flex mb-5">
+            <div className="mb-5 flex">
               <div
                 className={`${
-                  focusToday ? "bg-white-400" : "bg-gray-200 block"
-                } flex ml-20 lg:ml-5 md:ml-5 sm:ml-5 relative items-center space-x-1 
-              text-lg px-2 border hover:bg-red-100 text-gray-800 rounded-full`}
+                  focusToday ? "bg-white-400" : "block bg-gray-200"
+                } relative ml-20 flex items-center space-x-1 rounded-full border px-2 
+              text-lg text-gray-800 hover:bg-red-100 sm:ml-5 md:ml-5 lg:ml-5`}
               >
                 <motion.button
                   initial={{ scale: 1 }}
@@ -143,13 +142,13 @@ function Main() {
 
                 <div
                   style={{ width: "0.4rem", height: "0.4rem" }}
-                  className={`bg-gray-500 rounded-full mr-5`}
+                  className={`mr-5 rounded-full bg-gray-500`}
                 />
                 <motion.div
                   layout
                   className={` ${
                     focusToday
-                      ? `hidden bg-gray-500 rounded-full mr-5`
+                      ? `mr-5 hidden rounded-full bg-gray-500`
                       : `block`
                   } `}
                 >
@@ -169,10 +168,10 @@ function Main() {
               </div>
 
               <div
-                className={`flex ml-5 relative ${
+                className={`relative ml-5 flex ${
                   focusToday ? "bg-gray-200" : "bg-white-400"
                 } 
-          items-center space-x-1 text-lg px-2 text-gray-800 rounded-full hover:bg-red-100 border`}
+          items-center space-x-1 rounded-full border px-2 text-lg text-gray-800 hover:bg-red-100`}
               >
                 <motion.button
                   initial={{ scale: 1 }}
@@ -293,9 +292,9 @@ function Main() {
             </AnimatePresence>
           </div>
         </div>
-        {showInstModal && (
+        {/* {showInstModal && (
           <WeeklyInstModal setShowInstModal={setShowInstModal} />
-        )}
+        )} */}
       </div>
     </React.Fragment>
   );

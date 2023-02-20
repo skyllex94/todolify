@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { saveUserData } from "../../redux/dataSlice";
 import { renameGoalAsync, toggleGoalAsync } from "../../redux/goalsSlice";
+import Example from "./GoalsDropdown";
+import GoalsDropdown from "./GoalsDropdown";
 
 import GoalsOptions from "./GoalsOptions";
 
@@ -50,9 +52,9 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
   };
 
   return (
-    <div className="flex group items-center justify-between inline pl-2 mb-2 ">
+    <div className="group mb-2 inline flex items-center justify-between pl-2 ">
       {enableRename ? (
-        <div className="flex ml-10 items-center">
+        <div className="ml-10 flex items-center">
           <form onSubmit={renameYearlyGoal}>
             <input
               type="text"
@@ -61,8 +63,8 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
               onBlur={() => setEnableRename(false)}
               value={renamedValue}
               onChange={(e) => setRenamedValue(e.target.value)}
-              className="block py-1 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 
-              dark:focus:border-orange-500 focus:outline-none focus:ring-0 focus:border-orange-600 peer"
+              className="text-md peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-1 px-0 text-gray-900 focus:border-orange-600 
+              focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-orange-500"
             />
           </form>
         </div>
@@ -73,16 +75,16 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
             type="checkbox"
             onChange={toggleYearlyGoal}
             checked={toggleDone}
-            className="w-4 h-4 mx-3 text-orange-600 bg-gray-100 border-gray-200 rounded focus:ring-orange-600 
-            dark:focus:ring-orange-600 dark:ring-offset-gray-200 focus:ring-2 dark:bg-gray-600 
-            dark:border-gray-100 cursor-pointer"
+            className="mx-3 h-4 w-4 cursor-pointer rounded border-gray-200 bg-gray-100 text-orange-600 
+            focus:ring-2 focus:ring-orange-600 dark:border-gray-100 dark:bg-gray-600 
+            dark:ring-offset-gray-200 dark:focus:ring-orange-600"
           />
 
           <div>{curr.goal}</div>
         </div>
       )}
 
-      <div className="flex hidden group-hover:block">
+      <div className="hidden group-hover:block">
         <GoalsOptions
           user_id={user_id}
           year_idx={year_idx}

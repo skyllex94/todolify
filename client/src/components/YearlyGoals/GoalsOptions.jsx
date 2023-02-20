@@ -27,22 +27,22 @@ function GoalsOptions({
   };
 
   const popover = (
-    <div className="bg-white border-solid border-2 border-red-600 rounded mt-2 mr-1 p-2">
+    <div className="mt-2 mr-1 rounded border-2 border-solid border-red-600 bg-white p-2">
       <Popover id="popover-positioned-top">
         <Popover.Body>
           <button
-            className="flex items-center w-full justify-between p-1 hover:bg-gray-100"
+            className="flex w-full items-center justify-between p-1 hover:bg-gray-100"
             onClick={() => setEnableRename(!enableRename)}
           >
             <p>Rename Goal</p>
             <AiOutlineEdit className="ml-3" />
           </button>
           <button
-            className="flex items-center w-full justify-between p-1 hover:bg-gray-100"
+            className="flex w-full items-center justify-between p-1 hover:bg-gray-100"
             onClick={() => removeYearlyGoal(curr._id)}
           >
             <p>Delete Goal</p>
-            <GrFormClose className="ml-3 right" />
+            <GrFormClose className="right ml-3" />
           </button>
         </Popover.Body>
       </Popover>

@@ -3,6 +3,7 @@ import DeleteTask from "./DeleteTask";
 import EditTask from "./EditTask";
 import EnableEditTask from "./EnableEditTask";
 import ToggleTask from "./ToggleTask";
+import GoalsDropdown from "./YearlyGoals/GoalsDropdown";
 
 const TaskItem = ({
   user_id,

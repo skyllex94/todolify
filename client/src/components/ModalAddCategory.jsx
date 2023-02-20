@@ -71,14 +71,14 @@ export default function ModalAddCategory({
         initial={{ y: 300, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 300, opacity: 0 }}
-        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+        className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none"
       >
         <div ref={refCloseModal} className="relative w-auto max-w-xl">
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+            <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
               <h3 className="text-3xl font-semibold">Add New Bucket</h3>
               <button
-                className="p-1 ml-auto bg-transparent text-black opacity-5 float-right text-xl font-semibold"
+                className="float-right ml-auto bg-transparent p-1 text-xl font-semibold text-black opacity-5"
                 onClick={() => setShowModal(false)}
               />
             </div>
@@ -86,13 +86,13 @@ export default function ModalAddCategory({
             <form className="p-8" onSubmit={onSubmit}>
               <div className="flex items-center border p-6">
                 <label
-                  className="block text-gray-700 text-md font-bold mb-2 mr-3"
+                  className="text-md mb-2 mr-3 block font-bold text-gray-700"
                   htmlFor="category_name"
                 >
                   Name:
                 </label>
                 <input
-                  className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                  className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
                   type="text"
                   autoFocus
                   value={category}
@@ -102,25 +102,25 @@ export default function ModalAddCategory({
 
               <div className="border p-6">
                 <label
-                  className="block text-gray-700 text-md font-bold mb-2"
+                  className="text-md mb-2 block font-bold text-gray-700"
                   htmlFor="start_from"
                 >
                   Start From:
                 </label>
                 <input
-                  className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                  className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
                   type="date"
                   value={activeFrom}
                   onChange={(e) => setActiveFrom(e.target.value)}
                 />
                 <label
-                  className="block text-gray-700 text-md font-bold mb-2"
+                  className="text-md mb-2 block font-bold text-gray-700"
                   htmlFor="end_at"
                 >
                   End At:
                 </label>
                 <input
-                  className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                  className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
                   type="date"
                   value={activeUntil}
                   onChange={(e) => setActiveUntil(e.target.value)}
@@ -129,14 +129,14 @@ export default function ModalAddCategory({
 
               <div className="flex items-center border p-6">
                 <label
-                  className="block text-gray-700 text-md font-bold"
+                  className="text-md block font-bold text-gray-700"
                   htmlFor="start_from"
                 >
                   Timeblock Hours:
                 </label>
 
                 <select
-                  className="flex items-center ml-2"
+                  className="ml-2 flex items-center"
                   value={timeDuration}
                   onChange={(e) => setTimeDuration(e.target.value)}
                 >
@@ -149,9 +149,9 @@ export default function ModalAddCategory({
                 </select>
               </div>
             </form>
-            <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
+            <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-200 p-6">
               <button
-                className="bg-red-500 mr-3 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                className="mr-3 mb-1 rounded bg-red-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                 type="button"
                 onClick={onSubmit}
               >
@@ -159,9 +159,9 @@ export default function ModalAddCategory({
               </button>
 
               <button
-                className="bg-white-500 text-black active:bg-white-600 font-bold 
-              uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-              focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                className="bg-white-500 active:bg-white-600 mr-1 mb-1 
+              rounded px-6 py-3 text-sm font-bold uppercase text-black shadow 
+              outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none"
                 type="button"
                 onClick={() => setShowModal(false)}
               >
@@ -171,7 +171,7 @@ export default function ModalAddCategory({
           </div>
         </div>
       </motion.div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
     </React.Fragment>
   );
 }

@@ -75,7 +75,7 @@ function Events() {
           />
         ) : (
           <div>
-            <img src={loader} className="pt-24 loader" alt="loader" />
+            <img src={loader} className="loader pt-24" alt="loader" />
           </div>
         )}
       </div>

@@ -4,7 +4,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 function EnableEditTask({ setEnableEdit }) {
   return (
     <button
-      className="hidden group-hover:block rounded-full mr-1"
+      className="mr-1 hidden rounded-full group-hover:block"
       onClick={() => setEnableEdit((prevState) => !prevState)}
     >
       <AiOutlineEdit />

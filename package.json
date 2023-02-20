@@ -13,6 +13,7 @@
   "author": "Kamen Kanchev",
   "license": "MIT",
   "dependencies": {
+    "@headlessui/react": "^1.7.11",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.8",
     "cookie-session": "^2.0.0",
@@ -20,6 +21,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
+    "heroicons": "^2.0.16",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
@@ -28,6 +30,7 @@
     "mongoose": "^6.7.2",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "react-dom": "^18.2.0",
     "react-html5video": "^2.5.1",
     "react-icons": "^4.6.0",
     "react-toastify": "^9.1.1",
@@ -35,6 +38,8 @@
   },
   "devDependencies": {
     "concurrently": "^7.5.0",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.4",
+    "prettier-plugin-tailwindcss": "^0.2.3"
   }
 }

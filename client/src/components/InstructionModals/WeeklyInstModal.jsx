@@ -6,6 +6,7 @@ import { DefaultPlayer as Video } from "react-html5video";
 import "react-html5video/dist/styles.css";
 import video from "../../assets/instructions/video.mp4";
 import video_mobile from "../../assets/instructions/video-mobile.mp4";
+import loader from "../../assets/instructions/video_loader.gif";
 import { RiCloseFill } from "react-icons/ri";
 
 export default function WeeklyInstModal({ setShowInstModal }) {
@@ -38,20 +39,26 @@ export default function WeeklyInstModal({ setShowInstModal }) {
           initial={{ y: 300, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 300, opacity: 0 }}
-          className="justify-center items-center flex fixed inset-0 z-50 outline-none"
+          className="fixed inset-0 z-50 flex items-center justify-center outline-none"
         >
           <div ref={closeModalRef}>
-            <div className="flex items-center justify-between bg-white p-3 border rounded-t">
-              <h3 className="text-2xl font-sans font-semibold">Instructions</h3>
+            <div className="flex items-center justify-between rounded-t border bg-white p-3">
+              <h3 className="font-sans text-2xl font-semibold">Instructions</h3>
               <button
-                className="p-1 ml-auto text-black float-right text-3xl text-bold"
+                className="text-bold float-right ml-auto p-1 text-3xl text-black"
                 onClick={() => setShowInstModal(false)}
               >
                 <RiCloseFill />
               </button>
             </div>
-            <div className="flex w-full items-center mb-4">
-              <Video autoPlay loop muted controls={["PlayPause", "Fullscreen"]}>
+            <div className="mb-4 flex w-full items-center">
+              <Video
+                autoPlay
+                loop
+                muted
+                poster={loader}
+                controls={["PlayPause", "Fullscreen"]}
+              >
                 <source
                   src={window.screen.width < 450 ? video_mobile : video}
                   type="video/webm"
@@ -69,7 +76,7 @@ export default function WeeklyInstModal({ setShowInstModal }) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="opacity-25 bg-black fixed inset-0"></div>
+      <div className="fixed inset-0 bg-black opacity-25"></div>
     </div>
   );
 }

@@ -22,13 +22,13 @@ export default function About() {
           style={{ overflow: "auto" }}
           className="flex w-full"
         >
-          <main className="container pt-28 px-4 mx-auto w-full">
+          <main className="container mx-auto w-full px-4 pt-28">
             <section
-              className="grid grid-cols-1 lg:grid-cols-2 gap-4 
-            items-center justify-center"
+              className="grid grid-cols-1 items-center justify-center 
+            gap-4 lg:grid-cols-2"
             >
-              <div className="leftside-text ml-5">
-                <h1 className="text-4xl font-extrabold text-left text-gray-900">
+              <div className="leftside-text ml-5 ">
+                <h1 className="text-left text-4xl font-extrabold text-gray-900">
                   Todolify
                 </h1>
                 <div className="text-lg text-gray-500">
@@ -53,7 +53,7 @@ export default function About() {
                 >
                   Start your productivity journey
                   <svg
-                    className="w-6 h-6 ml-1"
+                    className="ml-1 h-6 w-6"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -75,11 +75,11 @@ export default function About() {
                 <img src={img2} alt="Todo list showcase" />
               </div>
               <div className="rightside-text ml-4">
-                <h1 className="text-2xl font-extrabold text-left text-gray-900">
+                <h1 className="text-left text-2xl font-extrabold text-gray-900">
                   How is this different from all the other todo list
                   applications?
                 </h1>
-                <div className="text-lg text-gray-500 my-4">
+                <div className="my-4 text-lg text-gray-500">
                   <p>
                     Our app includes timeblocking and categorization features
                     with which you crate a new way of looking at your daily
