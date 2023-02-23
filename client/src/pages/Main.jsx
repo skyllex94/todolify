@@ -12,7 +12,6 @@ import { useHorizontalScroll } from "../hooks/horizontalScroll";
 import { motion, AnimatePresence } from "framer-motion";
 import SideMenu from "../components/SideMenu/SideMenu";
 import { saveUserData } from "../redux/dataSlice";
-import WeeklyInstModal from "../components/InstructionModals/WeeklyInstModal";
 
 var _ = require("lodash");
 

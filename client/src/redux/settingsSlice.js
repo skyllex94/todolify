@@ -83,6 +83,7 @@ export const settingsSlice = createSlice({
   reducers: {
     openSideMenu: (state, action) => {
       // Per Redux docs, make a copy of the state and return the updated value
+      window.localStorage.setItem("side_menu", JSON.stringify(action.payload));
       return { ...state, isOpenSideMenu: action.payload };
     },
     openEventsInTodoList: (state, action) => {

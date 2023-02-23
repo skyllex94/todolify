@@ -42,7 +42,6 @@ function Register() {
         try {
           // Store the jsonwebtoken in redux store for route validation
           const jwt = dispatch(storeJWT({ jwt: res.data }));
-          console.log(jwt);
           window.localStorage.setItem(
             "jwt",
             JSON.stringify(jwt.payload.jwt.token)
@@ -68,12 +67,12 @@ function Register() {
     <div>
       <Header />
       <div className="pt-40">
-        <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
-          <div className="hidden lg:block lg:w-1/2 bg-cover mt-10 ml-6 flex justify-center items-center">
+        <div className="mx-auto flex max-w-sm overflow-hidden rounded-lg bg-white shadow-lg lg:max-w-4xl">
+          <div className="mt-10 ml-6 flex hidden items-center justify-center bg-cover lg:block lg:w-1/2">
             <img
               src={image}
               alt="registration"
-              className="object-contain h-110 w-full"
+              className="h-110 w-full object-contain"
             />
           </div>
 
@@ -109,24 +108,24 @@ function Register() {
               </h1>
             </a> */}
             <div className="mt-4 flex items-center justify-between">
-              <span className="border-b w-1/8 lg:w-1/6"></span>
+              <span className="w-1/8 border-b lg:w-1/6"></span>
               <div>
-                <h2 className="text-2xl font-semibold text-gray-700 text-center">
+                <h2 className="text-center text-2xl font-semibold text-gray-700">
                   Todolify
                 </h2>
-                <div className="text-center mt-2">
+                <div className="mt-2 text-center">
                   <p>Your personalized todo app</p>
                 </div>
               </div>
 
-              <span className="border-b w-1/8 lg:w-1/6"></span>
+              <span className="w-1/8 border-b lg:w-1/6"></span>
             </div>
 
             <form onSubmit={(e) => onSubmit(e)}>
               <div className="mt-4">
                 <label
                   htmlFor="name"
-                  className="block text-gray-700 text-sm font-bold mb-2"
+                  className="mb-2 block text-sm font-bold text-gray-700"
                 >
                   Full Name
                 </label>
@@ -134,16 +133,16 @@ function Register() {
                   name="name"
                   value={name}
                   onChange={(e) => onChange(e, "name")}
-                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
-                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
-                  w-full appearance-none"
+                  className="focus:shadow-outline block w-full appearance-none 
+                  rounded border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 
+                  hover:bg-white focus:outline-none"
                   type="text"
                 />
               </div>
               <div className="mt-4">
                 <label
                   htmlFor="email"
-                  className="block text-gray-700 text-sm font-bold mb-2"
+                  className="mb-2 block text-sm font-bold text-gray-700"
                 >
                   Email Address
                 </label>
@@ -151,9 +150,9 @@ function Register() {
                   name="email"
                   value={email}
                   onChange={(e) => onChange(e, "email")}
-                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
-                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
-                  w-full appearance-none"
+                  className="focus:shadow-outline block w-full appearance-none 
+                  rounded border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 
+                  hover:bg-white focus:outline-none"
                   type="email"
                 />
               </div>
@@ -161,7 +160,7 @@ function Register() {
                 <div className="flex justify-between">
                   <label
                     htmlFor="password"
-                    className="block text-gray-700 text-sm font-bold mb-2"
+                    className="mb-2 block text-sm font-bold text-gray-700"
                   >
                     Password
                   </label>
@@ -170,9 +169,9 @@ function Register() {
                   name="password"
                   value={password}
                   onChange={(e) => onChange(e, "password")}
-                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
-                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
-                  w-full appearance-none"
+                  className="focus:shadow-outline block w-full appearance-none 
+                  rounded border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 
+                  hover:bg-white focus:outline-none"
                   type="password"
                 />
               </div>
@@ -180,7 +179,7 @@ function Register() {
                 <div className="flex justify-between">
                   <label
                     htmlFor="repeat_password"
-                    className="block text-gray-700 text-sm font-bold mb-2"
+                    className="mb-2 block text-sm font-bold text-gray-700"
                   >
                     Repeat Password
                   </label>
@@ -189,27 +188,27 @@ function Register() {
                   name="repeat_password"
                   value={repeat_password}
                   onChange={(e) => onChange(e, "repeat_password")}
-                  className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
-                  focus:shadow-outline border border-gray-300 rounded py-2 px-4 block 
-                  w-full appearance-none"
+                  className="focus:shadow-outline block w-full appearance-none 
+                  rounded border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 
+                  hover:bg-white focus:outline-none"
                   type="password"
                 />
               </div>
               <div className="mt-8">
                 <button
                   type="submit"
-                  className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+                  className="w-full rounded bg-gray-700 py-2 px-4 font-bold text-white hover:bg-gray-600"
                 >
                   Create an account
                 </button>
               </div>
             </form>
             <div className="mt-4 flex items-center justify-between">
-              <span className="border-b w-1/5 md:w-1/4"></span>
-              <Link to="/login" className="text-xs text-gray-500 uppercase">
+              <span className="w-1/5 border-b md:w-1/4"></span>
+              <Link to="/login" className="text-xs uppercase text-gray-500">
                 or Login instead
               </Link>
-              <span className="border-b w-1/5 md:w-1/4"></span>
+              <span className="w-1/5 border-b md:w-1/4"></span>
             </div>
           </div>
         </div>

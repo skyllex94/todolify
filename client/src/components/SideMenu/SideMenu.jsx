@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import styles from "./sidemenu.module.css";
@@ -11,7 +11,7 @@ import { openSideMenu } from "../../redux/settingsSlice";
 
 function SideMenu() {
   // Side Menu states
-  const isOpen = useSelector((state) => state.settings.isOpenSideMenu);
+  let isOpen = JSON.parse(localStorage.getItem("side_menu"));
   const user_id = useSelector((state) => state.auth.user_id);
 
   const navLinks = [
@@ -46,11 +46,6 @@ function SideMenu() {
     whileHover: { scale: 1.1 },
     whileTap: { scale: 0.9 },
   };
-
-  // const handleSearch = (e) => {
-  //   setSearch(e.target.value);
-  //   dispatch(searchForTask(search));
-  // };
 
   return (
     <div className={isOpen ? styles.sidenav : styles.sidenavClosed}>
@@ -90,16 +85,16 @@ function SideMenu() {
         </motion.div>
         <div
           className={
-            !isOpen ? "hidden rounded-br xl:block lg:block md:block" : undefined
+            !isOpen ? "hidden rounded-br md:block lg:block xl:block" : undefined
           }
         >
-          <ul className="pt-2 pb-4 space-y-1 text-s">
+          <ul className="text-s space-y-1 pt-2 pb-4">
             {navLinks.map((curr, idx) => {
               return (
                 <motion.li key={idx} {...motionProps} className="rounded-sm ">
                   <Link
                     to={curr.link}
-                    className={"flex items-center p-2 space-x-3 rounded-md"}
+                    className={"flex items-center space-x-3 rounded-md p-2"}
                   >
                     <span>{curr.icon}</span>
                     <span className={isOpen ? "" : "hidden"}>{curr.name}</span>
