@@ -14,14 +14,14 @@ const TodoList = ({
 }) => {
   return (
     <div className="todo-list ml-5 min-w-[16%]">
-      <div className="rounded-lg shadow-lg bg-white pr-5 justify-between">
+      <div className="justify-between rounded-lg bg-white pr-5 shadow-lg">
         <ul className="list-group pt-5">
           <h3 className="text-center">
             <i>{dayOfWeek}</i> - <span>{day + "/" + month_year}</span>
           </h3>
           {todos.map((curr, index) => {
             return (
-              <div key={index} className="flex inline mb-1">
+              <div key={index} className="mb-1 flex">
                 <div className="brackets min-w-[93%]">
                   <CategoryItem
                     user_id={user_id}

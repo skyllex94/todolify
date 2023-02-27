@@ -117,7 +117,6 @@ export const updateTaskAsync = createAsyncThunk(
   "updateTaskAsync",
   async (payload) => {
     // payload => {user_id, category_index, day, month_year, task_index, updatedValue}
-    console.log("day, month:", payload.day, payload.month_year);
     try {
       // Returns an object wt confirmation obj and objInfo
       return await axios.patch(`/api/user/rename-task/`, {
@@ -274,7 +273,7 @@ export const todosSlice = createSlice({
 
     builder.addCase(updateIconAsync.fulfilled, (_, action) => {
       const { userTodoList, error } = action.payload.data;
-      if (error) return console.log(error);
+      if (error) return alert(error);
 
       return userTodoList;
     });
@@ -283,7 +282,7 @@ export const todosSlice = createSlice({
     builder.addCase(toggleTaskAsync.fulfilled, (state, action) => {
       const { userTodoList, error } = action.payload.data;
       if (error) {
-        console.log(error);
+        alert(error);
         return;
       }
       return userTodoList;

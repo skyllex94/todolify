@@ -8,7 +8,7 @@ export const getUserConfigAsync = createAsyncThunk(
     try {
       return await axios.get(`/api/settings/${user_id}`);
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   }
 );
@@ -22,7 +22,7 @@ export const updateUserNameAsync = createAsyncThunk(
         new_name: payload.new_name,
       });
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   }
 );
@@ -36,7 +36,7 @@ export const updateUserEmailAsync = createAsyncThunk(
         new_email: payload.new_email,
       });
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   }
 );
@@ -50,7 +50,7 @@ export const updateUserPassAsync = createAsyncThunk(
         new_pass: payload.new_pass,
       });
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   }
 );
@@ -64,7 +64,7 @@ export const permanentlyDeleteUserAsync = createAsyncThunk(
         data: { user_id },
       });
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
     }
   }
 );
@@ -82,6 +82,7 @@ export const settingsSlice = createSlice({
   },
   reducers: {
     openSideMenu: (state, action) => {
+      // TODO: make sure the side menu updates on click in DOM
       // Per Redux docs, make a copy of the state and return the updated value
       window.localStorage.setItem("side_menu", JSON.stringify(action.payload));
       return { ...state, isOpenSideMenu: action.payload };
@@ -106,9 +107,7 @@ export const settingsSlice = createSlice({
     // Fetch all user config data
     builder.addCase(getUserConfigAsync.fulfilled, (state, action) => {
       const { userConfig, error } = action.payload.data;
-      console.log("userConfig:", userConfig);
       if (error) return alert(error);
-
       return { ...state, userConfig };
     });
 
@@ -150,4 +149,5 @@ export const {
   changeCategoryIconToDone,
   searchForTask,
 } = settingsSlice.actions;
+
 export default settingsSlice.reducer;

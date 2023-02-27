@@ -15,7 +15,7 @@ function AddCategory({ user_id, day, month_year, dayWtData }) {
         type="text"
         placeholder="Add Bucket..."
         onClick={() => setShowModal(true)}
-        className=" w-full text-black-500 ml-3 mr-2 h-12 focus:outline-none pl-5 pr-5 rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
+        className="text-black-500 ml-3 mr-2 block h-12 w-full rounded-lg border border-gray-300 pl-5 pr-5 focus:shadow focus:outline-none"
       />
 
       {showModal && (

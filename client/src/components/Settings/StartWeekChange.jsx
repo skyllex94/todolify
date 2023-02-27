@@ -12,14 +12,15 @@ export default function StartWeekChange() {
 
   return (
     <input
+      aria-label="change-week-start"
       id="orange-checkbox"
       type="checkbox"
       onChange={changeStartOfWeek}
       checked={fromSunday}
-      className="w-4 cursor-pointer h-4 mx-3 text-orange-600 border-gray-600 
-    rounded focus:ring-orange-600 
-    dark:focus:ring-orange-600 dark:ring-offset-gray-200 focus:ring-2 dark:bg-gray-600 
-    dark:border-gray-100"
+      className="mx-3 h-4 w-4 cursor-pointer rounded border-gray-600 
+    text-orange-600 focus:ring-2 
+    focus:ring-orange-600 dark:border-gray-100 dark:bg-gray-600 dark:ring-offset-gray-200 
+    dark:focus:ring-orange-600"
     />
   );
 }
