@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { saveUserData } from "../../redux/dataSlice";
 import { renameGoalAsync, toggleGoalAsync } from "../../redux/goalsSlice";
-import Example from "./GoalsDropdown";
-import GoalsDropdown from "./GoalsDropdown";
 
 import GoalsOptions from "./GoalsOptions";
 

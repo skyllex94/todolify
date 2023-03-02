@@ -34,7 +34,7 @@ export const getDayOfWeek = (date) => {
   return day;
 };
 
-function addDays(date, days) {
+export function addDays(date, days) {
   const dateCopy = new Date(date);
   dateCopy.setDate(date.getDate() + days);
   return dateCopy;

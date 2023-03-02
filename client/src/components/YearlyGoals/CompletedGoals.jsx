@@ -4,7 +4,7 @@ function CompletedGoals({ goals }) {
   const completed = goals.filter((curr) => curr.done === true);
 
   return (
-    <div className="flex border-t-2 items-center justify-between ml-5 pt-3 pb-4">
+    <div className="ml-5 flex items-center justify-between border-t-2 pt-3 pb-4">
       <div>
         <i>Completed Goals:</i>
       </div>

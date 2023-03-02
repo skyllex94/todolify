@@ -96,34 +96,35 @@ function LoginForm() {
           </div>
         </a> */}
         <div className="mt-4 flex items-center justify-between">
-          <span className="border-b w-1/5 lg:w-1/4"></span>
+          <span className="w-1/5 border-b lg:w-1/4"></span>
           {/* <div className="text-xs text-center text-gray-500 uppercase">
             or login with email
           </div> */}
 
           <div className="mb-3">
-            <h2 className="text-2xl mt-4 font-semibold text-gray-700 text-center">
+            <h2 className="mt-4 text-center text-2xl font-semibold text-gray-700">
               Todolify
             </h2>
-            <p className="text-xl text-gray-600 text-center">Welcome back!</p>
+            <p className="text-center text-xl text-gray-600">Welcome back!</p>
           </div>
-          <span className="border-b w-1/5 lg:w-1/4"></span>
+          <span className="w-1/5 border-b lg:w-1/4"></span>
         </div>
         <div className="mt-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label className="mb-2 block text-sm font-bold text-gray-700" alt>
             Email Address
           </label>
           <input
             type="email"
+            alt="email"
             value={email}
             onChange={(e) => onChange(e, "email")}
-            className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
-            focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full"
+            className="focus:shadow-outline block w-full rounded 
+            border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 hover:bg-white focus:outline-none"
           />
         </div>
         <div className="mt-4">
           <div className="flex justify-between">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+            <label className="mb-2 block text-sm font-bold text-gray-700">
               Password
             </label>
             <a href="#!" className="text-xs text-gray-500">
@@ -132,26 +133,27 @@ function LoginForm() {
           </div>
           <input
             type="password"
+            alt="password"
             value={password}
             onChange={(e) => onChange(e, "password")}
-            className="bg-gray-100 text-gray-800 hover:bg-white focus:outline-none 
-            focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full"
+            className="focus:shadow-outline block w-full rounded 
+            border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 hover:bg-white focus:outline-none"
           />
         </div>
         <div className="mt-8">
           <button
             type="submit"
-            className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+            className="w-full rounded bg-gray-700 py-2 px-4 font-bold text-white hover:bg-gray-600"
           >
             Login
           </button>
         </div>
         <div className="mt-4 flex items-center justify-between">
-          <span className="border-b w-1/5 md:w-1/4"></span>
-          <Link to="/register" className="text-xs text-gray-500 uppercase">
+          <span className="w-1/5 border-b md:w-1/4"></span>
+          <Link to="/register" className="text-xs uppercase text-gray-500">
             or sign up
           </Link>
-          <span className="border-b w-1/5 md:w-1/4"></span>
+          <span className="w-1/5 border-b md:w-1/4"></span>
         </div>
       </form>
     </Fragment>
