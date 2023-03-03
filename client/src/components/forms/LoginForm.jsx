@@ -110,7 +110,7 @@ function LoginForm() {
           <span className="w-1/5 border-b lg:w-1/4"></span>
         </div>
         <div className="mt-4">
-          <label className="mb-2 block text-sm font-bold text-gray-700" alt>
+          <label className="mb-2 block text-sm font-bold text-gray-700">
             Email Address
           </label>
           <input

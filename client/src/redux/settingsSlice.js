@@ -4,7 +4,6 @@ import axios from "axios";
 export const getUserConfigAsync = createAsyncThunk(
   "getUserConfigAsync",
   async (user_id) => {
-    console.log("user_id:", user_id);
     try {
       return await axios.get(`/api/settings/${user_id}`);
     } catch (err) {
@@ -82,9 +81,8 @@ export const settingsSlice = createSlice({
   },
   reducers: {
     openSideMenu: (state, action) => {
-      // TODO: make sure the side menu updates on click in DOM
+      // TODO: Make sure the side menu updates on click in DOM
       // Per Redux docs, make a copy of the state and return the updated value
-      window.localStorage.setItem("side_menu", JSON.stringify(action.payload));
       return { ...state, isOpenSideMenu: action.payload };
     },
     openEventsInTodoList: (state, action) => {

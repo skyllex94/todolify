@@ -7,7 +7,6 @@ import { decodeJWT } from "../utils/functions";
 import logo from "../assets/brackets.png";
 
 function Header() {
-  const [userId, setUserId] = useState(null);
   const user_id = useSelector((state) => state.auth.user_id);
   const dispatch = useDispatch();
   const { logoutUser } = useLogout();
@@ -33,17 +32,13 @@ function Header() {
     document.addEventListener("mousedown", closeOpenMenus);
   }, [closeOpenMenus]);
 
+  // Save user_id to Redux state if not already
   useEffect(() => {
-    if (user_id) {
-      setUserId(user_id);
-    } else {
-      const savedJWT = window.localStorage.getItem("jwt");
-      if (savedJWT) {
-        const user_id_obj = decodeJWT(savedJWT);
-        const user_id = user_id_obj.user.id;
-        setUserId(user_id);
-        dispatch(saveUserId({ user_id }));
-      }
+    const savedJWT = window.localStorage.getItem("jwt");
+    if (savedJWT) {
+      const user_id_obj = decodeJWT(savedJWT);
+      const user_id = user_id_obj.user.id;
+      dispatch(saveUserId({ user_id }));
     }
   }, [dispatch, user_id]);
 
@@ -56,10 +51,10 @@ function Header() {
         dark:border-gray-800 dark:bg-gray-900/80"
         >
           <div className="m-auto w-full sm:container md:container md:px-12 lg:px-6 xl:container">
-            <div className="flex flex-wrap items-center justify-between gap-6 pt-5 md:gap-0 md:py-5 lg:py-5">
+            <div className="flex flex-wrap items-center justify-between py-5 pt-5 md:py-5 lg:gap-6 xl:gap-6">
               <div className="flex w-full items-center justify-between lg:w-auto">
                 <Link
-                  to="/"
+                  to={user_id ? `/user/${user_id}` : "/"}
                   className="relative z-20 flex items-center pl-2 dark:bg-gray-300"
                   aria-label="logo"
                 >
@@ -96,7 +91,7 @@ function Header() {
                     <ul className="space-y-6 text-base font-medium lg:flex lg:space-y-0 lg:text-sm">
                       <li className="navlinks relative">
                         <Link
-                          to={userId ? `/user/${userId}` : "/"}
+                          to={user_id ? `/user/${user_id}` : "/"}
                           className="lis dark:hover:text-primaryLight md:px-4"
                         >
                           <span>Home</span>
@@ -119,7 +114,7 @@ function Header() {
                     className="border-primary/10 -lg:space-y-0 flex w-full flex-col 
                     items-center space-y-2 dark:border-gray-700"
                   >
-                    {userId ? (
+                    {user_id ? (
                       <button
                         onClick={logoutUser}
                         className="relative ml-auto flex h-9 w-24 items-center justify-center 
@@ -134,21 +129,21 @@ function Header() {
                     ) : (
                       <div className="flex items-center justify-center">
                         <Link
-                          to={userId ? `/user/${userId}` : "/register"}
+                          to={user_id ? `/user/${user_id}` : "/register"}
                           className="relative ml-auto mr-3 flex h-9 w-24 justify-center rounded-full border
                            pt-2 before:absolute before:inset-0 before:transition
                            before:duration-300 hover:before:scale-105 focus:before:bg-sky-600/10 
                            active:duration-75 active:before:scale-95 dark:focus:before:bg-sky-400/10"
                         >
                           <span
-                            className="text-primary dark:text-primaryLight relative ml-6 block flex w-24 text-sm 
+                            className="text-primary dark:text-primaryLight relative ml-6  flex w-24 text-sm 
                           font-semibold"
                           >
                             Sign up
                           </span>
                         </Link>
                         <Link
-                          to={userId ? `/user/${userId}` : "/login"}
+                          to={user_id ? `/user/${user_id}` : "/login"}
                           className="relative ml-auto flex h-9 w-24 items-center justify-center pl-3 
                           before:absolute before:inset-0 before:rounded-full before:bg-red-600 before:transition 
                           before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 
@@ -164,7 +159,7 @@ function Header() {
                 </div>
               ) : (
                 <div className="navmenu flex items-center justify-between">
-                  <div className="flex hidden text-gray-600 dark:text-gray-300 lg:block lg:pr-4">
+                  <div className="flex text-gray-600 dark:text-gray-300 lg:block lg:pr-4">
                     <ul className="space-y-6 text-base font-medium lg:flex lg:space-y-0 lg:text-sm">
                       <li className="navlinks relative">
                         <Link
@@ -187,10 +182,10 @@ function Header() {
                   </div>
 
                   <div
-                    className="border-primary/10 -lg:space-y-0 flex flex 
+                    className="border-primary/10 -lg:space-y-0 flex
                   flex-col items-center dark:border-gray-700"
                   >
-                    {userId ? (
+                    {user_id ? (
                       <button
                         onClick={logoutUser}
                         className="relative ml-auto flex hidden h-9 w-24 items-center justify-center pl-3 before:absolute 
@@ -205,20 +200,20 @@ function Header() {
                     ) : (
                       <div className="flex items-center">
                         <Link
-                          to={userId ? `/user/${userId}` : "/register"}
+                          to={user_id ? `/user/${user_id}` : "/register"}
                           className="relative ml-auto mr-3 flex hidden h-9 w-24 items-center justify-center rounded-full border
                         before:absolute before:inset-0 before:transition before:duration-300 hover:before:scale-105
                          focus:before:bg-sky-600/10 active:duration-75 active:before:scale-95 dark:focus:before:bg-sky-400/10 sm:px-6 lg:block"
                         >
                           <span
-                            className="text-primary dark:text-primaryLight relative mt-2 block flex w-24 text-sm 
+                            className="text-primary dark:text-primaryLight relative mt-2 flex w-24 text-sm 
                         font-semibold"
                           >
                             Sign up
                           </span>
                         </Link>
                         <Link
-                          to={userId ? `/user/${userId}` : "/login"}
+                          to={user_id ? `/user/${user_id}` : "/login"}
                           className="relative ml-auto flex hidden h-9 w-24 items-center justify-center pt-1.5 
                           before:absolute before:inset-0 before:rounded-full before:bg-red-600 
                           before:transition before:duration-300 hover:before:scale-105 active:duration-75 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import styles from "./sidemenu.module.css";
@@ -10,8 +10,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { openSideMenu } from "../../redux/settingsSlice";
 
 function SideMenu() {
-  // Side Menu states
-  let isOpen = JSON.parse(localStorage.getItem("side_menu"));
+  const dispatch = useDispatch();
+
+  // Conditionally render useSelector - from localStorage if value is different
+  const isOpen = useSelector((state) => {
+    const isOpenLS = JSON.parse(localStorage.getItem("side_menu"));
+    const isOpenRedux = state.settings.isOpenSideMenu;
+
+    if (isOpenLS !== null && isOpenLS !== isOpenRedux) return isOpenLS;
+    return isOpenRedux;
+  });
   const user_id = useSelector((state) => state.auth.user_id);
 
   const navLinks = [
@@ -37,8 +45,10 @@ function SideMenu() {
     },
   ];
 
-  const dispatch = useDispatch();
-  const toggleOpen = () => dispatch(openSideMenu(!isOpen));
+  const toggleOpen = () => {
+    window.localStorage.setItem("side_menu", JSON.stringify(!isOpen));
+    dispatch(openSideMenu(!isOpen));
+  };
 
   // Default motion style props for usage
   const motionProps = {

@@ -49,7 +49,7 @@ export default function About() {
                 </div>
                 <Link
                   to={"/login"}
-                  class="inline-flex text-left text-lg text-red-600 hover:underline"
+                  className="inline-flex text-left text-lg text-red-600 hover:underline"
                 >
                   Start your productivity journey
                   <svg

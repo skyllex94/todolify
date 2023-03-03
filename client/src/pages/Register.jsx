@@ -37,7 +37,6 @@ function Register() {
         const body = { name, email, password };
         // Making a promise - post request
         const res = await axios.post("/users", body);
-        console.log(res.data);
 
         try {
           // Store the jsonwebtoken in redux store for route validation
