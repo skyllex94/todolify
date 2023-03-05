@@ -30,7 +30,7 @@ function CategoryItem({
 
   return (
     <ul className={`list-group`}>
-      <div className="flex categories items-center justify-between">
+      <div className="categories flex items-center justify-between">
         <div className="flex items-center text-left">
           <SelectIcon
             user_id={user_id}
@@ -58,7 +58,7 @@ function CategoryItem({
           )}
         </div>
 
-        <div className="wrapper-right-elements flex inline">
+        <div className="wrapper-right-elements inline flex">
           <DoneTasks
             tasks={tasks}
             setCategoryCompleted={setCategoryCompleted}
@@ -79,7 +79,7 @@ function CategoryItem({
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: -100, opacity: 0 }}
-        className="items-center my-1"
+        className="my-1 items-center"
       >
         {tasks &&
           tasks.map((curr, index) => {
@@ -87,7 +87,7 @@ function CategoryItem({
 
             return (
               <div
-                className="flex items-center mb-1 justify-between group"
+                className="group mb-1 flex items-center justify-between"
                 key={index}
               >
                 <TaskItem

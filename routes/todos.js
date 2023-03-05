@@ -28,6 +28,11 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/verify_recaptcha", async (req, res) => {
+  const token = req.body.token;
+  console.log("token:", token);
+});
+
 // @route   POST /user/date/:id
 // @desc    Add date to DB, if it doesn't exist
 // @access  Private
@@ -35,13 +40,6 @@ router.post("/date/:id", async (req, res) => {
   const user_id = req.params.id;
   const month_year = req.body.month_year;
   const day = req.body.day;
-
-  // Check if date exist in DB
-  // const findDate = await Todos.find({
-  //   user_id: user_id,
-  //   "date.month_year": month_year,
-  //   "date.days.day": day,
-  // });
 
   // Fetch the todo list of user
   const userTodoList = await Todos.findOne({ user_id: req.params.id });

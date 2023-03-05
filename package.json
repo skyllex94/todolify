@@ -15,6 +15,8 @@
   "license": "MIT",
   "dependencies": {
     "babel-jest": "^29.4.3",
+    "babel-plugin-styled-components": "^2.0.7",
+    "babel-runtime": "^6.26.0",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.8",
     "cookie-session": "^2.0.0",
@@ -32,6 +34,7 @@
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "react-dom": "^18.2.0",
+    "react-google-recaptcha-v3": "^1.10.1",
     "react-html5video": "^2.5.1",
     "react-icons": "^4.6.0",
     "react-toastify": "^9.1.1",
