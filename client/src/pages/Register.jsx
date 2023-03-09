@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 // HTTP Requests
@@ -72,12 +72,16 @@ function Register() {
 
   const recaptchaResult = async (token) => {
     console.log("token:", token);
-    // const res = await axios.get(
-    //   "http://localhost:3000/api/user/verify_recaptcha",
-    //   {
-    //     data: { token },
-    //   }
-    // );
+    const res = await axios.post(
+      "http://localhost:3000/api/user/verify_recaptcha",
+      { token }
+    );
+
+    if (res.error) {
+      displayAlert("Verification", res.error);
+      return;
+    }
+    if (res.verificationResult === false) return;
     setVerifiedRecaptcha(true);
   };
 
@@ -184,7 +188,6 @@ function Register() {
                   type="password"
                 />
               </div>
-
               <div className="mt-5 flex items-center justify-center">
                 <ReCAPTCHA
                   sitekey="6Lf4-9QkAAAAAJtMG1ZtBwzeo0FEMUFeNKQfhsJo"
