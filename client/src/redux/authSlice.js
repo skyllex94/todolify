@@ -1,4 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const verifyRecaptcha = createAsyncThunk(
+  "verifyRecaptchaAsync",
+  async (token) => {
+    try {
+      return await axios.post(
+        "http://localhost:3000/api/user/verify_recaptcha",
+        { token }
+      );
+    } catch (err) {
+      return console.log(err.message);
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",

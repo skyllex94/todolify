@@ -1,22 +1,29 @@
 import axios from "axios";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import { useFormData } from "../../hooks/useFormData";
 
-import { storeJWT } from "../../redux/authSlice";
+import { storeJWT, verifyRecaptcha } from "../../redux/authSlice";
 import { decodeJWT } from "../../utils/functions";
 import Alert from "../Alert";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const recaptchaRef = useRef();
+
+  useEffect(() => {
+    recaptchaRef.current.reset();
+  }, []);
 
   const { formData, onChange } = useFormData();
   const { email, password } = formData;
   // Hangling and diplaying alert
   const { alert, enableAlert, displayAlert } = useDisplayAlert();
+  const [verifiedRecaptcha, setVerifiedRecaptcha] = useState(false);
 
   // Google OAuth startup
   // useEffect(() => {
@@ -41,6 +48,10 @@ function LoginForm() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (verifiedRecaptcha === false) {
+      displayAlert("error", "reCaptcha was not verified.");
+      return;
+    }
     try {
       // Request to server to check if use exists in DB and send token
       const res = await axios.post("/api/user", formData);
@@ -55,6 +66,17 @@ function LoginForm() {
     } catch (err) {
       displayAlert(err.name, err.message, err.response.status);
     }
+  };
+
+  const recaptchaResult = async (token) => {
+    const res = await dispatch(verifyRecaptcha(token));
+
+    if (res.error) {
+      displayAlert("error", res.error);
+      return;
+    }
+    if (res.verificationResult === false) return;
+    setVerifiedRecaptcha(true);
   };
 
   return (
@@ -97,9 +119,6 @@ function LoginForm() {
         </a> */}
         <div className="mt-4 flex items-center justify-between">
           <span className="w-1/5 border-b lg:w-1/4"></span>
-          {/* <div className="text-xs text-center text-gray-500 uppercase">
-            or login with email
-          </div> */}
 
           <div className="mb-3">
             <h2 className="mt-4 text-center text-2xl font-semibold text-gray-700">
@@ -140,7 +159,15 @@ function LoginForm() {
             border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 hover:bg-white focus:outline-none"
           />
         </div>
-        <div className="mt-8">
+        <div className="mt-5 flex items-center justify-center">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey="6Lf4-9QkAAAAAJtMG1ZtBwzeo0FEMUFeNKQfhsJo"
+            onChange={recaptchaResult}
+          />
+        </div>
+
+        <div className="mt-5">
           <button
             type="submit"
             className="w-full rounded bg-gray-700 py-2 px-4 font-bold text-white hover:bg-gray-600"

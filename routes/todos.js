@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
+const env = require("dotenv");
 const express = require("express");
 const { validationResult } = require("express-validator");
 const router = express.Router();
 const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
 const { getDayIdx } = require("./helper_funcs");
+const axios = require("axios");
 
 // @route   GET TODOS /user/:id
 // @desc    Fetch all todos for the authorized user
@@ -28,9 +30,30 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/verify_recaptcha", async (req, res) => {
-  const token = req.body.token;
+router.post("/verify_recaptcha", async (req, res) => {
+  const { token } = req.body;
   console.log("token:", token);
+
+  const google_auth_res = await axios.post(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      secret: process.env.GOOGLE_RECAPTCHA_SECRET,
+      response: token,
+    },
+    {
+      // Content-Type should the google auth type
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  console.log("google_auth_res:", google_auth_res);
+  if (!google_auth_res) return { error: "Could not verify reCaptcha" };
+
+  const { data } = google_auth_res;
+  if (data.success === false) res.send({ verificationResult: false });
+  res.send({ verificationResult: true });
 });
 
 // @route   POST /user/date/:id
@@ -566,18 +589,6 @@ router.delete("/:id/:category_id", async (req, res) => {
 
   // Return back dayWtData, category_id OR alternatively the whole new document
   res.send({ dayWtData, categoryToDelete, updatedTodoList });
-
-  // Find user_id, and remove the selected category by id
-  // await userTodoList.updateOne(
-  //   { user_id },
-  //   {
-  //     $pull: {
-  //       [queryKey]: {
-  //         _id: categoryToDelete,
-  //       },
-  //     },
-  //   }
-  // );
 });
 
 function idxIsValid(idx, timePeriod) {

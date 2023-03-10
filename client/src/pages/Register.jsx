@@ -6,7 +6,7 @@ import axios from "axios";
 import image from "../assets/reg.jpg";
 // Redux
 import { useDispatch } from "react-redux";
-import { storeJWT } from "../redux/authSlice";
+import { storeJWT, verifyRecaptcha } from "../redux/authSlice";
 import { decodeJWT } from "../utils/functions";
 import Alert from "../components/Alert";
 
@@ -71,14 +71,10 @@ function Register() {
   };
 
   const recaptchaResult = async (token) => {
-    console.log("token:", token);
-    const res = await axios.post(
-      "http://localhost:3000/api/user/verify_recaptcha",
-      { token }
-    );
+    const res = await dispatch(verifyRecaptcha(token));
 
     if (res.error) {
-      displayAlert("Verification", res.error);
+      displayAlert("error", res.error);
       return;
     }
     if (res.verificationResult === false) return;
