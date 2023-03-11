@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
@@ -13,11 +19,6 @@ import ReCAPTCHA from "react-google-recaptcha";
 function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const recaptchaRef = useRef();
-
-  useEffect(() => {
-    recaptchaRef.current.reset();
-  }, []);
 
   const { formData, onChange } = useFormData();
   const { email, password } = formData;
@@ -118,7 +119,7 @@ function LoginForm() {
           </div>
         </a> */}
         <div className="mt-4 flex items-center justify-between">
-          <span className="w-1/5 border-b lg:w-1/4"></span>
+          <span className="w-1/5 border-b lg:w-1/4" />
 
           <div className="mb-3">
             <h2 className="mt-4 text-center text-2xl font-semibold text-gray-700">
@@ -126,7 +127,7 @@ function LoginForm() {
             </h2>
             <p className="text-center text-xl text-gray-600">Welcome back!</p>
           </div>
-          <span className="w-1/5 border-b lg:w-1/4"></span>
+          <span className="w-1/5 border-b lg:w-1/4" />
         </div>
         <div className="mt-4">
           <label className="mb-2 block text-sm font-bold text-gray-700">
@@ -159,9 +160,9 @@ function LoginForm() {
             border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 hover:bg-white focus:outline-none"
           />
         </div>
-        <div className="mt-5 flex items-center justify-center">
+
+        <div className="recaptcha mt-5 flex items-center justify-center">
           <ReCAPTCHA
-            ref={recaptchaRef}
             sitekey="6Lf4-9QkAAAAAJtMG1ZtBwzeo0FEMUFeNKQfhsJo"
             onChange={recaptchaResult}
           />

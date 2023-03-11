@@ -38,17 +38,17 @@ export default function Settings() {
   return (
     <React.Fragment>
       <Header />
-
       <div className="flex h-screen">
         <SideMenu />
 
-        <div className="pl-5 mt-28 w-96 xl:w-1/2 lg:w-1/2 md:w-1/2">
+        <div className="mt-28 w-96 pl-5 md:w-1/2 lg:w-1/2 xl:w-1/2">
           <div className="profile-settings">
-            <p className="mb-4 ml-10 sm:ml-1 md:ml-1 lg:ml-1 xl:ml-1">
+            <p className="mb-4 ml-1">
+              {/*ml-10 sm:ml-1 md:ml-1 lg:ml-1 xl:ml-1*/}
               <b>Profile:</b>
             </p>
-            <div className="border rounded-md">
-              <div className="flex items-center justify-between px-5 pt-10 pb-5 h-10 text-black">
+            <div className="rounded-md border">
+              <div className="flex h-10 items-center justify-between px-5 pt-10 pb-5 text-black">
                 <div>
                   <label htmlFor="user_name" className="pr-3">
                     Name:
@@ -66,15 +66,15 @@ export default function Settings() {
                 </div>
                 <button
                   onClick={() => setEnableNameChange((prev) => !prev)}
-                  className="bg-red-500 ml-4 text-white active:bg-red-600 font-bold 
-                  uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                  focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="ml-4 mr-1 mb-1 rounded bg-red-500 
+                  px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                  transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                 >
                   Change
                 </button>
               </div>
 
-              <div className="flex items-center justify-between px-5 pt-10 pb-5 h-10 text-black">
+              <div className="flex h-10 items-center justify-between px-5 pt-10 pb-5 text-black">
                 <div>
                   <label htmlFor="email" className="pr-3">
                     Email:
@@ -91,9 +91,9 @@ export default function Settings() {
                 </div>
                 <button
                   onClick={() => setEnableEmailChange((prev) => !prev)}
-                  className="bg-red-500 text-white active:bg-red-600 font-bold 
-                  uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                  focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="mr-1 mb-1 rounded bg-red-500 
+                  px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                  transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                 >
                   Change
                 </button>
@@ -116,9 +116,9 @@ export default function Settings() {
 
                 <button
                   onClick={() => setEnablePassChange(!enablePassChange)}
-                  className="bg-red-500 text-white active:bg-red-600 font-bold 
-                  uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                  focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="mr-1 mb-1 rounded bg-red-500 
+                  px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                  transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                 >
                   Change
                 </button>
@@ -130,18 +130,18 @@ export default function Settings() {
             <p className="mt-10 mb-4 ml-1">
               <b>Customization:</b>
             </p>
-            <div className="border rounded-md">
+            <div className="rounded-md border">
               <div
-                className="flex items-center justify-start lg:justify-between
-              md:justify-between sm:justify-between px-10 pt-10 h-10"
+                className="flex h-10 items-center justify-start
+              px-10 pt-10 sm:justify-between md:justify-between lg:justify-between"
               >
                 <label>Include Events is Weekly List:</label>
                 <EventsInTodoChange />
               </div>
 
               <div
-                className="flex items-center justify-start lg:justify-between
-              md:justify-between sm:justify-between p-10 h-10"
+                className="flex h-10 items-center justify-start
+              p-10 sm:justify-between md:justify-between lg:justify-between"
               >
                 <label>Start Week from Sunday:</label>
 
@@ -154,10 +154,10 @@ export default function Settings() {
             <p className="mt-10 mb-4 ml-1">
               <b>Deletion:</b>
             </p>
-            <div className="border rounded-md">
+            <div className="rounded-md border">
               <div
-                className="flex items-center justify-start lg:justify-between
-              md:justify-between sm:justify-between p-10 pt-10 h-10"
+                className="flex h-10 items-center justify-start
+              p-10 pt-10 sm:justify-between md:justify-between lg:justify-between"
               >
                 <LogoutUser />
                 <RemoveUser />

@@ -10,7 +10,7 @@ function GoalsList({ user_id }) {
   return (
     localData &&
     localData.goals.map((yearlyGoals, idx) => (
-      <div key={idx} className="ml-5 flex pt-24">
+      <div key={idx} className="flex pt-24">
         <div className="todo-list ml-5 w-80">
           <div className="rounded-lg bg-white pr-5 shadow-lg">
             <ul className="list-group pt-5">

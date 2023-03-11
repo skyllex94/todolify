@@ -70,7 +70,7 @@ function SideMenu() {
         )}
       </button>
 
-      <div className="space-y-3">
+      <div className={isOpen && "space-y-3"}>
         <div className="flex items-center">
           <h2 className={isOpen ? "text-xl font-bold" : "hidden"}>Dashboard</h2>
         </div>
@@ -95,7 +95,7 @@ function SideMenu() {
         </motion.div>
         <div
           className={
-            !isOpen ? "hidden rounded-br md:block lg:block xl:block" : undefined
+            !isOpen ? "rounded-br md:block lg:block xl:block" : undefined
           }
         >
           <ul className="text-s space-y-1 pt-2 pb-4">
@@ -107,7 +107,7 @@ function SideMenu() {
                     className={"flex items-center space-x-3 rounded-md p-2"}
                   >
                     <span>{curr.icon}</span>
-                    <span className={isOpen ? "" : "hidden"}>{curr.name}</span>
+                    {isOpen ? <span> {curr.name} </span> : undefined}
                   </Link>
                 </motion.li>
               );

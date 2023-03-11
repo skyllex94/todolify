@@ -50,7 +50,7 @@ function Header() {
         bg-white/90 shadow-2xl shadow-gray-600/5 backdrop-blur 
         dark:border-gray-800 dark:bg-gray-900/80"
         >
-          <div className="m-auto w-full sm:container md:container md:px-12 lg:px-6 xl:container">
+          <div className="m-auto w-full sm:container md:container xl:container md:px-12 lg:px-6">
             <div className="flex flex-wrap items-center justify-between py-5 pt-5 md:py-5 lg:gap-6 xl:gap-6">
               <div className="flex w-full items-center justify-between lg:w-auto">
                 <Link
@@ -144,7 +144,7 @@ function Header() {
                         </Link>
                         <Link
                           to={user_id ? `/user/${user_id}` : "/login"}
-                          className="relative ml-auto flex h-9 w-24 items-center justify-center pl-3 
+                          className="relative ml-auto flex h-9 w-24 items-center justify-center
                           before:absolute before:inset-0 before:rounded-full before:bg-red-600 before:transition 
                           before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 
                           dark:before:bg-red-400 sm:px-6"

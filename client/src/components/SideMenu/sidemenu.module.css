@@ -8,7 +8,9 @@
   padding-top: 15px;
   padding-left: 15px;
 }
-@media only screen and (max-width: 600px) {
+
+/* Mobile friendly implementation */
+/* @media only screen and (max-width: 600px) {
   .sidenavClosed {
     position: absolute;
     z-index: 15;
@@ -21,7 +23,7 @@
   .sideitem {
     display: none;
   }
-}
+} */
 
 .sidenavClosed {
   transition: 0.3s ease-in-out;

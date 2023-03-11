@@ -69,7 +69,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
   return (
     <div
       onWheel={(e) => scrollChange(e)}
-      className="container mx-auto pt-20 max-h-screen"
+      className="container mx-auto max-h-screen pt-20"
     >
       <AnimatePresence mode="wait">
         <motion.div
@@ -78,19 +78,20 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.2 }}
-          className="wrapper bg-white rounded shadow w-full"
+          className="wrapper w-full rounded bg-white shadow"
         >
-          <div className="flex justify-between pl-14 md:pl-2 lg:pl-2 xl:pl-2 sm:pl-2 py-2">
+          <div className="flex justify-between pl-2">
+            {/*md:pl-2 lg:pl-2 xl:pl-2 sm:pl-2 py-2*/}
             <span className="text-lg font-bold">{monthTitle}</span>
             <div className="buttons">
               <button
-                className="py-1 px-5 md:px-1 lg:px-1 xl:px-1 border mr-2"
+                className="mr-2 border py-1 px-5 md:px-1 lg:px-1 xl:px-1"
                 onClick={() => previousMonth()}
               >
                 <AiOutlineArrowUp />
               </button>
               <button
-                className="py-1 px-5 md:px-1 lg:px-1 xl:px-1 border"
+                className="border py-1 px-5 md:px-1 lg:px-1 xl:px-1"
                 onClick={() => nextMonth()}
               >
                 <AiOutlineArrowDown />
@@ -104,9 +105,9 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
                 {weekDays.map((day, idx) => (
                   <th
                     key={idx}
-                    className="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs"
+                    className="lg:w-30 md:w-30 h-10 w-10 border-r p-2 text-xs sm:w-20 xl:w-40 xl:text-sm"
                   >
-                    <span className="xl:block lg:block md:block sm:block hidden">
+                    <span className="hidden sm:block md:block lg:block xl:block">
                       {day}
                     </span>
                   </th>
@@ -150,8 +151,8 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
                     return (
                       <td
                         key={idx}
-                        className={`border ${dimDay} h-30 xl:w-40 px-2 lg:w-30 md:w-30 
-                          sm:w-20 w-10 transition cursor-pointer ease-out`}
+                        className={`border ${dimDay} h-30 lg:w-30 md:w-30 w-10 cursor-pointer 
+                          px-2 transition ease-out sm:w-20 xl:w-40`}
                       >
                         <div className={white}>
                           <CalendarDay
