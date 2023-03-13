@@ -18,7 +18,6 @@ function Events() {
   const [currMonth, setCurrMonth] = useState(getMonth());
   const [currMonthIdx, setCurrMonthIdx] = useState(getCurrMonth());
   const [loadEvents, setLoadEvents] = useState(false);
-  // const events = useSelector((state) => state.events);
 
   // UI Manipulation requirements
   const navigate = useNavigate();

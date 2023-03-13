@@ -70,7 +70,7 @@ function SideMenu() {
         )}
       </button>
 
-      <div className={isOpen && "space-y-3"}>
+      <div className={isOpen ? "space-y-3" : undefined}>
         <div className="flex items-center">
           <h2 className={isOpen ? "text-xl font-bold" : "hidden"}>Dashboard</h2>
         </div>

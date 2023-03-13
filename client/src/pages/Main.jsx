@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
-import { decodeJWT, getDate } from "../utils/functions";
+import { getDate } from "../utils/functions";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import loader from "../assets/loader.gif";
 import { useHorizontalScroll } from "../hooks/horizontalScroll";
@@ -12,21 +12,16 @@ import { useHorizontalScroll } from "../hooks/horizontalScroll";
 import { motion, AnimatePresence } from "framer-motion";
 import SideMenu from "../components/SideMenu/SideMenu";
 import { saveUserData } from "../redux/dataSlice";
-
-var _ = require("lodash");
+// var _ = require("lodash");
 
 function Main() {
   const navigate = useNavigate();
-  const savedJWT = window.localStorage.getItem("jwt");
-
-  const user_id = decodeJWT(savedJWT);
-  const { id } = user_id.user;
+  const user_id = useSelector((state) => state.auth.user_id);
 
   const [loadedTodoList, setLoadedTodoList] = useState(false);
   const [dateIdx, setDateIdx] = useState(0);
   const scrollRef = useHorizontalScroll();
   const [focusToday, setFocusToday] = useState(false);
-  // const [showInstModal, setShowInstModal] = useState(handleShowInstModal);
 
   const dispatch = useDispatch();
 
@@ -71,13 +66,13 @@ function Main() {
       return respFromDB;
     };
 
-    getUserTodoList(id).catch(console.error);
-  }, [id]);
+    getUserTodoList(user_id).catch(console.error);
+  }, [user_id, dispatch]);
 
   useEffect(() => {
     // If there's no JWT passed from App.js, navigate to landing page
-    if (!id) navigate("/");
-  }, [navigate, id]);
+    if (!user_id) navigate("/");
+  }, [navigate, user_id]);
 
   function getWeek(idx) {
     const date = getDate(idx);
@@ -113,7 +108,7 @@ function Main() {
       <Header />
 
       <div className="flex h-screen">
-        <SideMenu user_id={id} />
+        <SideMenu />
 
         <div
           className="flex h-full pt-24"
@@ -228,7 +223,7 @@ function Main() {
                         <TodoList
                           data={todos}
                           key={idx}
-                          user_id={id}
+                          user_id={user_id}
                           todos={categories}
                           events={events}
                           day={day}
@@ -271,7 +266,7 @@ function Main() {
                         <TodoList
                           data={todos}
                           key={idx}
-                          user_id={id}
+                          user_id={user_id}
                           todos={categories}
                           events={events}
                           day={day}

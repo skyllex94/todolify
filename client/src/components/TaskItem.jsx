@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DeleteTask from "./DeleteTask";
 import EditTask from "./EditTask";
 import EnableEditTask from "./EnableEditTask";
+import NotificationsModal from "./Notifications/NotificationsModal";
 import ToggleTask from "./ToggleTask";
 
 const TaskItem = ({
@@ -16,6 +17,11 @@ const TaskItem = ({
   done,
 }) => {
   const [enableEdit, setEnableEdit] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const openNotificationsModal = () => {
+    setShowModal(true);
+  };
 
   return (
     <React.Fragment>
@@ -41,7 +47,9 @@ const TaskItem = ({
             setEnableEdit={setEnableEdit}
           />
         ) : (
-          task
+          <button className="task_button" onClick={openNotificationsModal}>
+            {task}
+          </button>
         )}
       </div>
 
@@ -55,6 +63,10 @@ const TaskItem = ({
           month_year={month_year}
         />
       </div>
+
+      {showModal && (
+        <NotificationsModal setShowModal={setShowModal} task={task} />
+      )}
     </React.Fragment>
   );
 };

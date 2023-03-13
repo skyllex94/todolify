@@ -21,10 +21,10 @@ body {
 }
 
 .navbar-active .hamburger div:first-child {
-  @apply rotate-45 translate-y-1.5;
+  @apply translate-y-1.5 rotate-45;
 }
 .navbar-active .hamburger div:last-child {
-  @apply -rotate-45 -translate-y-1;
+  @apply -translate-y-1 -rotate-45;
 }
 .navbar-active div:first-child div:first-child div:last-child {
   @apply block lg:flex;
@@ -119,6 +119,11 @@ code {
   width: 75px;
   height: auto;
   margin-left: 30px;
+}
+
+.task_button {
+  all: unset;
+  cursor: pointer;
 }
 
 /* Check box css modules */
