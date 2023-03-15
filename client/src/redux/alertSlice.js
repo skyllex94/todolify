@@ -8,6 +8,7 @@ export const alertSlice = createSlice({
       state.alert = {
         message: action.payload.message,
         type: action.payload.type,
+        title: action.payload?.title,
       };
     },
     clearAlert: (state, _) => {

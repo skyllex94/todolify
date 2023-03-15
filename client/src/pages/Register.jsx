@@ -14,6 +14,8 @@ import { useDisplayAlert } from "../hooks/useDisplayAlert";
 import { useSignupData } from "../hooks/useSignupData";
 import ReCAPTCHA from "react-google-recaptcha";
 
+import { AnimatePresence } from "framer-motion";
+
 function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,7 +23,8 @@ function Register() {
   const [verifiedRecaptcha, setVerifiedRecaptcha] = useState(false);
   const { formData, onChange } = useSignupData();
   const { name, email, password, repeat_password } = formData;
-  const { alert, enableAlert, displayAlert } = useDisplayAlert();
+  const { alertState, enableAlert, setEnableAlert, displayAlert } =
+    useDisplayAlert();
 
   useEffect(() => {
     const fetchJWT = JSON.parse(window.localStorage.getItem("jwt"));
@@ -30,6 +33,11 @@ function Register() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (password === "" || password === null) {
+      displayAlert("error", "Please input password");
+      return;
+    }
 
     if (password !== repeat_password) {
       displayAlert("error", "Passwords do not match");
@@ -95,7 +103,15 @@ function Register() {
           </div>
 
           <div className="w-full py-5 px-8 lg:w-1/2">
-            {enableAlert && <Alert type={alert.type} message={alert.message} />}
+            <AnimatePresence>
+              {enableAlert && (
+                <Alert
+                  type={alertState.type}
+                  message={alertState.message}
+                  setEnableAlert={setEnableAlert}
+                />
+              )}
+            </AnimatePresence>
 
             <div className="mt-4 flex items-center justify-between">
               <span className="w-1/8 border-b lg:w-1/6"></span>

@@ -25,7 +25,7 @@ const TaskItem = ({
 
   return (
     <React.Fragment>
-      <div className="flex items-center text-left">
+      <div className="flex items-center justify-center text-left">
         <ToggleTask
           user_id={user_id}
           category_index={category_index}
@@ -53,7 +53,10 @@ const TaskItem = ({
         )}
       </div>
 
-      <div className="flex">
+      <div>
+        <div className="bg_buttons_hover absolute mx-3 hidden bg-white text-white group-hover:inline">
+          I
+        </div>
         <EnableEditTask setEnableEdit={setEnableEdit} />
         <DeleteTask
           user_id={user_id}

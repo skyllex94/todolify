@@ -126,6 +126,30 @@ code {
   cursor: pointer;
 }
 
+.task_button:hover {
+  word-break: break-all;
+  overflow: hidden;
+}
+
+.rename_button {
+  right: 20px;
+  top: 3px;
+}
+
+.delete_button {
+  right: 0;
+  top: 3px;
+}
+
+.bg_buttons_hover {
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 10px;
+  background: white;
+  right: -20px;
+  top: -5px;
+}
+
 /* Check box css modules */
 
 .checkmark {

@@ -80,12 +80,12 @@ router.post(
 
           categories: [
             {
-              category: "Bucket 1",
+              category: "Category 1",
               icon: 4,
               tasks: [],
             },
             {
-              category: "Bucket 2",
+              category: "Category 2",
               icon: 1,
               tasks: [],
             },

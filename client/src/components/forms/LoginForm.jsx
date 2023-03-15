@@ -1,11 +1,5 @@
 import axios from "axios";
-import React, {
-  Fragment,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
@@ -15,6 +9,7 @@ import { storeJWT, verifyRecaptcha } from "../../redux/authSlice";
 import { decodeJWT } from "../../utils/functions";
 import Alert from "../Alert";
 import ReCAPTCHA from "react-google-recaptcha";
+import { AnimatePresence } from "framer-motion";
 
 function LoginForm() {
   const dispatch = useDispatch();
@@ -23,7 +18,8 @@ function LoginForm() {
   const { formData, onChange } = useFormData();
   const { email, password } = formData;
   // Hangling and diplaying alert
-  const { alert, enableAlert, displayAlert } = useDisplayAlert();
+  const { alertState, enableAlert, setEnableAlert, displayAlert } =
+    useDisplayAlert();
   const [verifiedRecaptcha, setVerifiedRecaptcha] = useState(false);
 
   // Google OAuth startup
@@ -49,10 +45,17 @@ function LoginForm() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.email === "" || formData.password === "") {
+      displayAlert("error", "Please input your credentials");
+      return;
+    }
+
     if (verifiedRecaptcha === false) {
       displayAlert("error", "reCaptcha was not verified.");
       return;
     }
+
     try {
       // Request to server to check if use exists in DB and send token
       const res = await axios.post("/api/user", formData);
@@ -82,10 +85,19 @@ function LoginForm() {
 
   return (
     <Fragment>
-      {enableAlert && <Alert type={alert.type} message={alert.message} />}
+      <AnimatePresence>
+        {enableAlert && (
+          <Alert
+            type={alertState.type}
+            message={alertState.message}
+            setEnableAlert={setEnableAlert}
+          />
+        )}
+      </AnimatePresence>
 
       <form onSubmit={(e) => onSubmit(e)}>
-        {/* <a
+        {/*
+         <a
           href="#!"
           className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md
            hover:bg-gray-100"
@@ -117,7 +129,8 @@ function LoginForm() {
           >
             Sign in with Google
           </div>
-        </a> */}
+        </a> 
+      */}
         <div className="mt-4 flex items-center justify-between">
           <span className="w-1/5 border-b lg:w-1/4" />
 

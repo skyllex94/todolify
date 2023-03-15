@@ -1,36 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import dayjs from "dayjs";
+import { AnimatePresence, motion } from "framer-motion";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
+import Alert from "../Alert";
 
 export default function NotificationsModal({ setShowModal, task }) {
   const refCloseModal = useRef();
-  const [day, setDay] = useState("");
-  const [reminder, setReminder] = useState("");
-  const { enableAlert, displayAlert } = useDisplayAlert();
-
-  const times = ["12:00", "12:16"];
+  const [time, setTime] = useState("");
+  const [day, setDay] = useState();
+  const { alertState, enableAlert, setEnableAlert, displayAlert } =
+    useDisplayAlert();
 
   const addNotification = async () => {
-    if (reminder === "" || reminder === null) {
-      alert("Please select a time for the notification");
+    if (time === "" || !time) {
+      displayAlert("error", "Please select a time for the notification");
       return;
     }
+    if (day === "" || !day) {
+      displayAlert("error", "Please select a day for the notification");
+      return;
+    }
+    const date = `${day}T${time}`;
+    console.log("date:", date);
 
     const notifPermission = await Notification.requestPermission();
     if (notifPermission === "default" || notifPermission === "denied") {
-      alert(
+      displayAlert(
+        "error",
         "Please allow notifications for this app in order to receive reminders."
       );
       return;
     }
     const now = new Date();
-    const reminderDate = new Date(reminder);
+    const reminderDate = new Date(date);
     const diff = reminderDate - now;
 
     console.log("diff:", diff);
-    console.log(reminder);
     console.log("reminderDate:", reminderDate);
+
+    if (diff > 0)
+      displayAlert("success", `Reminder created to ${day} at ${time}`);
 
     setTimeout(() => {
       new Notification("Todolify Reminder", {
@@ -62,16 +70,30 @@ export default function NotificationsModal({ setShowModal, task }) {
         className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none"
       >
         <div ref={refCloseModal} className="relative w-auto max-w-xl">
-          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+          <div className="relative flex w-full flex-col rounded-lg border-0 bg-white px-3 shadow-lg outline-none focus:outline-none">
             <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
               <h3 className="text-3xl font-semibold">Create a Reminder</h3>
+
               <button
                 className="float-right ml-auto bg-transparent p-1 text-xl font-semibold text-black opacity-5"
                 onClick={() => setShowModal(false)}
               />
             </div>
 
-            <form className="p-8">
+            <AnimatePresence>
+              {enableAlert && (
+                <Alert
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  type={alertState.type}
+                  message={alertState.message}
+                  setEnableAlert={setEnableAlert}
+                />
+              )}
+            </AnimatePresence>
+
+            <form className="p-5">
               <div className="flex items-center justify-between border p-6">
                 <label
                   className="text-md mb-2 mr-3 block font-bold text-gray-700"
@@ -79,15 +101,8 @@ export default function NotificationsModal({ setShowModal, task }) {
                 >
                   Which day:
                 </label>
-                <select
-                  className="ml-2 flex items-center"
-                  value={day}
-                  onChange={(e) => setDay(e.target.value)}
-                >
-                  <option value={"Today"}>Today</option>
-                  <option value={"Tomorrow"}>Tomorrow</option>
-                  <option value={"In 2 Days"}>In 2 Days</option>
-                </select>
+
+                <input type="date" onChange={(e) => setDay(e.target.value)} />
               </div>
 
               <div className="flex items-center justify-between border p-6">
@@ -98,20 +113,11 @@ export default function NotificationsModal({ setShowModal, task }) {
                   Remind me at:
                 </label>
 
-                <select
-                  className="ml-2 flex items-center"
-                  value={reminder}
-                  onChange={(e) => setReminder(e.target.value)}
-                >
-                  <option defaultValue={"Select Time"}>Select Time</option>
-                  <option value={"11:30"}>11:30 AM</option>
-                  <option value={`2023-03-13T${times[0]}`}>12:00 AM</option>
-                  <option value={`2023-03-13T${times[1]}`}>12:30 AM</option>
-                  <option value={"1:00"}>1:00 PM</option>
-                  <option value={"1:30"}>1:30 PM</option>
-                  <option value={"2:00"}>2:00 PM</option>
-                  <option value={"2:30"}>2:30 PM</option>
-                </select>
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                />
               </div>
             </form>
             <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-200 p-6">

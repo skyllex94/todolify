@@ -87,7 +87,7 @@ function CategoryItem({
 
             return (
               <div
-                className="group mb-1 flex items-center justify-between"
+                className="task_bg group relative mb-1 flex items-center justify-between" // rounded hover:bg-gray-100
                 key={index}
               >
                 <TaskItem

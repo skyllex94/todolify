@@ -13,7 +13,7 @@ function AddCategory({ user_id, day, month_year, dayWtData }) {
 
       <input
         type="text"
-        placeholder="Add Bucket..."
+        placeholder="Add Category..."
         onClick={() => setShowModal(true)}
         className="text-black-500 ml-3 mr-2 block h-12 w-full rounded-lg border border-gray-300 pl-5 pr-5 focus:shadow focus:outline-none"
       />

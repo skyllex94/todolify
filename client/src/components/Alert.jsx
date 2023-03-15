@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { motion } from "framer-motion";
 
-function Alert({ type, message }) {
+function Alert({ type, message, duration = 3000, setEnableAlert }) {
+  useEffect(() => {
+    setTimeout(() => {
+      setEnableAlert(false);
+    }, duration);
+  }, [duration, setEnableAlert]);
+
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className={
         type === "error"
-          ? "bg-red-200 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md"
-          : "bg-teal-200 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
+          ? "rounded-b border-t-4 border-red-500 bg-red-200 px-4 py-3 text-red-900 shadow-md"
+          : type === "success"
+          ? "rounded-b border-t-4 border-green-500 bg-green-300 px-4 py-3 text-green-900 shadow-md"
+          : type === "neutral" &&
+            "rounded-b border-t-4 border-teal-500 bg-teal-200 px-4 py-3 text-teal-900 shadow-md"
       }
       role="alert"
     >
@@ -15,8 +28,11 @@ function Alert({ type, message }) {
           <svg
             className={
               type === "error"
-                ? "fill-current h-6 w-6 text-red-500 mr-4"
-                : "fill-current h-6 w-6 text-teal-500 mr-4"
+                ? "mr-4 h-6 w-6 fill-current text-red-500"
+                : type === "success"
+                ? "mr-4 h-6 w-6 fill-current text-green-500"
+                : type === "neutral" &&
+                  "mr-4 h-6 w-6 fill-current text-teal-500"
             }
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -26,10 +42,11 @@ function Alert({ type, message }) {
         </div>
         <div>
           {type === "error" && <p className="font-bold">Error occured</p>}
+          {type === "success" && <p className="font-bold">Success</p>}
           <p className="text-sm">{message}</p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

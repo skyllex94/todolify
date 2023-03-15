@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { decodeJWT } from "../utils/functions";
 
 function Landing() {
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ function Landing() {
     <div>
       <Header />
       <div className="relative bg-white pt-40 pb-20 dark:bg-gray-900 lg:pt-44">
-        <div className="relative m-auto px-6 md:px-12 lg:px-6 xl:container">
+        <div className="relative m-auto px-6 xl:container md:px-12 lg:px-6">
           <h1 className="text-center text-4xl font-black text-red-900 sm:mx-auto sm:w-10/12 sm:text-5xl md:w-2/3 md:text-6xl lg:w-auto lg:text-left xl:text-7xl">
             Want to be 30% more productive?
             <br className="hidden lg:block" />

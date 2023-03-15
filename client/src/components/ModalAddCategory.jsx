@@ -76,7 +76,7 @@ export default function ModalAddCategory({
         <div ref={refCloseModal} className="relative w-auto max-w-xl">
           <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
             <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
-              <h3 className="text-3xl font-semibold">Add New Bucket</h3>
+              <h3 className="text-3xl font-semibold">Add New Category</h3>
               <button
                 className="float-right ml-auto bg-transparent p-1 text-xl font-semibold text-black opacity-5"
                 onClick={() => setShowModal(false)}
@@ -127,7 +127,7 @@ export default function ModalAddCategory({
                 />
               </div>
 
-              <div className="flex items-center border p-6">
+              <div className="flex items-center justify-between border p-6">
                 <label
                   className="text-md block font-bold text-gray-700"
                   htmlFor="start_from"
@@ -155,7 +155,7 @@ export default function ModalAddCategory({
                 type="button"
                 onClick={onSubmit}
               >
-                Create Bucket
+                Create Category
               </button>
 
               <button

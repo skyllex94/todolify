@@ -25,7 +25,7 @@ function DeleteTask({ user_id, category_id, day, month_year, dayWtData, id }) {
 
   return (
     <button
-      className="hidden group-hover:inline rounded-full"
+      className="delete_button absolute hidden group-hover:inline"
       onClick={() => handleDeleteTask()}
     >
       <GrFormClose />
