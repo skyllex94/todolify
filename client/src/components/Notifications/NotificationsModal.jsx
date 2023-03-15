@@ -10,6 +10,12 @@ export default function NotificationsModal({ setShowModal, task }) {
   const { alertState, enableAlert, setEnableAlert, displayAlert } =
     useDisplayAlert();
 
+  // Flutter - mobile app variable
+  var isFlutterInAppWebViewReady = false;
+  window.addEventListener("flutterInAppWebViewPlatformReady", function (event) {
+    isFlutterInAppWebViewReady = true;
+  });
+
   const addNotification = async () => {
     if (time === "" || !time) {
       displayAlert("error", "Please select a time for the notification");
@@ -45,6 +51,16 @@ export default function NotificationsModal({ setShowModal, task }) {
         body: `This is a reminder to: "${task}"`,
       });
     }, diff);
+
+    // if (isFlutterInAppWebViewReady) {
+    //   const args = [day, time, { task: task.diff.toiosstring }];
+    //   window.flutter_inappwebview.callHandler("showreminded", ...args);
+    // }
+
+    // if (isFlutterInAppWebViewReady) {
+    //   const args = [day, time, { task: task, diff: diff.toISOString() }];
+    //   window.flutter_inappwebview.callHandler("showreminded", ...args);
+    // }
   };
 
   useEffect(() => {
