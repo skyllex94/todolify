@@ -43,8 +43,9 @@ export default function NotificationsModal({ setShowModal, task }) {
     console.log("diff:", diff);
     console.log("reminderDate:", reminderDate);
 
-    if (diff > 0)
+    if (diff > 0) {
       displayAlert("success", `Reminder created to ${day} at ${time}`);
+    }
 
     setTimeout(() => {
       new Notification("Todolify Reminder", {
