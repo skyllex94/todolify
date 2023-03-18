@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
-import Alert from "../Alert";
+import Alert from "../Alert/Alert";
+// const webpush = require("web-push");
 
 export default function NotificationsModal({ setShowModal, task }) {
   const refCloseModal = useRef();
@@ -62,6 +63,37 @@ export default function NotificationsModal({ setShowModal, task }) {
     //   const args = [day, time, { task: task, diff: diff.toISOString() }];
     //   window.flutter_inappwebview.callHandler("showreminded", ...args);
     // }
+  };
+
+  const webPushAPINotificationCall = async () => {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+
+    console.log("permission:", permission);
+    const sw = await navigator.serviceWorker.ready;
+    console.log("sw:", sw);
+    const subscribtion = await sw.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array("public-key"),
+    });
+
+    console.log("subscribtion:", subscribtion);
+    const res = await subscribtion.sendSubscriptionToServer();
+    // console.log("res:", res);
+
+    // Utility function to convert a URL-safe Base64 string to a Uint8Array
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, "+")
+        .replace(/_/g, "/");
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
   };
 
   useEffect(() => {

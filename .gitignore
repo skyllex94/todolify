@@ -3,3 +3,4 @@ config/default.json
 .VSCodeCounter/
 .env
 client/frontend.env
+build

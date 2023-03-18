@@ -7,7 +7,7 @@ import { useFormData } from "../../hooks/useFormData";
 
 import { storeJWT, verifyRecaptcha } from "../../redux/authSlice";
 import { decodeJWT } from "../../utils/functions";
-import Alert from "../Alert";
+import Alert from "../Alert/Alert";
 import ReCAPTCHA from "react-google-recaptcha";
 import { AnimatePresence } from "framer-motion";
 
@@ -68,7 +68,7 @@ function LoginForm() {
       const { id } = user.user;
       navigate(`/user/${id}`);
     } catch (err) {
-      displayAlert(err.name, err.message, err.response.status);
+      displayAlert(err.name, err.message);
     }
   };
 

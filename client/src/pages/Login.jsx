@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-
-import LoginForm from "../components/forms/LoginForm";
+import LoginForm from "../components/Forms/LoginForm";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ function Login() {
     <div>
       <Header />
       <div className="pt-40">
-        <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-l">
+        <div className="lg:max-w-l mx-auto flex max-w-sm overflow-hidden rounded-lg bg-white shadow-lg">
           <div className="w-full p-8">
             <LoginForm />
           </div>

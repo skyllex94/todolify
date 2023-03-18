@@ -8,7 +8,7 @@ import image from "../assets/reg.jpg";
 import { useDispatch } from "react-redux";
 import { storeJWT, verifyRecaptcha } from "../redux/authSlice";
 import { decodeJWT } from "../utils/functions";
-import Alert from "../components/Alert";
+import Alert from "../components/Alert/Alert";
 
 import { useDisplayAlert } from "../hooks/useDisplayAlert";
 import { useSignupData } from "../hooks/useSignupData";
