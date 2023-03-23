@@ -13,7 +13,7 @@ import {
 import { IoIosMusicalNotes, IoMdBusiness } from "react-icons/io";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateIconAsync } from "../redux/todosSlice";
+import { updateIconAsync } from "../../redux/todosSlice";
 import { AiOutlineStock } from "react-icons/ai";
 import {
   TbBrandGoogleAnalytics,
@@ -116,14 +116,14 @@ function SelectIcon({
   }, [currIcon]); // Don't include icon dependency since they fight over
 
   const popover = (
-    <div className="bg-white border-solid border-2 border-red-600 rounded p-2">
+    <div className="rounded border-2 border-solid border-red-600 bg-white p-2">
       <Popover id="popover-positioned-top">
         <Popover.Body>
           <div className="grid grid-cols-6 gap-2">
             {icons.map((icon, idx) => (
               <div
                 key={idx}
-                className="transition ease-in-out hover:-translate-y-1 hover:scale-105 duration-50"
+                className="duration-50 transition ease-in-out hover:-translate-y-1 hover:scale-105"
                 onClick={() => handleChangeIcon(icon, idx)}
               >
                 {icon}

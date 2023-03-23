@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { useDispatch } from "react-redux";
-import { updateTaskAsync } from "../redux/todosSlice";
+import { updateTaskAsync } from "../../redux/todosSlice";
 
 function EditTask({
   user_id,
@@ -42,7 +42,7 @@ function EditTask({
         value={updatedValue}
         onChange={(event) => setUpdatedValue(event.target.value)}
         onBlur={() => setEnableEdit(false)}
-        className="block py-1 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-orange-500 focus:outline-none focus:ring-0 focus:border-orange-600 peer"
+        className="text-md peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-1 px-0 text-gray-900 focus:border-orange-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-orange-500"
       />
     </form>
   );

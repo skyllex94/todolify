@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FiPlusCircle } from "react-icons/fi";
-import EventInfoModal from "./UpdateEventModal";
+import EventInfoModal from "../Modals/UpdateEventModal";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { removeEventAsync } from "../../redux/eventsSlice";
@@ -75,11 +75,11 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       onMouseLeave={() => {
         setAddEventButton("hidden");
       }}
-      className="mx-auto h-32 xl:h-36 lg:h-36 md:h-36 sm:h-36 xl:w-full lg:w-full md:w-full sm:w-full
-      w-10 mx-auto overflow-hidden"
+      className="mx-auto h-32 w-10 overflow-hidden sm:h-36 sm:w-full md:h-36 md:w-full
+      lg:h-36 lg:w-full xl:h-36 xl:w-full "
     >
       <div
-        className="flex items-center justify-between"
+        className="flex cursor-pointer items-center justify-between"
         onClick={() => addEventModal(day)}
       >
         <div className="flex text-red-500">{$D}</div>
@@ -91,7 +91,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
         {events &&
           events.map((curr, idx) => {
             return (
-              <div className="flex mb-1 items-center text-gray-500" key={idx}>
+              <div className="mb-1 flex items-center text-gray-500" key={idx}>
                 <motion.button
                   initial={{ scale: 1 }}
                   whileHover={{
@@ -111,9 +111,9 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                   onClick={() =>
                     openEventInfo(curr._id, idx, curr.event, curr.notes)
                   }
-                  className="relative flex w-full justify-between px-2 rounded border border-red-200 text-sm font-medium"
+                  className="relative flex w-full justify-between rounded border border-red-200 px-2 text-sm font-medium"
                 >
-                  <div className="text-gray-700 text-left mr-3">
+                  <div className="mr-3 text-left text-gray-700">
                     {curr.event}
                   </div>
                 </motion.button>

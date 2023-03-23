@@ -3,7 +3,7 @@ import { AiOutlineStar } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { openEventsInTodoList } from "../redux/settingsSlice";
+import { openEventsInTodoList } from "../../redux/settingsSlice";
 import ToggleEventInTodos from "./ToggleEventInTodos";
 
 function EventsInTodos({ events, day, month_year }) {
@@ -16,7 +16,7 @@ function EventsInTodos({ events, day, month_year }) {
     <AnimatePresence mode="wait">
       <div className="brackets-events min-w-[93%]">
         <div onClick={openPanel} className="flex items-center justify-between">
-          <div className="flex title">
+          <div className="title flex">
             <div className="p-1">
               <AiOutlineStar />
             </div>
@@ -53,10 +53,10 @@ function EventsInTodos({ events, day, month_year }) {
           exit={{ y: -100, opacity: 0 }}
           className={isOpen ? `flex items-center` : "hidden"}
         >
-          <div className="items-center my-1">
+          <div className="my-1 items-center">
             <div className="flex flex-col">
               {events.map((curr, idx) => (
-                <div key={idx} className="flex mb-1 items-center">
+                <div key={idx} className="mb-1 flex items-center">
                   <ToggleEventInTodos
                     curr={curr}
                     event_idx={idx}

@@ -1,7 +1,7 @@
 import React from "react";
 import { GrFormClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
-import { deleteCategoryAsync } from "../redux/todosSlice";
+import { deleteCategoryAsync } from "../../redux/todosSlice";
 
 function DeleteCategory({ user_id, id, day, month_year, dayWtData }) {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ function DeleteCategory({ user_id, id, day, month_year, dayWtData }) {
 
   return (
     <button
-      className="p-1 group-hover:block rounded-full"
+      className="rounded-full p-1 group-hover:block"
       onClick={(e) => {
         const confirmBox = window.confirm(
           "Do you really want to delete this category?"

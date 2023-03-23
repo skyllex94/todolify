@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTaskAsync } from "../redux/todosSlice";
+import { addTaskAsync } from "../../redux/todosSlice";
 
 function AddTask({
   user_id,
@@ -44,7 +44,7 @@ function AddTask({
         {!enableAddTask && (
           <span
             onClick={() => setEnableAddTask(true)}
-            className="add-task-label ml-3 text-xs font-semibold inline-block py-1 px-2 uppercase rounded text-gray-600 bg-gray-200 uppercase last:mr-0 mr-1"
+            className="add-task-label ml-3 mr-1 inline-block rounded bg-gray-200 py-1 px-2 text-xs font-semibold uppercase uppercase text-gray-600 last:mr-0"
           >
             Add Task
           </span>
@@ -55,7 +55,7 @@ function AddTask({
               <div className="flex items-center">
                 <div className="relative">
                   <div>
-                    <i className="fa fa-search text-white z-20 hover:text-gray-500" />
+                    <i className="fa fa-search z-20 text-white hover:text-gray-500" />
                   </div>
                   <input
                     type="text"
@@ -64,8 +64,8 @@ function AddTask({
                     value={addTaskValue}
                     onChange={(event) => setAddTaskValue(event.target.value)}
                     onBlur={() => setEnableAddTask(false)}
-                    className="text-black-500 ml-3 w-60 h-12 focus:outline-none pl-10 pr-5 
-                    rounded-lg border border-gray-300 focus:shadow focus:outline-none block"
+                    className="text-black-500 ml-3 block h-12 w-60 rounded-lg border 
+                    border-gray-300 pl-10 pr-5 focus:shadow focus:outline-none focus:outline-none"
                   />
                 </div>
               </div>

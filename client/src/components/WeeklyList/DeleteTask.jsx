@@ -1,7 +1,7 @@
 import React from "react";
 import { GrFormClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
-import { deleteTaskAsync } from "../redux/todosSlice";
+import { deleteTaskAsync } from "../../redux/todosSlice";
 
 function DeleteTask({ user_id, category_id, day, month_year, dayWtData, id }) {
   const dispatch = useDispatch();

@@ -139,3 +139,14 @@ export function unregister() {
       });
   }
 }
+
+export function reminderNotifications() {
+  if ("Notification" in window) {
+    Notification.requestPermission().then(function (permission) {
+      // permission can be 'granted', 'denied', or 'default'
+      if (permission === "granted") {
+        console.log("Permission for notifications granted!");
+      }
+    });
+  }
+}

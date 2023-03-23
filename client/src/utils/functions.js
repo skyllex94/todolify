@@ -28,7 +28,7 @@ export const getDayOfWeek = (date) => {
     "Saturday",
   ];
 
-  let dayToConvert = date.getUTCDay();
+  let dayToConvert = date.getDay();
 
   let day = weekday[dayToConvert];
   return day;

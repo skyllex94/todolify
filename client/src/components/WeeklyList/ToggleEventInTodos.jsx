@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleEventAsync } from "../redux/eventsSlice";
+import { toggleEventAsync } from "../../redux/eventsSlice";
 
 export default function ToggleEventInTodos({
   curr,
@@ -47,9 +47,9 @@ export default function ToggleEventInTodos({
     <input
       id="purple-checkbox"
       type="checkbox"
-      className="w-4 h-4 mx-3 text-purple-600 bg-gray-100 border-gray-200 rounded focus:ring-purple-600 
-                      dark:focus:ring-purple-600 dark:ring-offset-gray-200 focus:ring-2 dark:bg-gray-600 
-                      dark:border-gray-100 cursor-pointer"
+      className="mx-3 h-4 w-4 cursor-pointer rounded border-gray-200 bg-gray-100 text-purple-600 
+                      focus:ring-2 focus:ring-purple-600 dark:border-gray-100 dark:bg-gray-600 
+                      dark:ring-offset-gray-200 dark:focus:ring-purple-600"
       onChange={toggleEvent}
       checked={toggle}
     />

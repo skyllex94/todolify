@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addCategoryAsync } from "../redux/todosSlice";
+import { addCategoryAsync } from "../../redux/todosSlice";
 import { motion } from "framer-motion";
 
 export default function ModalAddCategory({

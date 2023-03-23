@@ -4,7 +4,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 function EnableEditCategory({ setEnableEdit }) {
   return (
     <button
-      className="group-hover:block rounded-full mr-1"
+      className="mr-1 rounded-full group-hover:block"
       onClick={() => setEnableEdit((prevState) => !prevState)}
     >
       <AiOutlineEdit />

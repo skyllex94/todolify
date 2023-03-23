@@ -1,5 +1,5 @@
 import Header from "./Header";
-import TodoList from "../components/TodoList";
+import TodoList from "../components/WeeklyList/TodoList";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";

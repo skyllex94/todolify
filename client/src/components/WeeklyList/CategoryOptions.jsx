@@ -5,7 +5,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { GrFormClose } from "react-icons/gr";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useDispatch } from "react-redux";
-import { deleteTaskAsync } from "../redux/todosSlice";
+import { deleteTaskAsync } from "../../redux/todosSlice";
 
 function CategoryOptions({
   user_id,
@@ -34,11 +34,11 @@ function CategoryOptions({
   };
 
   const popover = (
-    <div className="bg-white border-solid border-2 border-red-600 rounded p-2">
+    <div className="rounded border-2 border-solid border-red-600 bg-white p-2">
       <Popover id="popover-positioned-top">
         <Popover.Body>
           <button
-            className="flex items-center w-full justify-between p-1 hover:bg-gray-100"
+            className="flex w-full items-center justify-between p-1 hover:bg-gray-100"
             onClick={() => setEnableEdit((prev) => !prev)}
           >
             <p>Rename Task</p>
@@ -46,7 +46,7 @@ function CategoryOptions({
           </button>
 
           <button
-            className="flex items-center w-full justify-between p-1 hover:bg-gray-100"
+            className="flex w-full items-center justify-between p-1 hover:bg-gray-100"
             onClick={() => handleDeleteTask()}
           >
             <p>Delete Task</p>

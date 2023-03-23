@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddEventModal from "./AddEventModal";
+import AddEventModal from "../Modals/AddEventModal";
 
 import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
@@ -151,7 +151,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
                     return (
                       <td
                         key={idx}
-                        className={`border ${dimDay} h-30 lg:w-30 md:w-30 w-10 cursor-pointer 
+                        className={`border ${dimDay} h-30 lg:w-30 md:w-30 w-10 
                           px-2 transition ease-out sm:w-20 xl:w-40`}
                       >
                         <div className={white}>

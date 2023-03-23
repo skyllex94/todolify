@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DeleteTask from "./DeleteTask";
 import EditTask from "./EditTask";
 import EnableEditTask from "./EnableEditTask";
-import NotificationsModal from "./Notifications/NotificationsModal";
+import NotificationsModal from "../Modals/NotificationsModal";
 import ToggleTask from "./ToggleTask";
 
 const TaskItem = ({
@@ -57,6 +57,7 @@ const TaskItem = ({
         <div className="bg_buttons_hover absolute mx-3 hidden bg-white text-white group-hover:inline">
           I
         </div>
+
         <EnableEditTask setEnableEdit={setEnableEdit} />
         <DeleteTask
           user_id={user_id}
