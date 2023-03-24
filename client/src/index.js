@@ -17,4 +17,4 @@ root.render(
 );
 
 serviceWorkerRegistration.register();
-serviceWorkerRegistration.reminderNotifications();
+// serviceWorkerRegistration.reminderNotifications();

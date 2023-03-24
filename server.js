@@ -3,7 +3,37 @@ const express = require("express");
 require("dotenv").config();
 const connectDB = require("./config/mongodb");
 const app = express();
+
+const webpush = require("web-push");
+const bodyParser = require("body-parser");
 const path = require("path");
+
+// app.use(bodyParser.json());
+
+const publicVapidKey =
+  "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+
+webpush.setVapidDetails(
+  "mailto:test@test.com",
+  publicVapidKey,
+  process.env.VAPID_PRIVATE_KEY
+);
+
+// Push Notifications Subscribe Route
+
+app.post("/subscribe", (req, res) => {
+  // Get push subscription object
+  const subscription = req.body;
+
+  // Send 201 Status
+  res.status(201).json({});
+  const payload = JSON.stringify({ title: "Push Test" });
+
+  // Pass object into sendNotification
+  webpush
+    .sendNotification(subscription, payload)
+    .catch((err) => console.error(err));
+});
 
 // Connect MongoDB Atlas
 connectDB();

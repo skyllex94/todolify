@@ -36,7 +36,7 @@ export function register(config) {
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
-        checkValidServiceWorker(swUrl, config);
+        // checkValidServiceWorker(swUrl, config);
 
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
@@ -63,25 +63,43 @@ function registerValidSW(swUrl, config) {
         if (installingWorker == null) {
           return;
         }
-        installingWorker.onstatechange = () => {
+        installingWorker.onstatechange = async () => {
           if (installingWorker.state === "installed") {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
-              console.log(
-                "New content is available and will be used when all " +
-                  "tabs for this page are closed. See https://cra.link/PWA."
-              );
+
+              const publicVapidKey =
+                "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+
+              console.log("Service worker registered");
+
+              console.log("Registering a push...");
+              const subscription = await register.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+              });
+
+              console.log("Push registered");
+
+              // Send Push Notification
+              console.log("Sending push");
+              await fetch("/subscribe", {
+                method: "POST",
+                headers: {
+                  "content-type": "application/json",
+                },
+                body: JSON.stringify(subscription),
+              });
+
+              console.log("Push notification sent");
 
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);
               }
             } else {
-              // At this point, everything has been precached.
-              // It's the perfect time to display a
-              // "Content is cached for offline use." message.
               console.log("Content is cached for offline use.");
 
               // Execute callback
@@ -140,13 +158,56 @@ export function unregister() {
   }
 }
 
+// Continue from here and review why the service worker is having some slack and not installing
+
 export function reminderNotifications() {
-  if ("Notification" in window) {
-    Notification.requestPermission().then(function (permission) {
-      // permission can be 'granted', 'denied', or 'default'
-      if (permission === "granted") {
-        console.log("Permission for notifications granted!");
-      }
-    });
+  const publicVapidKey =
+    "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+
+  if ("serviceWorker" in navigator) {
+    send().catch((err) => console.error(err));
   }
+
+  // Register service worker, register the push, send the push
+  async function send() {
+    console.log("Registering service worker");
+    const register = await navigator.serviceWorker.register(
+      `${process.env.PUBLIC_URL}/service-worker.js`
+    );
+
+    console.log("Service worker registered");
+
+    console.log("Registering a push...");
+    const subscription = await register.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+    });
+
+    console.log("Push registered");
+
+    // Send Push Notification
+    console.log("Sending push");
+    await fetch("/subscribe", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(subscription),
+    });
+
+    console.log("Push notification sent");
+  }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  var padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  var base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+
+  var rawData = window.atob(base64);
+  var outputArray = new Uint8Array(rawData.length);
+
+  for (var i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }
