@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import LoginForm from "../components/Forms/LoginForm";
+import LoginForm from "../components/Form/LoginForm";
 
 function Login() {
   const navigate = useNavigate();
