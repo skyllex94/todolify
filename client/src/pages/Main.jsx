@@ -194,7 +194,6 @@ function Main() {
                       const date = getDate(0);
                       const { day, month_year, dayOfWeek } = date;
                       let categories = todos.categories;
-                      console.log("categories:", categories);
                       let events = null;
                       let dayWtData = false;
 

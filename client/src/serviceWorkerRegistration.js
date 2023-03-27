@@ -48,13 +48,14 @@ export function register(config) {
         });
       } else {
         // Is not localhost. Just register service worker
-        registerValidSW(swUrl, config);
+        // registerValidSW(swUrl, config);
       }
     });
   }
 }
 
 function registerValidSW(swUrl, config) {
+  // const registedWorker = await navigator.serviceWorker.register(swUrl);
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {

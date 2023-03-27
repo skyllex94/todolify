@@ -12,10 +12,10 @@ export default function NotificationsModal({ setShowModal, task }) {
     useDisplayAlert();
 
   // Flutter - mobile app variable
-  var isFlutterInAppWebViewReady = false;
-  window.addEventListener("flutterInAppWebViewPlatformReady", function (event) {
-    isFlutterInAppWebViewReady = true;
-  });
+  // var isFlutterInAppWebViewReady = false;
+  // window.addEventListener("flutterInAppWebViewPlatformReady", function (event) {
+  //   isFlutterInAppWebViewReady = true;
+  // });
 
   const addNotification = async () => {
     if (time === "" || !time) {
@@ -66,20 +66,36 @@ export default function NotificationsModal({ setShowModal, task }) {
   };
 
   const webPushAPINotificationCall = async () => {
+    const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+
     const permission = await Notification.requestPermission();
     if (permission !== "granted") return;
 
-    console.log("permission:", permission);
-    const sw = await navigator.serviceWorker.ready;
-    console.log("sw:", sw);
-    const subscribtion = await sw.pushManager.subscribe({
+    const registedWorker = await navigator.serviceWorker.register(swUrl);
+    console.log("Service worker registered");
+
+    const publicVapidKey =
+      "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+
+    console.log("Registering a push...");
+    const subscription = await registedWorker.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array("public-key"),
+      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
     });
 
-    console.log("subscribtion:", subscribtion);
-    const res = await subscribtion.sendSubscriptionToServer();
-    // console.log("res:", res);
+    console.log("Push registered");
+
+    // Send Push Notification
+    console.log("Sending push");
+    await fetch("/subscribe", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(subscription),
+    });
+
+    console.log("Push notification sent");
 
     // Utility function to convert a URL-safe Base64 string to a Uint8Array
     function urlBase64ToUint8Array(base64String) {
@@ -173,7 +189,7 @@ export default function NotificationsModal({ setShowModal, task }) {
               <button
                 className="mr-3 mb-1 rounded bg-red-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                 type="button"
-                onClick={addNotification}
+                onClick={webPushAPINotificationCall}
               >
                 Add Notification
               </button>
