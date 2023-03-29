@@ -59,6 +59,7 @@ function LoginForm() {
     try {
       // Request to server to check if use exists in DB and send token
       const res = await axios.post("/api/user", formData);
+      console.log("res:", res);
 
       // Take in the jwt returned from post req and set in redux store
       const jwt = dispatch(storeJWT({ jwt: res.data }));
