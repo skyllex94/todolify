@@ -22,11 +22,14 @@ webpush.setVapidDetails(
 
 app.post("/subscribe", (req, res) => {
   // Get push subscription object
+  console.log("Here I am");
   const subscription = req.body;
+  console.log("subscription:", subscription);
 
   // Send 201 Status
   res.status(201).json({});
   const payload = JSON.stringify({ title: "Push Test" });
+  console.log(payload);
 
   // Pass object into sendNotification
   webpush

@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import Alert from "../Alert/Alert";
-// const webpush = require("web-push");
+// import dotenv from "dotenv";
+// dotenv.config();
 
 export default function NotificationsModal({ setShowModal, task }) {
   const refCloseModal = useRef();
@@ -10,12 +11,6 @@ export default function NotificationsModal({ setShowModal, task }) {
   const [day, setDay] = useState();
   const { alertState, enableAlert, setEnableAlert, displayAlert } =
     useDisplayAlert();
-
-  // Flutter - mobile app variable
-  // var isFlutterInAppWebViewReady = false;
-  // window.addEventListener("flutterInAppWebViewPlatformReady", function (event) {
-  //   isFlutterInAppWebViewReady = true;
-  // });
 
   const addNotification = async () => {
     if (time === "" || !time) {
@@ -88,6 +83,8 @@ export default function NotificationsModal({ setShowModal, task }) {
       }
 
       window.addEventListener("load", () => {
+        const publicURL = process.env.PUBLIC_URL;
+        console.log(publicURL);
         const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
         if (isLocalhost) {
@@ -97,10 +94,7 @@ export default function NotificationsModal({ setShowModal, task }) {
           // Add some additional logging to localhost, pointing developers to the
           // service worker/PWA documentation.
           navigator.serviceWorker.ready.then(() => {
-            console.log(
-              "This web app is being served cache-first by a service " +
-                "worker. To learn more, visit https://cra.link/PWA"
-            );
+            console.log("Ready for service worker");
           });
         } else {
           // Is not localhost. Just register service worker
@@ -110,68 +104,50 @@ export default function NotificationsModal({ setShowModal, task }) {
     }
   }
 
-  function registerValidSW(swUrl) {
-    // const registedWorker = await navigator.serviceWorker.register(swUrl);
-    navigator.serviceWorker
-      .register(swUrl)
-      .then((registration) => {
-        registration.onupdatefound = () => {
-          const installingWorker = registration.installing;
-          if (installingWorker == null) {
-            return;
-          }
-          installingWorker.onstatechange = async () => {
-            if (installingWorker.state === "installed") {
-              if (navigator.serviceWorker.controller) {
-                // At this point, the updated precached content has been fetched,
-                // but the previous service worker will still serve the older
-                // content until all client tabs are closed.
+  async function registerValidSW(swUrl) {
+    console.log("swUrl:", swUrl);
+    const register = await navigator.serviceWorker.register("/service-worker", {
+      scope: "/",
+    });
+    const publicVapidKey =
+      "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
 
-                const publicVapidKey =
-                  "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+    console.log("Service worker registered");
 
-                console.log("Service worker registered");
+    console.log("Registering a push...");
+    const subscription = await register.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+    });
 
-                console.log("Registering a push...");
-                const subscription = await register.pushManager.subscribe({
-                  userVisibleOnly: true,
-                  applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-                });
+    console.log("Push registered");
 
-                console.log("Push registered");
+    // Send Push Notification
+    console.log("Sending push");
+    const res = await fetch("/subscribe", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(subscription),
+    });
 
-                // Send Push Notification
-                console.log("Sending push");
-                await fetch("/subscribe", {
-                  method: "POST",
-                  headers: {
-                    "content-type": "application/json",
-                  },
-                  body: JSON.stringify(subscription),
-                });
-
-                console.log("Push notification sent");
-              } else {
-                console.log("Content is cached for offline use.");
-              }
-            }
-          };
-        };
-      })
-      .catch((error) => {
-        console.error("Error during service worker registration:", error);
-      });
+    console.log("res:", res);
+    console.log("Push notification sent");
   }
 
   const webPushAPINotificationCall = async () => {
-    const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-    console.log("swUrl:", swUrl);
-
     const permission = await Notification.requestPermission();
     console.log("permission:", permission);
     if (permission !== "granted") return;
 
-    const registeredWorker = await navigator.serviceWorker.register(swUrl);
+    const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+    console.log("swUrl:", swUrl);
+
+    // There's most likely something going on here
+    const registeredWorker = await navigator.serviceWorker.register(
+      "http://localhost:3000/user/service-worker.js"
+    );
     console.log("Service worker registered");
 
     const publicVapidKey =
@@ -289,7 +265,7 @@ export default function NotificationsModal({ setShowModal, task }) {
               <button
                 className="mr-3 mb-1 rounded bg-red-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                 type="button"
-                onClick={registerValidSW}
+                onClick={webPushAPINotificationCall}
               >
                 Add Notification
               </button>
