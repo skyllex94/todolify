@@ -49,14 +49,17 @@ export default function NotificationsModal({ setShowModal, task }) {
   };
 
   const webPushAPINotificationCall = async () => {
+    // Asking for permission to display notifications
+
     const permission = await Notification.requestPermission();
     console.log("permission:", permission);
     if (permission !== "granted") return;
 
+    // Registering a service worker
+
     const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
     console.log("swUrl:", swUrl);
 
-    // It's proabably not working, the regisrtation because of the localhost, it needs to be hosted online
     const sw = await navigator.serviceWorker.register("/service-worker.js");
     console.log("sw:", sw);
     console.log("Service worker registered");
@@ -66,7 +69,7 @@ export default function NotificationsModal({ setShowModal, task }) {
     const publicVapidKey =
       "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
 
-    const registeredWorker = await navigator.serviceWorker.ready();
+    const registeredWorker = await navigator.serviceWorker.ready;
     const subscription = await registeredWorker.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: publicVapidKey,
