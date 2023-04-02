@@ -77,14 +77,14 @@ export default function NotificationsModal({ setShowModal, task }) {
 
     console.log("subscription:", JSON.stringify(subscription));
 
-    // Send Push Notification
-    console.log("Sending push");
+    // Send Push Subscription to the server-side
+
     await fetch("/subscribe", {
       method: "POST",
+      body: JSON.stringify(subscription),
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify(subscription),
     });
 
     console.log("Push notification sent");
