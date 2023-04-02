@@ -2,7 +2,7 @@
 
 // import { clientsClaim } from "workbox-core";
 // import { ExpirationPlugin } from "workbox-expiration";
-import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
+import { precacheAndRoute } from "workbox-precaching";
 // import { registerRoute } from "workbox-routing";
 // import { StaleWhileRevalidate } from "workbox-strategies";
 // clientsClaim();
@@ -56,16 +56,18 @@ precacheAndRoute(self.__WB_MANIFEST);
 //   })
 // );
 
-console.log("Service worker loaded");
-
 // This allows the web app to trigger skipWaiting via registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener("Push", (event) => {
-  const data = event.data.json();
-  console.log("Push notification received");
 
-  self.registration.showNotification(data.title, {
-    body: "First Web Push Notification",
-  });
+self.addEventListener("push", function (e) {
+  // const data = event.data.json();
+  // console.log("Push notification received");
+
+  let options = {
+    body: "This is the body of the notification",
+  };
+
+  self.registration.showNotification("Notification Title", options);
 });
 
+console.log("Service worker loaded");
 // Any other custom service worker logic can go here.

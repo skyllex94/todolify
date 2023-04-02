@@ -5,7 +5,8 @@ import App from "./App";
 // Redux Store
 import store from "./redux/store";
 import { Provider } from "react-redux";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
+// import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -16,5 +17,12 @@ root.render(
   </React.StrictMode>
 );
 
+// window.addEventListener("load", async () => {
+//   let sw = await navigator.serviceWorker.register("./service-worker.js");
+//   console.log("sw:", sw);
+
+//   console.log("sw:", sw);
+//   console.log("Service worker registered");
+// });
+
 // serviceWorkerRegistration.register();
-// serviceWorkerRegistration.reminderNotifications();

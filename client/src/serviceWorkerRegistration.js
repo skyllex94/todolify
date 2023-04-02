@@ -72,31 +72,6 @@ function registerValidSW(swUrl, config) {
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
 
-              const publicVapidKey =
-                "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
-
-              console.log("Service worker registered");
-
-              console.log("Registering a push...");
-              const subscription = await register.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-              });
-
-              console.log("Push registered");
-
-              // Send Push Notification
-              console.log("Sending push");
-              await fetch("/subscribe", {
-                method: "POST",
-                headers: {
-                  "content-type": "application/json",
-                },
-                body: JSON.stringify(subscription),
-              });
-
-              console.log("Push notification sent");
-
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);

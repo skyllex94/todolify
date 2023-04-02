@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import Alert from "../Alert/Alert";
 
-import * as serviceWorkerRegistration from "../../serviceWorkerRegistration";
-
 export default function NotificationsModal({ setShowModal, task }) {
   const refCloseModal = useRef();
   const [time, setTime] = useState("");
@@ -48,93 +46,7 @@ export default function NotificationsModal({ setShowModal, task }) {
         body: `This is a reminder to: "${task}"`,
       });
     }, diff);
-
-    // if (isFlutterInAppWebViewReady) {
-    //   const args = [day, time, { task: task.diff.toiosstring }];
-    //   window.flutter_inappwebview.callHandler("showreminded", ...args);
-    // }
-
-    // if (isFlutterInAppWebViewReady) {
-    //   const args = [day, time, { task: task, diff: diff.toISOString() }];
-    //   window.flutter_inappwebview.callHandler("showreminded", ...args);
-    // }
   };
-
-  const isLocalhost = Boolean(
-    window.location.hostname === "localhost" ||
-      // [::1] is the IPv6 localhost address.
-      window.location.hostname === "[::1]" ||
-      // 127.0.0.0/8 are considered localhost for IPv4.
-      window.location.hostname.match(
-        /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-      )
-  );
-
-  function register(config) {
-    if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
-      // The URL constructor is available in all browsers that support SW.
-      const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
-
-      if (publicUrl.origin !== window.location.origin) {
-        // Our service worker won't work if PUBLIC_URL is on a different origin
-        // from what our page is served on. This might happen if a CDN is used to
-        // serve assets; see https://github.com/facebook/create-react-app/issues/2374
-        return;
-      }
-
-      window.addEventListener("load", () => {
-        const publicURL = process.env.PUBLIC_URL;
-        console.log(publicURL);
-        const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-
-        if (isLocalhost) {
-          // This is running on localhost. Let's check if a service worker still exists or not.
-          // checkValidServiceWorker(swUrl, config);
-
-          // Add some additional logging to localhost, pointing developers to the
-          // service worker/PWA documentation.
-          navigator.serviceWorker.ready.then(() => {
-            console.log("Ready for service worker");
-          });
-        } else {
-          // Is not localhost. Just register service worker
-          registerValidSW(swUrl, config);
-        }
-      });
-    }
-  }
-
-  async function registerValidSW(swUrl) {
-    console.log("swUrl:", swUrl);
-    const register = await navigator.serviceWorker.register("/service-worker", {
-      scope: "/",
-    });
-    const publicVapidKey =
-      "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
-
-    console.log("Service worker registered");
-
-    console.log("Registering a push...");
-    const subscription = await register.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-    });
-
-    console.log("Push registered");
-
-    // Send Push Notification
-    console.log("Sending push");
-    const res = await fetch("/subscribe", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(subscription),
-    });
-
-    console.log("res:", res);
-    console.log("Push notification sent");
-  }
 
   const webPushAPINotificationCall = async () => {
     const permission = await Notification.requestPermission();
@@ -144,23 +56,23 @@ export default function NotificationsModal({ setShowModal, task }) {
     const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
     console.log("swUrl:", swUrl);
 
-    // There's most likely something going on here
-    const registeredWorker = await navigator.serviceWorker.register(
-      "/service-worker.js"
-    );
-    console.log("registeredWorker:", registeredWorker);
+    // It's proabably not working, the regisrtation because of the localhost, it needs to be hosted online
+    const sw = await navigator.serviceWorker.register("/service-worker.js");
+    console.log("sw:", sw);
     console.log("Service worker registered");
+
+    // Subscribe to the registered service worker
 
     const publicVapidKey =
       "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
 
-    console.log("Registering a push...");
+    const registeredWorker = await navigator.serviceWorker.ready();
     const subscription = await registeredWorker.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+      applicationServerKey: publicVapidKey,
     });
 
-    console.log("Push registered");
+    console.log("subscription:", JSON.stringify(subscription));
 
     // Send Push Notification
     console.log("Sending push");

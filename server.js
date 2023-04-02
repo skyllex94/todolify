@@ -3,24 +3,24 @@ require("dotenv").config();
 const connectDB = require("./config/mongodb");
 const app = express();
 
-const webpush = require("web-push");
+const push = require("web-push");
 const bodyParser = require("body-parser");
 const path = require("path");
 
 // app.use(bodyParser.json());
 
-const publicVapidKey =
-  "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
-
-webpush.setVapidDetails(
-  "mailto:test@test.com",
-  publicVapidKey,
-  process.env.VAPID_PRIVATE_KEY
-);
-
 // Push Notifications Subscribe Route
 
 app.post("/subscribe", (req, res) => {
+  const publicVapidKey =
+    "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+
+  push.setVapidDetails(
+    "mailto:test@test.com",
+    publicVapidKey,
+    process.env.VAPID_PRIVATE_KEY
+  );
+
   // Get push subscription object
   console.log("Here I am");
   const subscription = req.body;
@@ -29,11 +29,10 @@ app.post("/subscribe", (req, res) => {
   // Send 201 Status
   res.status(201).json({});
   const payload = JSON.stringify({ title: "Push Test" });
-  console.log(payload);
 
   // Pass object into sendNotification
-  webpush
-    .sendNotification(subscription, payload)
+  push
+    .sendNotification(subscription, "test message")
     .catch((err) => console.error(err));
 });
 
