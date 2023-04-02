@@ -80,17 +80,25 @@ export default function NotificationsModal({ setShowModal, task }) {
 
     // Send Push Subscription to the server-side
 
-    // const res = await axios.post("/subscribe", {
-    //   subscription: stringified_subscription,
-    // });
-
-    const res = await fetch("/subscribe", {
-      method: "POST",
-      body: stringified_subscription,
-      headers: {
-        "Content-Type": "application/json",
+    const res = await axios.post(
+      "/subscribe",
+      {
+        subscription: stringified_subscription,
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // const res = await fetch("/subscribe", {
+    //   method: "POST",
+    //   body: stringified_subscription,
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
 
     console.log("res:", res);
     console.log("Push notification sent");
