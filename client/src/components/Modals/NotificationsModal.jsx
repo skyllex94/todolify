@@ -74,19 +74,20 @@ export default function NotificationsModal({ setShowModal, task }) {
       userVisibleOnly: true,
       applicationServerKey: publicVapidKey,
     });
-
-    console.log("subscription:", JSON.stringify(subscription));
+    const stringified_subscription = JSON.stringify(subscription);
+    console.log("subscription:", stringified_subscription);
 
     // Send Push Subscription to the server-side
 
-    await fetch("/subscribe", {
+    const res = await fetch("/subscribe", {
       method: "POST",
-      body: JSON.stringify(subscription),
+      body: stringified_subscription,
       headers: {
         "content-type": "application/json",
       },
     });
 
+    console.log("res:", res);
     console.log("Push notification sent");
   };
 
