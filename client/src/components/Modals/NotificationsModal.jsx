@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import Alert from "../Alert/Alert";
+import axios from "axios";
 
 export default function NotificationsModal({ setShowModal, task }) {
   const refCloseModal = useRef();
@@ -79,11 +80,15 @@ export default function NotificationsModal({ setShowModal, task }) {
 
     // Send Push Subscription to the server-side
 
+    // const res = await axios.post("/subscribe", {
+    //   subscription: stringified_subscription,
+    // });
+
     const res = await fetch("/subscribe", {
       method: "POST",
       body: stringified_subscription,
       headers: {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
       },
     });
 
