@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import Alert from "../Alert/Alert";
-// import dotenv from "dotenv";
-// dotenv.config();
+
+import * as serviceWorkerRegistration from "../../serviceWorkerRegistration";
 
 export default function NotificationsModal({ setShowModal, task }) {
   const refCloseModal = useRef();
@@ -146,8 +146,9 @@ export default function NotificationsModal({ setShowModal, task }) {
 
     // There's most likely something going on here
     const registeredWorker = await navigator.serviceWorker.register(
-      "http://localhost:3000/user/service-worker.js"
+      "/service-worker.js"
     );
+    console.log("registeredWorker:", registeredWorker);
     console.log("Service worker registered");
 
     const publicVapidKey =

@@ -16,5 +16,5 @@ root.render(
   </React.StrictMode>
 );
 
-serviceWorkerRegistration.register();
+// serviceWorkerRegistration.register();
 // serviceWorkerRegistration.reminderNotifications();
