@@ -33,6 +33,9 @@ router.post("/subscribe", async (req, res) => {
     );
 
     console.log("Here I am");
+    const request = req;
+    console.log("request:", request);
+
     const { stringified_subscription } = req.body;
     console.log("subscription:", stringified_subscription);
 
