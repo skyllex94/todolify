@@ -37,7 +37,7 @@ router.post("/subscribe", async (req, res) => {
     // console.log("request:", request);
 
     const { subscription } = await req.body;
-    console.log("subscription:", stringified_subscription);
+    console.log("subscription:", subscription);
 
     // Send 201 Status
     res.status(201).json({});
