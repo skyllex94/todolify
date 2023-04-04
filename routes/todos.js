@@ -25,18 +25,9 @@ router.post("/subscribe", async (req, res) => {
     );
 
     // Get push subscription object
-    console.log(
-      "publicVapidKey:",
-      publicVapidKey,
-      "privateKey:",
-      process.env.VAPID_PRIVATE_KEY
-    );
 
     console.log("Here I am");
-    // const request = req;
-    // console.log("request:", request);
-
-    const { subscription } = await req.body;
+    const { subscription } = req.body;
     console.log("subscription:", subscription);
 
     // Send 201 Status
@@ -45,7 +36,7 @@ router.post("/subscribe", async (req, res) => {
 
     // Pass object into sendNotification
     push
-      .sendNotification(stringified_subscription, "test message")
+      .sendNotification(subscription, "test message")
       .catch((err) => console.error(err));
   } catch (err) {
     console.error(err);

@@ -75,15 +75,14 @@ export default function NotificationsModal({ setShowModal, task }) {
       userVisibleOnly: true,
       applicationServerKey: publicVapidKey,
     });
-    const stringified_subscription = JSON.stringify(subscription);
-    console.log("subscription:", stringified_subscription);
+    console.log("subscription:", subscription);
 
     // Send Push Subscription to the server-side
 
     const res = await axios.post(
       "/api/user/subscribe",
       {
-        subscription: { subscription },
+        subscription: JSON.stringify(subscription),
       },
       {
         headers: {
@@ -91,14 +90,6 @@ export default function NotificationsModal({ setShowModal, task }) {
         },
       }
     );
-
-    // const res = await fetch("/subscribe", {
-    //   method: "POST",
-    //   body: stringified_subscription,
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
 
     console.log("res:", res);
     console.log("Push notification sent");
