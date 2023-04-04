@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const env = require("dotenv");
+require("dotenv").config();
 const express = require("express");
 const { validationResult } = require("express-validator");
 const router = express.Router();
@@ -7,6 +7,47 @@ const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
 const { getDayIdx } = require("./helper_funcs");
 const axios = require("axios");
+
+const push = require("web-push");
+
+// @route   POST Subscribe a service worker
+// @desc    Subscribe a service worker and receive a subscription object with created endpoint
+// @access  Private
+router.post("/subscribe", async (req, res) => {
+  try {
+    const publicVapidKey =
+      "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+
+    push.setVapidDetails(
+      "mailto:test@test.com",
+      publicVapidKey,
+      process.env.VAPID_PRIVATE_KEY
+    );
+
+    // Get push subscription object
+    console.log(
+      "publicVapidKey:",
+      publicVapidKey,
+      "privateKey:",
+      process.env.VAPID_PRIVATE_KEY
+    );
+
+    console.log("Here I am");
+    const { stringified_subscription } = req.body;
+    console.log("subscription:", stringified_subscription);
+
+    // Send 201 Status
+    res.status(201).json({});
+    // const payload = JSON.stringify({ title: "Push Test" });
+
+    // Pass object into sendNotification
+    push
+      .sendNotification(stringified_subscription, "test message")
+      .catch((err) => console.error(err));
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 // @route   GET TODOS /user/:id
 // @desc    Fetch all todos for the authorized user

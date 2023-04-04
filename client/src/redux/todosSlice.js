@@ -137,7 +137,6 @@ export const updateIconAsync = createAsyncThunk(
   "updateIconAsync",
   async (payload) => {
     // payload => {user_id, category_idx, newIconIdx, dayWtData, dayIdx, monthIdx}
-
     try {
       // Returns an object wt confirmation obj and objInfo
       return await axios.patch(`/api/user/upd-ctry-icon/`, {

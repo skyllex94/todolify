@@ -15,10 +15,10 @@ function EditTask({
   const dispatch = useDispatch();
   const [updatedValue, setUpdatedValue] = useState(task);
 
-  const updateTask = (e) => {
+  const updateTask = async (e) => {
     e.preventDefault();
     try {
-      dispatch(
+      const res = await dispatch(
         updateTaskAsync({
           user_id,
           category_index,
@@ -28,6 +28,7 @@ function EditTask({
           updatedValue,
         })
       );
+      console.log(res);
       setEnableEdit(false);
     } catch (err) {
       console.log(err.message);

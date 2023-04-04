@@ -81,7 +81,7 @@ export default function NotificationsModal({ setShowModal, task }) {
     // Send Push Subscription to the server-side
 
     const res = await axios.post(
-      "/subscribe",
+      "/api/user/subscribe",
       {
         subscription: stringified_subscription,
       },

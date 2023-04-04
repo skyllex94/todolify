@@ -7,34 +7,44 @@ const push = require("web-push");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-// app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(bodyParser.json());
 
-// Push Notifications Subscribe Route
+// Push Notifications Subscription Route
+// app.post("/subscribe", (req, res) => {
+//   const publicVapidKey =
+//     "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
 
-app.post("/subscribe", (req, res) => {
-  const publicVapidKey =
-    "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
+//   push.setVapidDetails(
+//     "mailto:test@test.com",
+//     publicVapidKey,
+//     process.env.VAPID_PRIVATE_KEY
+//   );
 
-  push.setVapidDetails(
-    "mailto:test@test.com",
-    publicVapidKey,
-    process.env.VAPID_PRIVATE_KEY
-  );
+//   // Get push subscription object
+//   console.log(
+//     "publicVapidKey:",
+//     publicVapidKey,
+//     "privateKey:",
+//     process.env.VAPID_PRIVATE_KEY
+//   );
+//   console.log("Here I am");
+//   const { stringified_subscription } = req.body;
+//   console.log("subscription:", stringified_subscription);
 
-  // Get push subscription object
-  console.log("Here I am");
-  const subscription = req.body;
-  console.log("subscription:", subscription);
+//   // Send 201 Status
+//   res.status(201).json({});
+//   const payload = JSON.stringify({ title: "Push Test" });
 
-  // Send 201 Status
-  res.status(201).json({});
-  const payload = JSON.stringify({ title: "Push Test" });
-
-  // Pass object into sendNotification
-  push
-    .sendNotification(subscription, "test message")
-    .catch((err) => console.error(err));
-});
+//   // Pass object into sendNotification
+//   push
+//     .sendNotification(stringified_subscription, "test message")
+//     .catch((err) => console.error(err));
+// });
 
 // Connect MongoDB Atlas
 connectDB();
