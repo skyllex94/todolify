@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+require("dotenv").config();
 const mwAuth = require("../middleware/mwAuth");
 const User = require("../schemas/UserSchema");
 const { check, validationResult } = require("express-validator");
@@ -38,6 +39,7 @@ router.post(
     const errors = validationResult(req);
     // If there are errors, return a bad response wt error message
     if (!errors.isEmpty()) {
+      console.log("Here in error validationResults");
       return res.status(400).json({ errors: errors.array() });
     }
 
@@ -46,6 +48,7 @@ router.post(
     try {
       // Make a request to get the user from the cloud DB
       let user = await User.findOne({ email });
+      console.log("user:", user);
 
       if (!user) {
         return res
@@ -73,7 +76,7 @@ router.post(
       // Create the jsonwebtoken / 3rd paramether could be object of expiresIn
       jwt.sign(payload, process.env.jwtSecret, {}, (err, token) => {
         if (err) throw err;
-        // Send back a responce from server of the jwt we created
+        // Send back a response from server of the jwt we created
         res.json({ token });
       });
     } catch (error) {
