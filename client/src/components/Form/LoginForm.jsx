@@ -51,10 +51,10 @@ function LoginForm() {
       return;
     }
 
-    // if (verifiedRecaptcha === false) {
-    //   displayAlert("error", "reCaptcha was not verified.");
-    //   return;
-    // }
+    if (verifiedRecaptcha === false) {
+      displayAlert("error", "reCaptcha was not verified.");
+      return;
+    }
 
     try {
       // Request to server to check if use exists in DB and send token

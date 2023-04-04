@@ -28,7 +28,8 @@ router.post("/subscribe", async (req, res) => {
 
     console.log("Here I am");
     const { subscription } = req.body;
-    console.log("subscription:", subscription);
+    console.log(subscription);
+    console.log("JSON.parse(subscription):", JSON.parse(subscription));
 
     // Send 201 Status
     res.status(201).json({});
@@ -36,7 +37,8 @@ router.post("/subscribe", async (req, res) => {
 
     // Pass object into sendNotification
     push
-      .sendNotification(subscription, "test message")
+      .sendNotification(JSON.parse(subscription), "test")
+
       .catch((err) => console.error(err));
   } catch (err) {
     console.error(err);

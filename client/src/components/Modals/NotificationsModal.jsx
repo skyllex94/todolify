@@ -76,10 +76,11 @@ export default function NotificationsModal({ setShowModal, task }) {
       applicationServerKey: publicVapidKey,
     });
     console.log("subscription:", subscription);
+    console.log("JSON.stringify(subscription):", JSON.stringify(subscription));
 
     // Send Push Subscription to the server-side
 
-    const res = await axios.post(
+    await axios.post(
       "/api/user/subscribe",
       {
         subscription: JSON.stringify(subscription),
@@ -91,7 +92,6 @@ export default function NotificationsModal({ setShowModal, task }) {
       }
     );
 
-    console.log("res:", res);
     console.log("Push notification sent");
   };
 
