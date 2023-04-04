@@ -7,12 +7,8 @@ const push = require("web-push");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Push Notifications Subscription Route
 // app.post("/subscribe", (req, res) => {

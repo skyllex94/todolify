@@ -83,7 +83,7 @@ export default function NotificationsModal({ setShowModal, task }) {
     const res = await axios.post(
       "/api/user/subscribe",
       {
-        subscription: stringified_subscription,
+        subscription: { subscription },
       },
       {
         headers: {
