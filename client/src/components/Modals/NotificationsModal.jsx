@@ -49,7 +49,55 @@ export default function NotificationsModal({ setShowModal, task }) {
     }, diff);
   };
 
-  // Subscribe to the registered service worker
+  async function calculateReminderTime() {
+    if (time === "" || !time) {
+      displayAlert("error", "Please select a time for the notification");
+      return;
+    }
+    if (day === "" || !day) {
+      displayAlert("error", "Please select a day for the notification");
+      return;
+    }
+    const date = `${day}T${time}`;
+    console.log("date:", date);
+
+    const notifPermission = await Notification.requestPermission();
+    if (notifPermission === "default" || notifPermission === "denied") {
+      displayAlert(
+        "error",
+        "Please allow notifications for the app in order to receive reminders."
+      );
+      return;
+    }
+
+    const now = new Date();
+    const reminderDate = new Date(date);
+    const diff = reminderDate - now;
+
+    console.log("diff:", diff);
+    console.log("reminderDate:", reminderDate);
+
+    if (diff > 0) {
+      displayAlert("success", `Reminder created to ${day} at ${time}`);
+    }
+
+    return diff;
+  }
+
+  async function registerSW() {
+    // Asking for permission to display notifications
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+
+    try {
+      const sw = await navigator.serviceWorker.register("/service-worker.js");
+      console.log("sw:", sw);
+      console.log("Service worker registered");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async function subscribeToSW() {
     const publicVapidKey =
       "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
@@ -73,11 +121,13 @@ export default function NotificationsModal({ setShowModal, task }) {
     return subscription;
   }
 
-  async function pushSubscriptionToServer(sub) {
+  async function pushSubscriptionToServer(sub, reminderTime) {
     await axios.post(
       "/api/user/subscribe",
       {
         subscription: JSON.stringify(sub),
+        reminderTime,
+        task,
       },
       {
         headers: {
@@ -89,21 +139,11 @@ export default function NotificationsModal({ setShowModal, task }) {
     console.log("Push notification sent");
   }
 
-  async function registerSW() {
-    // Asking for permission to display notifications
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") return;
-
-    try {
-      const sw = await navigator.serviceWorker.register("/service-worker.js");
-      console.log("sw:", sw);
-      console.log("Service worker registered");
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   const webPushAPINotificationCall = async () => {
+    // Calculate reminder time and do checks
+    const reminderTime = await calculateReminderTime();
+    console.log("reminderTime:", reminderTime);
+
     // Register a service worker
     await registerSW();
 
@@ -111,7 +151,7 @@ export default function NotificationsModal({ setShowModal, task }) {
     const subscription = await subscribeToSW();
 
     // Send Push Subscription to the server-side
-    await pushSubscriptionToServer(subscription);
+    await pushSubscriptionToServer(subscription, reminderTime);
   };
 
   useEffect(() => {

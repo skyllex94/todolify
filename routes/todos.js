@@ -25,18 +25,25 @@ router.post("/subscribe", async (req, res) => {
     );
 
     // Get push subscription object
-    const { subscription } = req.body;
+    const { subscription, reminderTime, task } = req.body;
+
     console.log(subscription);
-    console.log("JSON.parse(subscription):", JSON.parse(subscription));
+    console.log("reminderTime:", reminderTime);
+    console.log("task:", task);
 
     // Send 201 Status
     res.status(201).json({});
-    // const payload = JSON.stringify({ title: "Push Test" });
+    const payload = JSON.stringify({
+      title: "Reminder Test",
+      body: `This is a reminder to: "${task}"`,
+    });
 
     // Pass object into sendNotification
-    push
-      .sendNotification(JSON.parse(subscription), "test")
-      .catch((err) => console.error(err));
+    setTimeout(() => {
+      push
+        .sendNotification(JSON.parse(subscription), payload)
+        .catch((err) => console.error(err));
+    }, reminderTime);
   } catch (err) {
     console.error(err);
   }

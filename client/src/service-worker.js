@@ -59,15 +59,11 @@ precacheAndRoute(self.__WB_MANIFEST);
 // This allows the web app to trigger skipWaiting via registration.waiting.postMessage({type: 'SKIP_WAITING'})
 
 self.addEventListener("push", function (e) {
-  // const data = event.data.json();
-  // console.log("Push notification received");
+  const data = e.data.json();
 
-  let options = {
-    body: "This is the body of the notification",
-  };
-
-  self.registration.showNotification("Notification Title", options);
+  self.registration.showNotification(data.title, {
+    body: data.body,
+  });
 });
 
 console.log("Service worker loaded");
-// Any other custom service worker logic can go here.
