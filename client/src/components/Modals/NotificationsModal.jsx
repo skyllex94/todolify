@@ -49,41 +49,35 @@ export default function NotificationsModal({ setShowModal, task }) {
     }, diff);
   };
 
-  const webPushAPINotificationCall = async () => {
-    // Asking for permission to display notifications
-
-    const permission = await Notification.requestPermission();
-    console.log("permission:", permission);
-    if (permission !== "granted") return;
-
-    // Registering a service worker
-
-    const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
-    console.log("swUrl:", swUrl);
-
-    const sw = await navigator.serviceWorker.register("/service-worker.js");
-    console.log("sw:", sw);
-    console.log("Service worker registered");
-
-    // Subscribe to the registered service worker
-
+  // Subscribe to the registered service worker
+  async function subscribeToSW() {
     const publicVapidKey =
       "BFt1wp7hs6lZu_zeV59YpHaBKADr4mQal6pYJz-PqkIJM-ybL8nWaeTSfDpQAivuYx65cvyQ1o33uW3rJYSbfYs";
 
     const registeredWorker = await navigator.serviceWorker.ready;
-    const subscription = await registeredWorker.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: publicVapidKey,
-    });
+
+    let subscription = null;
+    try {
+      subscription = await registeredWorker.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: publicVapidKey,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
+    if (!subscription)
+      return alert("Error occured while creating a notification");
     console.log("subscription:", subscription);
-    console.log("JSON.stringify(subscription):", JSON.stringify(subscription));
 
-    // Send Push Subscription to the server-side
+    return subscription;
+  }
 
+  async function pushSubscriptionToServer(sub) {
     await axios.post(
       "/api/user/subscribe",
       {
-        subscription: JSON.stringify(subscription),
+        subscription: JSON.stringify(sub),
       },
       {
         headers: {
@@ -93,21 +87,32 @@ export default function NotificationsModal({ setShowModal, task }) {
     );
 
     console.log("Push notification sent");
-  };
-
-  // Utility function to convert a URL-safe Base64 string to a Uint8Array
-  function urlBase64ToUint8Array(base64String) {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding)
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
   }
+
+  async function registerSW() {
+    // Asking for permission to display notifications
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+
+    try {
+      const sw = await navigator.serviceWorker.register("/service-worker.js");
+      console.log("sw:", sw);
+      console.log("Service worker registered");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const webPushAPINotificationCall = async () => {
+    // Register a service worker
+    await registerSW();
+
+    // Subscribe to the registered service worker
+    const subscription = await subscribeToSW();
+
+    // Send Push Subscription to the server-side
+    await pushSubscriptionToServer(subscription);
+  };
 
   useEffect(() => {
     const closeModal = (e) => {

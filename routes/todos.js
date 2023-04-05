@@ -25,8 +25,6 @@ router.post("/subscribe", async (req, res) => {
     );
 
     // Get push subscription object
-
-    console.log("Here I am");
     const { subscription } = req.body;
     console.log(subscription);
     console.log("JSON.parse(subscription):", JSON.parse(subscription));
@@ -38,7 +36,6 @@ router.post("/subscribe", async (req, res) => {
     // Pass object into sendNotification
     push
       .sendNotification(JSON.parse(subscription), "test")
-
       .catch((err) => console.error(err));
   } catch (err) {
     console.error(err);
