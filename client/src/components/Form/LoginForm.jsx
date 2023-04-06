@@ -82,6 +82,7 @@ function LoginForm() {
     }
     if (res.verificationResult === false) return;
     setVerifiedRecaptcha(true);
+    console.log("setVerifiedRecaptcha:", setVerifiedRecaptcha);
   };
 
   return (

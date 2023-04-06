@@ -34,7 +34,7 @@ router.post("/subscribe", async (req, res) => {
     // Send 201 Status
     res.status(201).json({});
     const payload = JSON.stringify({
-      title: "Reminder Test",
+      title: "Task Reminder",
       body: `This is a reminder to: "${task}"`,
     });
 

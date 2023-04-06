@@ -8,46 +8,9 @@ export default function NotificationsModal({ setShowModal, task }) {
   const refCloseModal = useRef();
   const [time, setTime] = useState("");
   const [day, setDay] = useState();
+  const [timeBefore, setTimeBefore] = useState(0);
   const { alertState, enableAlert, setEnableAlert, displayAlert } =
     useDisplayAlert();
-
-  const addNotification = async () => {
-    if (time === "" || !time) {
-      displayAlert("error", "Please select a time for the notification");
-      return;
-    }
-    if (day === "" || !day) {
-      displayAlert("error", "Please select a day for the notification");
-      return;
-    }
-    const date = `${day}T${time}`;
-    console.log("date:", date);
-
-    const notifPermission = await Notification.requestPermission();
-    if (notifPermission === "default" || notifPermission === "denied") {
-      displayAlert(
-        "error",
-        "Please allow notifications for this app in order to receive reminders."
-      );
-      return;
-    }
-    const now = new Date();
-    const reminderDate = new Date(date);
-    const diff = reminderDate - now;
-
-    console.log("diff:", diff);
-    console.log("reminderDate:", reminderDate);
-
-    if (diff > 0) {
-      displayAlert("success", `Reminder created to ${day} at ${time}`);
-    }
-
-    setTimeout(() => {
-      new Notification("Todolify Reminder", {
-        body: `This is a reminder to: "${task}"`,
-      });
-    }, diff);
-  };
 
   async function calculateReminderTime() {
     if (time === "" || !time) {
@@ -59,7 +22,6 @@ export default function NotificationsModal({ setShowModal, task }) {
       return;
     }
     const date = `${day}T${time}`;
-    console.log("date:", date);
 
     const notifPermission = await Notification.requestPermission();
     if (notifPermission === "default" || notifPermission === "denied") {
@@ -72,7 +34,8 @@ export default function NotificationsModal({ setShowModal, task }) {
 
     const now = new Date();
     const reminderDate = new Date(date);
-    const diff = reminderDate - now;
+    const diff = reminderDate - timeBefore - now;
+    console.log("timeBefore:", timeBefore);
 
     console.log("diff:", diff);
     console.log("reminderDate:", reminderDate);
@@ -135,14 +98,12 @@ export default function NotificationsModal({ setShowModal, task }) {
         },
       }
     );
-
-    console.log("Push notification sent");
   }
 
   const webPushAPINotificationCall = async () => {
     // Calculate reminder time and do checks
     const reminderTime = await calculateReminderTime();
-    console.log("reminderTime:", reminderTime);
+    if (!reminderTime) return;
 
     // Register a service worker
     await registerSW();
@@ -204,7 +165,7 @@ export default function NotificationsModal({ setShowModal, task }) {
               <div className="flex items-center justify-between border p-6">
                 <label
                   className="text-md mb-2 mr-3 block font-bold text-gray-700"
-                  htmlFor="reminder time"
+                  htmlFor="reminderDay"
                 >
                   Which day:
                 </label>
@@ -215,9 +176,9 @@ export default function NotificationsModal({ setShowModal, task }) {
               <div className="flex items-center justify-between border p-6">
                 <label
                   className="text-md mb-2 mr-3 block font-bold text-gray-700"
-                  htmlFor="reminder time"
+                  htmlFor="reminderTime"
                 >
-                  Remind me at:
+                  What time:
                 </label>
 
                 <input
@@ -225,6 +186,26 @@ export default function NotificationsModal({ setShowModal, task }) {
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                 />
+              </div>
+              <div className="flex items-center justify-between border p-6">
+                <label
+                  className="text-md mb-2 mr-3 block font-bold text-gray-700"
+                  htmlFor="timeBefore"
+                >
+                  Remind me:
+                </label>
+
+                <select
+                  id="timeBefore"
+                  className="ml-2 flex items-center"
+                  defaultValue={1.8e6}
+                  onChange={(e) => setTimeBefore(e.target.value)}
+                >
+                  <option value={900000}>15 mins before</option>
+                  <option value={1.8e6}>30 mins before</option>
+                  <option value={3.6e6}>1 hour before</option>
+                  <option value={7.2e6}>2 hours before</option>
+                </select>
               </div>
             </form>
             <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-200 p-6">
