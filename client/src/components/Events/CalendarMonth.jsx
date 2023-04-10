@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import AddEventModal from "../Modals/AddEventModal";
-import { GoogleLogin } from "react-google-login";
 
 import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { useGoogleLogin, hasGrantedAllScopesGoogle } from "@react-oauth/google";
+import { Button } from "react-bootstrap";
+import { syncWtGoogleCalendar } from "../../redux/eventsSlice";
 
 function CalendarMonth({ monthObj, setCurrMonthIdx }) {
   const [showModal, setShowModal] = useState(false);
   const [monthInfo, setMonthInfo] = useState(null);
   const events = useSelector((state) => state.data);
+  const dispatch = useDispatch();
 
   const startFromSunday = useSelector(
     (state) => state.settings.startFromSunday
@@ -67,13 +71,37 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
     weekDays.unshift(sunday);
   };
 
-  const googleOAuthSuccess = (res) => {
-    console.log(res);
+  const googleSignOnSuccess = (credentialResponse) => {
+    console.log(credentialResponse);
+
+    // Check if all access requested is granted
+    const hasAccess = hasGrantedAllScopesGoogle(
+      credentialResponse,
+      "https://www.googleapis.com/auth/calendar",
+      "openid",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email"
+    );
+
+    console.log("hasAccess:", hasAccess);
+
+    // if (!hasAccess) {
+    //   alert(
+    //     "Not all of the services needed to sync your calendar were granted, please make sure all of them are granted on login"
+    //   );
+    //   return;
+    // }
+
+    // Prepare & send payload on the server-side
+    const { code } = credentialResponse;
+
+    const res = dispatch(syncWtGoogleCalendar(code));
   };
 
-  const googleOAuthFailure = (res) => {
-    console.log(res);
-  };
+  const googleOAuth = useGoogleLogin({
+    onSuccess: googleSignOnSuccess,
+    flow: "auth-code",
+  });
 
   return (
     <div
@@ -91,18 +119,10 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
         >
           <div className="flex justify-between pl-2">
             <span className="text-lg font-bold">{monthTitle}</span>
-            <div>
-              <GoogleLogin
-                clientId="210618004548-d4nd5bsi5ofjbpq1lng1grj7gtupsbkc.apps.googleusercontent.com"
-                buttonText="Connect with Google Calendar"
-                onSuccess={googleOAuthSuccess}
-                onFailure={googleOAuthFailure}
-                cookiePolicy={"single_host_origin"}
-                responseType="code"
-                accessType="offline"
-                scope="openid email profile https://www.googleapis.com/auth/calendar"
-              />
-            </div>
+            <Button onClick={() => googleOAuth()}>
+              Sync with Google Calendar
+            </Button>
+
             <div className="buttons">
               <button
                 className="mr-2 border py-1 px-5 md:px-1 lg:px-1 xl:px-1"

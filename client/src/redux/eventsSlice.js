@@ -1,6 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const syncWtGoogleCalendar = createAsyncThunk(
+  "syncWtGoogleCalendar",
+  async (code) => {
+    console.log("code:", code);
+    try {
+      const res = await axios.post("/api/events/sync_calendar", {
+        authCodeForToken: code,
+      });
+      console.log("res:", res.data);
+    } catch (err) {
+      return err.message;
+    }
+  }
+);
+
 export const getEventsAsync = createAsyncThunk(
   "getEventsAsync",
   async (user_id) => {
