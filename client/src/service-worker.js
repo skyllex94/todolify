@@ -65,5 +65,3 @@ self.addEventListener("push", function (e) {
     body: data.body,
   });
 });
-
-console.log("Service worker loaded");

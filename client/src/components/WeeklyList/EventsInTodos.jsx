@@ -15,7 +15,10 @@ function EventsInTodos({ events, day, month_year }) {
   return (
     <AnimatePresence mode="wait">
       <div className="brackets-events min-w-[93%]">
-        <div onClick={openPanel} className="flex items-center justify-between">
+        <div
+          onClick={openPanel}
+          className=" flex cursor-pointer items-center justify-between"
+        >
           <div className="title flex">
             <div className="p-1">
               <AiOutlineStar />

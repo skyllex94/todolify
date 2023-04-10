@@ -90,14 +90,14 @@ function UpdateEventModal({
           initial={{ y: 300, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 300, opacity: 0 }}
-          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none"
         >
           <div ref={closeModalRef} className="relative w-auto max-w-xl">
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+            <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+              <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
                 <h3 className="text-3xl font-semibold">{eventInfo.name}</h3>
                 <button
-                  className="p-1 ml-auto bg-transparent text-black opacity-5 float-right text-xl font-semibold"
+                  className="float-right ml-auto bg-transparent p-1 text-xl font-semibold text-black opacity-5"
                   onClick={() => setShowInfoEventModal(false)}
                 />
               </div>
@@ -105,15 +105,15 @@ function UpdateEventModal({
               <form className="p-8">
                 {update ? (
                   <div className="border p-6">
-                    <div className="block flex items-center">
+                    <div className="flex items-center">
                       <label
-                        className="block text-gray-700 text-md font-bold mb-2 mr-10"
+                        className="text-md mb-2 mr-10 block font-bold text-gray-700"
                         htmlFor="category_name"
                       >
                         Event:
                       </label>
                       <input
-                        className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                        className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
                         type="text"
                         autoFocus
                         value={eventName}
@@ -123,14 +123,14 @@ function UpdateEventModal({
 
                     <div className="flex">
                       <label
-                        className="block text-gray-700 text-md font-bold mb-2 mr-3"
+                        className="text-md mb-2 mr-3 block font-bold text-gray-700"
                         htmlFor="Notes"
                       >
                         Notes:
                       </label>
                     </div>
                     <textarea
-                      className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                      className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-left text-gray-700 shadow focus:outline-none"
                       maxLength="200"
                       value={eventNotes}
                       onChange={(e) => setEventNotes(e.target.value)}
@@ -138,15 +138,15 @@ function UpdateEventModal({
                   </div>
                 ) : (
                   <div>
-                    <div className="flex mb-3">
+                    <div className="mb-3 flex">
                       <label
-                        className="block text-gray-700 text-md font-bold mb-2 mr-10"
+                        className="text-md mb-2 mr-10 block font-bold text-gray-700"
                         htmlFor="category_name"
                       >
                         Event Name: {eventInfo.name}
                       </label>
                       <label
-                        className="block text-gray-700 text-md font-bold mb-2 mr-3"
+                        className="text-md mb-2 mr-3 block font-bold text-gray-700"
                         htmlFor="category_name"
                       >
                         Date: {day.$D}/{month_year}
@@ -155,21 +155,21 @@ function UpdateEventModal({
                     <div className="border p-6">
                       <div className="flex">
                         <label
-                          className="block text-gray-700 text-md font-bold mb-2 mr-3"
+                          className="text-md mb-2 mr-3 block font-bold text-gray-700"
                           htmlFor="Notes"
                         >
                           Notes:
                         </label>
                         {eventInfo.notes ? (
                           <label
-                            className="block text-gray-700 text-md font-bold mb-2"
+                            className="text-md mb-2 block text-left font-bold text-gray-700"
                             htmlFor="Notes"
                           >
                             {eventInfo.notes}
                           </label>
                         ) : (
                           <label
-                            className="block text-gray-700 text-md font-bold mb-2"
+                            className="text-md mb-2 block font-bold text-gray-700"
                             htmlFor="Notes"
                           >
                             <i>No notes for this event</i>
@@ -181,11 +181,11 @@ function UpdateEventModal({
                 )}
               </form>
 
-              <div className="flex items-center justify-between p-6 border-t border-solid border-slate-200 rounded-b">
+              <div className="flex items-center justify-between rounded-b border-t border-solid border-slate-200 p-6">
                 {update ? (
                   <button
                     onClick={() => updateEvent()}
-                    className="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    className="mr-1 mb-1 rounded bg-red-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                     type="button"
                   >
                     Confirm
@@ -194,18 +194,18 @@ function UpdateEventModal({
                   <div className="flex items-start">
                     <button
                       onClick={() => setUpdate(true)}
-                      className="bg-green-500 text-white active:bg-green-600 font-bold 
-                      uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                      focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      className="mr-1 mb-1 rounded bg-green-500 
+                      px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                      transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
                       type="button"
                     >
                       Update
                     </button>
                     <button
                       onClick={() => deleteEvent(true)}
-                      className="bg-red-500 text-white active:bg-red-600 font-bold 
-                      uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                      focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      className="mr-1 mb-1 rounded bg-red-500 
+                      px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                      transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                       type="button"
                     >
                       Delete
@@ -214,9 +214,9 @@ function UpdateEventModal({
                 )}
 
                 <button
-                  className="bg-white-500 text-black active:bg-white-600 font-bold 
-                  uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                  focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="bg-white-500 active:bg-white-600 mr-1 mb-1 
+                  rounded px-6 py-3 text-sm font-bold uppercase text-black shadow 
+                  outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none"
                   type="button"
                   onClick={() => setShowInfoEventModal(false)}
                 >
@@ -228,7 +228,7 @@ function UpdateEventModal({
         </motion.div>
       </AnimatePresence>
 
-      <div className="opacity-25 bg-black fixed inset-0 "></div>
+      <div className="fixed inset-0 bg-black opacity-25 "></div>
     </div>
   );
 }

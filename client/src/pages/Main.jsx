@@ -285,9 +285,6 @@ function Main() {
             </AnimatePresence>
           </div>
         </div>
-        {/* {showInstModal && (
-          <WeeklyInstModal setShowInstModal={setShowInstModal} />
-        )} */}
       </div>
     </React.Fragment>
   );

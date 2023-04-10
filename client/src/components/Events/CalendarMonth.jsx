@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AddEventModal from "../Modals/AddEventModal";
+import { GoogleLogin } from "react-google-login";
 
 import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
@@ -66,6 +67,14 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
     weekDays.unshift(sunday);
   };
 
+  const googleOAuthSuccess = (res) => {
+    console.log(res);
+  };
+
+  const googleOAuthFailure = (res) => {
+    console.log(res);
+  };
+
   return (
     <div
       onWheel={(e) => scrollChange(e)}
@@ -81,8 +90,19 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
           className="wrapper w-full rounded bg-white shadow"
         >
           <div className="flex justify-between pl-2">
-            {/*md:pl-2 lg:pl-2 xl:pl-2 sm:pl-2 py-2*/}
             <span className="text-lg font-bold">{monthTitle}</span>
+            <div>
+              <GoogleLogin
+                clientId="210618004548-d4nd5bsi5ofjbpq1lng1grj7gtupsbkc.apps.googleusercontent.com"
+                buttonText="Connect with Google Calendar"
+                onSuccess={googleOAuthSuccess}
+                onFailure={googleOAuthFailure}
+                cookiePolicy={"single_host_origin"}
+                responseType="code"
+                accessType="offline"
+                scope="openid email profile https://www.googleapis.com/auth/calendar"
+              />
+            </div>
             <div className="buttons">
               <button
                 className="mr-2 border py-1 px-5 md:px-1 lg:px-1 xl:px-1"

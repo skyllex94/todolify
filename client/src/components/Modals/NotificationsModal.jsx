@@ -35,13 +35,12 @@ export default function NotificationsModal({ setShowModal, task }) {
     const now = new Date();
     const reminderDate = new Date(date);
     const diff = reminderDate - timeBefore - now;
-    console.log("timeBefore:", timeBefore);
-
-    console.log("diff:", diff);
-    console.log("reminderDate:", reminderDate);
 
     if (diff > 0) {
-      displayAlert("success", `Reminder created to ${day} at ${time}`);
+      displayAlert(
+        "success",
+        `Reminder created for ${day}, ${timeBefore} before ${time}`
+      );
     }
 
     return diff;
