@@ -6,7 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useGoogleLogin, hasGrantedAllScopesGoogle } from "@react-oauth/google";
+import {
+  useGoogleLogin,
+  hasGrantedAllScopesGoogle,
+  hasGrantedAnyScopeGoogle,
+} from "@react-oauth/google";
 import { Button } from "react-bootstrap";
 import { syncWtGoogleCalendar } from "../../redux/eventsSlice";
 
@@ -77,20 +81,13 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
     // Check if all access requested is granted
     const hasAccess = hasGrantedAllScopesGoogle(
       credentialResponse,
-      "https://www.googleapis.com/auth/calendar",
+      "profile",
+      "email",
       "openid",
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/userinfo.email"
+      "https://www.googleapis.com/auth/calendar"
     );
 
     console.log("hasAccess:", hasAccess);
-
-    // if (!hasAccess) {
-    //   alert(
-    //     "Not all of the services needed to sync your calendar were granted, please make sure all of them are granted on login"
-    //   );
-    //   return;
-    // }
 
     // Prepare & send payload on the server-side
     const { code } = credentialResponse;
@@ -100,6 +97,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
 
   const googleOAuth = useGoogleLogin({
     onSuccess: googleSignOnSuccess,
+    scope: "profile email openid https://www.googleapis.com/auth/calendar",
     flow: "auth-code",
   });
 

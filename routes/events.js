@@ -1,6 +1,13 @@
-const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
+const { google } = require("googleapis");
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CALENDAR_CLIENT_ID,
+  process.env.GOOGLE_CALENDAR_CLIENT_SECRET,
+  "http://localhost:3000"
+);
+
 // Todos Model being used for storing the events
 const Todos = require("../schemas/TodoSchema");
 const {
@@ -9,6 +16,29 @@ const {
   getDayIdx,
   getUserTodoList,
 } = require("./helper_funcs");
+
+const ref_token =
+  "1//01SO3bpiIVI4eCgYIARAAGAESNwF-L9IrDUyANsyGmh5drXsVhy_Q-lyQvvFaKTz666HgTcIe5YMXdxsuRudPrtQmTHFH1jfgXPw";
+const acs_token =
+  "ya29.a0Ael9sCNY0eHqn608k54sS8NYil4v-GmCzYG4Ly4dx7qNwalEjCsLScvz79888ncKGIkJhu1twBxsC36F5IqDvBdMYxYBkUymBNZBu9rMPhxijS7eW6HK8T70MPCN4aUE5edmIgTzKyiTfxs4hO6eds5EbJoUaCgYKATYSARASFQF4udJhK6-Q3FiilpgaxcYxvj5vqA0163";
+
+// @route   POST /api/events/sync_calendar
+// @desc    Sync with Google Calendar API and retrieve all data from there
+// @access  Private
+router.post("/sync_calendar", async (req, res) => {
+  try {
+    const { authCodeForToken } = req.body;
+    const { tokens } = await oauth2Client.getToken(authCodeForToken);
+    oauth2Client.setCredentials(tokens);
+
+    // Save refresh token on the database for the auth user
+    const { refresh_token } = tokens;
+
+    res.send(tokens);
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 // @route   GET EVENTS /api/events/user_id
 // @desc    Fetch all user events for the current month
@@ -29,9 +59,50 @@ router.get("/:user_id", async (req, res) => {
 router.post("/add-event", async (req, res) => {
   const { user_id, event_name, day, month_year, notes } = req.body;
 
+  console.log("day:", day);
+  console.log("month_year:", month_year);
+  console.log("ref_token:", ref_token);
+
+  const splitMonthYear = month_year.split("/");
+  const googleAuthDate = `${splitMonthYear[1]}, ${splitMonthYear[0]}, ${day}`;
+
   // Make sure you await the fetching of the userTodoList
   const userTodoList = await getUserTodoList(user_id);
   if (!userTodoList) return res.send({ error: "No user todo list found" });
+
+  console.log("oauth2Client.credentials", oauth2Client.credentials);
+
+  const scopes = ["https://www.googleapis.com/auth/calendar"];
+
+  oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: scopes,
+  });
+
+  // Google Calendar Integration
+  // oauth2Client.setCredentials({ refresh_token: ref_token });
+  const endDate = "2023-04-12T04:00:00.000Z";
+
+  // Start here: figure out why it's giving a bad request when trying to add
+  // an event to the field
+
+  const calendar = google.calendar("v3");
+  const googleRes = await calendar.events.insert({
+    auth: oauth2Client,
+    calendarId: "primary",
+    requestBody: {
+      summary: event_name,
+      description: notes,
+      colorId: "4",
+      start: {
+        date: new Date(googleAuthDate),
+      },
+      end: {
+        date: new Date(endDate),
+      },
+    },
+  });
+  console.log("googleRes:", googleRes);
 
   let newEvent = { event: event_name, done: false, notes };
 
