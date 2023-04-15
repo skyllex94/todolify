@@ -9,6 +9,9 @@ function AddEventModal({ monthInfo, setShowModal }) {
   // States
   const [eventName, setEventName] = useState("");
   const [notes, setNotes] = useState("");
+  const [duration, setDuration] = useState(1);
+  const [eventTime, setEventTime] = useState("");
+
   const user_id = useSelector((state) => state.auth.user_id);
   const closeModalRef = useRef();
 
@@ -47,14 +50,27 @@ function AddEventModal({ monthInfo, setShowModal }) {
     if (($D, $M, $y === null))
       return { error: "Some month values are missing" };
 
+    if (eventTime === "" || eventTime === null)
+      return { error: "The event start time hasn't been set" };
+
+    if (duration === null)
+      return { error: "No duration of the task has been placed" };
+
     const day = parseInt($D);
     const month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
 
-    let event_name = eventName;
     try {
       // Add event for to a specific day
       const res = await dispatch(
-        addEventAsync({ user_id, event_name, day, month_year, notes })
+        addEventAsync({
+          user_id,
+          event_name: eventName,
+          event_time: eventTime,
+          duration,
+          day,
+          month_year,
+          notes,
+        })
       );
 
       if (res.payload.status === 200)
@@ -73,28 +89,28 @@ function AddEventModal({ monthInfo, setShowModal }) {
           initial={{ y: 300, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 300, opacity: 0 }}
-          className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none"
         >
           <div ref={closeModalRef} className="relative w-auto max-w-xl">
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
+            <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
+              <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 p-5">
                 <h3 className="text-3xl font-semibold">Add Event</h3>
                 <button
-                  className="p-1 ml-auto bg-transparent text-black opacity-5 float-right text-xl font-semibold"
+                  className="float-right ml-auto bg-transparent p-1 text-xl font-semibold text-black opacity-5"
                   onClick={() => setShowModal(false)}
                 />
               </div>
 
               <form className="p-8" onSubmit={onSubmit}>
-                <div className="flex items-center mb-4">
+                <div className="mb-4 flex items-center">
                   <label
-                    className="block text-gray-700 text-md font-bold mb-2 mr-3"
+                    className="text-md mb-2 mr-3 block font-bold text-gray-700"
                     htmlFor="category_name"
                   >
                     Event:
                   </label>
                   <input
-                    className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                    className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
                     type="text"
                     autoFocus
                     value={eventName}
@@ -102,24 +118,62 @@ function AddEventModal({ monthInfo, setShowModal }) {
                   />
                 </div>
 
+                <div className="mb-4 flex items-center">
+                  <label
+                    className="text-md mb-2 mr-3 block font-bold text-gray-700"
+                    htmlFor="category_name"
+                  >
+                    Time:
+                  </label>
+
+                  <input
+                    className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
+                    type="time"
+                    value={eventTime}
+                    onChange={(e) => setEventTime(e.target.value)}
+                  />
+                </div>
+
+                <div className="mb-4 flex items-center">
+                  <label
+                    className="text-md mb-2 mr-3 block font-bold text-gray-700"
+                    htmlFor="event_duration"
+                  >
+                    Duration:
+                  </label>
+                  <select
+                    className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
+                    type="text"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  >
+                    <option value={1}>1 Hour</option>
+                    <option value={2}>2 Hours</option>
+                    <option value={3}>3 Hours</option>
+                    <option value={4}>4 Hours</option>
+                    <option value={5}>5 Hours</option>
+                    <option value={6}>6 Hours</option>
+                  </select>
+                </div>
+
                 <label
-                  className="block text-gray-700 text-md font-bold mb-2"
+                  className="text-md mb-2 block font-bold text-gray-700"
                   htmlFor="Notes"
                 >
                   Notes:
                 </label>
                 <textarea
-                  className="shadow appearance-none border border-gray-500 rounded w-full py-2 px-3 text-gray-700 mb-3 focus:outline-none focus:shadow-outline"
+                  className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
                   value={notes}
-                  rows={4}
+                  rows={2}
                   maxLength="200"
                   onChange={(e) => setNotes(e.target.value)}
                 />
               </form>
 
-              <div className="flex items-center justify-between p-6 border-t border-solid border-slate-200 rounded-b">
+              <div className="flex items-center justify-between rounded-b border-t border-solid border-slate-200 p-6">
                 <button
-                  className="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="mr-1 mb-1 rounded bg-red-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                   type="button"
                   onClick={onSubmit}
                 >
@@ -127,9 +181,9 @@ function AddEventModal({ monthInfo, setShowModal }) {
                 </button>
 
                 <button
-                  className="bg-white-500 text-black active:bg-white-600 font-bold 
-                  uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none 
-                  focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                  className="bg-white-500 active:bg-white-600 mr-1 mb-1 
+                  rounded px-6 py-3 text-sm font-bold uppercase text-black shadow 
+                  outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none"
                   type="button"
                   onClick={() => setShowModal(false)}
                 >
@@ -141,7 +195,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="opacity-25 bg-black fixed inset-0"></div>
+      <div className="fixed inset-0 bg-black opacity-25"></div>
     </div>
   );
 }

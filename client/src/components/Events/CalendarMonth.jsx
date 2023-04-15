@@ -4,15 +4,10 @@ import AddEventModal from "../Modals/AddEventModal";
 import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
-import { useDispatch, useSelector } from "react-redux";
 
-import {
-  useGoogleLogin,
-  hasGrantedAllScopesGoogle,
-  hasGrantedAnyScopeGoogle,
-} from "@react-oauth/google";
-import { Button } from "react-bootstrap";
+import { useGoogleLogin, hasGrantedAllScopesGoogle } from "@react-oauth/google";
 import { syncWtGoogleCalendar } from "../../redux/eventsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function CalendarMonth({ monthObj, setCurrMonthIdx }) {
   const [showModal, setShowModal] = useState(false);
@@ -75,9 +70,7 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
     weekDays.unshift(sunday);
   };
 
-  const googleSignOnSuccess = (credentialResponse) => {
-    console.log(credentialResponse);
-
+  const googleSignOnSuccess = async (credentialResponse) => {
     // Check if all access requested is granted
     const hasAccess = hasGrantedAllScopesGoogle(
       credentialResponse,
@@ -87,16 +80,25 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
       "https://www.googleapis.com/auth/calendar"
     );
 
-    console.log("hasAccess:", hasAccess);
+    if (!hasAccess) {
+      alert(
+        "Please make sure you grant permission to all the required services"
+      );
+      return;
+    }
 
     // Prepare & send payload on the server-side
     const { code } = credentialResponse;
+    await dispatch(syncWtGoogleCalendar(code));
+  };
 
-    const res = dispatch(syncWtGoogleCalendar(code));
+  const googleOnFailure = (err) => {
+    alert(err.message);
   };
 
   const googleOAuth = useGoogleLogin({
     onSuccess: googleSignOnSuccess,
+    onError: googleOnFailure,
     scope: "profile email openid https://www.googleapis.com/auth/calendar",
     flow: "auth-code",
   });
@@ -117,23 +119,53 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
         >
           <div className="flex justify-between pl-2">
             <span className="text-lg font-bold">{monthTitle}</span>
-            <Button onClick={() => googleOAuth()}>
-              Sync with Google Calendar
-            </Button>
 
-            <div className="buttons">
-              <button
-                className="mr-2 border py-1 px-5 md:px-1 lg:px-1 xl:px-1"
-                onClick={() => previousMonth()}
-              >
-                <AiOutlineArrowUp />
-              </button>
-              <button
-                className="border py-1 px-5 md:px-1 lg:px-1 xl:px-1"
-                onClick={() => nextMonth()}
-              >
-                <AiOutlineArrowDown />
-              </button>
+            <div className="flex items-center">
+              <div className="mr-3 max-w-md sm:px-0">
+                <button
+                  type="button"
+                  onClick={() => googleOAuth()}
+                  className="inline-flex 
+                  w-full items-center justify-between rounded-lg px-5 
+                  text-center text-sm font-medium hover:bg-gray-200
+                  focus:outline-none focus:ring-4 focus:ring-[#911c41]/50"
+                >
+                  <svg
+                    className="mr-2 h-4 "
+                    aria-hidden="true"
+                    focusable="false"
+                    data-prefix="fab"
+                    data-icon="google"
+                    role="img"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 488 512"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 
+                      256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 
+                      94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 
+                      140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                    />
+                  </svg>
+                  Sync with Google Calendar<div></div>
+                </button>
+              </div>
+
+              <div className="buttons">
+                <button
+                  className="mr-2 border py-1 px-5 md:px-1 lg:px-1 xl:px-1"
+                  onClick={() => previousMonth()}
+                >
+                  <AiOutlineArrowUp />
+                </button>
+                <button
+                  className="border py-1 px-5 md:px-1 lg:px-1 xl:px-1"
+                  onClick={() => nextMonth()}
+                >
+                  <AiOutlineArrowDown />
+                </button>
+              </div>
             </div>
           </div>
           <table className="table w-full">

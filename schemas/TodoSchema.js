@@ -6,6 +6,8 @@ const TodoSchema = new mongoose.Schema({
     ref: "user",
   },
 
+  google_calendar_refresh_token: { type: String },
+
   date: [
     {
       month_year: { type: String },

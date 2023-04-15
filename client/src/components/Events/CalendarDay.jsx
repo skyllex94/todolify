@@ -119,7 +119,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                 </motion.button>
                 <div
                   onClick={() => removeEvent(curr._id)}
-                  className="text-gray-700"
+                  className="cursor-pointer text-gray-700"
                 >
                   <GrFormClose />
                 </div>

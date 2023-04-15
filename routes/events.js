@@ -5,7 +5,7 @@ const { google } = require("googleapis");
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CALENDAR_CLIENT_ID,
   process.env.GOOGLE_CALENDAR_CLIENT_SECRET,
-  "http://localhost:3000"
+  "%PUBLIC_URL%/"
 );
 
 // Todos Model being used for storing the events
@@ -19,8 +19,6 @@ const {
 
 const ref_token =
   "1//01SO3bpiIVI4eCgYIARAAGAESNwF-L9IrDUyANsyGmh5drXsVhy_Q-lyQvvFaKTz666HgTcIe5YMXdxsuRudPrtQmTHFH1jfgXPw";
-const acs_token =
-  "ya29.a0Ael9sCNY0eHqn608k54sS8NYil4v-GmCzYG4Ly4dx7qNwalEjCsLScvz79888ncKGIkJhu1twBxsC36F5IqDvBdMYxYBkUymBNZBu9rMPhxijS7eW6HK8T70MPCN4aUE5edmIgTzKyiTfxs4hO6eds5EbJoUaCgYKATYSARASFQF4udJhK6-Q3FiilpgaxcYxvj5vqA0163";
 
 // @route   POST /api/events/sync_calendar
 // @desc    Sync with Google Calendar API and retrieve all data from there
@@ -33,6 +31,9 @@ router.post("/sync_calendar", async (req, res) => {
 
     // Save refresh token on the database for the auth user
     const { refresh_token } = tokens;
+
+    // Start here: Go ahead and create the UI confirmation for when you receive the refresh_token
+    // and make it so you store the ref_token in the database
 
     res.send(tokens);
   } catch (err) {
@@ -57,52 +58,59 @@ router.get("/:user_id", async (req, res) => {
 // @desc    Add an event to a specific day
 // @access  Private
 router.post("/add-event", async (req, res) => {
-  const { user_id, event_name, day, month_year, notes } = req.body;
+  const { user_id, event_name, event_time, duration, day, month_year, notes } =
+    req.body;
 
-  console.log("day:", day);
-  console.log("month_year:", month_year);
-  console.log("ref_token:", ref_token);
+  console.log("duration:", duration);
+  console.log("event_time:", typeof event_time);
 
+  // Google Calendar API Call and creation of the event in Google Calendar
   const splitMonthYear = month_year.split("/");
-  const googleAuthDate = `${splitMonthYear[1]}, ${splitMonthYear[0]}, ${day}`;
+  const splitInitTime = event_time.split(":");
 
-  // Make sure you await the fetching of the userTodoList
-  const userTodoList = await getUserTodoList(user_id);
-  if (!userTodoList) return res.send({ error: "No user todo list found" });
+  // DateTime format - "1995-12-17T03:24:00"
+  const googleStartDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${day}T${splitInitTime[0]}:${splitInitTime[1]}:00`;
+  console.log("splitMonthYear[0]:", splitMonthYear[0]);
 
-  console.log("oauth2Client.credentials", oauth2Client.credentials);
+  // Event oveflowing the current day and going in the next one
+  let dayAddup = day;
+  let endDateHourTime = parseInt(splitInitTime[0]) + parseInt(duration);
+  if (endDateHourTime >= 24) {
+    endDateHourTime %= 24;
+    endDateHourTime = 0 + endDateHourTime.toString();
+    dayAddup = parseInt(day) + 1;
+  }
 
-  const scopes = ["https://www.googleapis.com/auth/calendar"];
+  const googleEndDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${dayAddup}T${endDateHourTime}:${splitInitTime[1]}:00`;
 
-  oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: scopes,
-  });
+  console.log("googleStartDate:", googleStartDate);
+  console.log("startDate:", new Date(googleStartDate));
 
-  // Google Calendar Integration
-  // oauth2Client.setCredentials({ refresh_token: ref_token });
-  const endDate = "2023-04-12T04:00:00.000Z";
+  console.log("googleEndDate:", googleEndDate);
+  console.log("endDate:", new Date(googleEndDate));
 
-  // Start here: figure out why it's giving a bad request when trying to add
-  // an event to the field
+  oauth2Client.setCredentials({ refresh_token: ref_token });
 
   const calendar = google.calendar("v3");
-  const googleRes = await calendar.events.insert({
+  const googleEventObj = await calendar.events.insert({
     auth: oauth2Client,
     calendarId: "primary",
     requestBody: {
       summary: event_name,
       description: notes,
-      colorId: "4",
       start: {
-        date: new Date(googleAuthDate),
+        dateTime: new Date(googleStartDate),
       },
       end: {
-        date: new Date(endDate),
+        dateTime: new Date(googleEndDate),
       },
     },
   });
-  console.log("googleRes:", googleRes);
+  console.log("googleEventObj:", googleEventObj);
+
+  // Local database calendar event creation
+  const userTodoList = await getUserTodoList(user_id);
+  if (!userTodoList) return res.send({ error: "No user todo list found" });
 
   let newEvent = { event: event_name, done: false, notes };
 

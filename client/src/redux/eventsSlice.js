@@ -31,11 +31,14 @@ export const getEventsAsync = createAsyncThunk(
 export const addEventAsync = createAsyncThunk(
   "addEventAsync",
   async (payload) => {
-    // payload => {user_id, event_name(string), day(number) month_year(string: "dd/mm/yyyy"), notes}
+    // payload => {user_id, event_name(string), day(number) month_year(string: "dd/mm/yyyy"), notes
+    // event_time, duration (duration of the event)}
     try {
       return await axios.post("/api/events/add-event", {
         user_id: payload.user_id,
         event_name: payload.event_name,
+        event_time: payload.event_time,
+        duration: payload.duration,
         day: payload.day,
         month_year: payload.month_year,
         notes: payload.notes,
