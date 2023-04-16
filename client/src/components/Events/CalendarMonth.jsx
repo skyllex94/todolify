@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AddEventModal from "../Modals/AddEventModal";
+import GoogleCalendarModal from "../Modals/GoogleCalendarModal";
 
 import CalendarDay from "./CalendarDay";
 import { motion, AnimatePresence } from "framer-motion";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 
 import { useGoogleLogin, hasGrantedAllScopesGoogle } from "@react-oauth/google";
-import { syncWtGoogleCalendar } from "../../redux/eventsSlice";
+import {
+  checkRefreshToken,
+  syncWtGoogleCalendar,
+} from "../../redux/eventsSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-function CalendarMonth({ monthObj, setCurrMonthIdx }) {
+function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
   const [showModal, setShowModal] = useState(false);
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [monthInfo, setMonthInfo] = useState(null);
+  const [syncedCalendar, setSyncedCalendar] = useState(false);
+
   const events = useSelector((state) => state.data);
   const dispatch = useDispatch();
 
@@ -43,6 +50,19 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
     "Saturday",
     "Sunday",
   ];
+
+  // Check if there is Google Calendar refresh token in DB
+  const retrieveGoogleRefreshToken = useCallback(async () => {
+    const res = await dispatch(checkRefreshToken(user_id));
+    const { data } = res.payload;
+
+    // Check result and if there is a refresh token already present in DB
+    if (data?.refreshTokenExist === true) setSyncedCalendar(true);
+  }, [dispatch, user_id]);
+
+  useEffect(() => {
+    retrieveGoogleRefreshToken();
+  }, [retrieveGoogleRefreshToken]);
 
   const addEventModal = (day) => {
     setMonthInfo(day);
@@ -89,7 +109,12 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
 
     // Prepare & send payload on the server-side
     const { code } = credentialResponse;
-    await dispatch(syncWtGoogleCalendar(code));
+    const res = await dispatch(syncWtGoogleCalendar({ code, user_id }));
+    console.log("res:", res);
+
+    if (res.status === 200) {
+      setSyncedCalendar(true);
+    }
   };
 
   const googleOnFailure = (err) => {
@@ -122,34 +147,73 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
 
             <div className="flex items-center">
               <div className="mr-3 max-w-md sm:px-0">
-                <button
-                  type="button"
-                  onClick={() => googleOAuth()}
-                  className="inline-flex 
+                {syncedCalendar ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowCalendarModal(true)}
+                    className="inline-flex 
                   w-full items-center justify-between rounded-lg px-5 
                   text-center text-sm font-medium hover:bg-gray-200
                   focus:outline-none focus:ring-4 focus:ring-[#911c41]/50"
-                >
-                  <svg
-                    className="mr-2 h-4 "
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fab"
-                    data-icon="google"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 488 512"
                   >
-                    <path
-                      fill="currentColor"
-                      d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      zoomAndPan="magnify"
+                      viewBox="0 0 30 30.000001"
+                      height="15"
+                      preserveAspectRatio="xMidYMid meet"
+                      version="1.0"
+                    >
+                      <defs>
+                        <clipPath id="id1">
+                          <path
+                            d="M 2.328125 4.222656 L 27.734375 4.222656 L 27.734375 24.542969 L 2.328125 24.542969 Z M 2.328125 4.222656 "
+                            clipRule="nonzero"
+                          />
+                        </clipPath>
+                      </defs>
+                      <g clipPath="url(#id1)">
+                        <path
+                          fill="rgb(13.729858%, 12.159729%, 12.548828%)"
+                          d="M 27.5 7.53125 L 24.464844 4.542969 C 24.15625 4.238281 23.65625 4.238281 23.347656 4.542969 L 11.035156 16.667969 L 6.824219 12.523438 C 6.527344 12.230469 6 12.230469 5.703125 12.523438 L 2.640625 15.539062 C 2.332031 15.84375 2.332031 16.335938 2.640625 16.640625 L 10.445312 24.324219 C 10.59375 24.472656 10.796875 24.554688 11.007812 24.554688 C 11.214844 24.554688 11.417969 24.472656 11.566406 24.324219 L 27.5 8.632812 C 27.648438 8.488281 27.734375 8.289062 27.734375 8.082031 C 27.734375 7.875 27.648438 7.679688 27.5 7.53125 Z M 27.5 7.53125 "
+                          fillOpacity="1"
+                          fillRule="nonzero"
+                        />
+                      </g>
+                    </svg>
+                    Syncing...<div></div>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => googleOAuth()}
+                    className="inline-flex 
+                  w-full items-center justify-between rounded-lg px-5 
+                  text-center text-sm font-medium hover:bg-gray-200
+                  focus:outline-none focus:ring-4 focus:ring-[#911c41]/50"
+                  >
+                    <svg
+                      className="mr-2 h-4 "
+                      aria-hidden="true"
+                      focusable="false"
+                      data-prefix="fab"
+                      data-icon="google"
+                      role="img"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 488 512"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 
                       256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 
                       94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 
                       140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                    />
-                  </svg>
-                  Sync with Google Calendar<div></div>
-                </button>
+                      />
+                    </svg>
+                    Sync with Google Calendar<div></div>
+                  </button>
+                )}
               </div>
 
               <div className="buttons">
@@ -240,11 +304,10 @@ function CalendarMonth({ monthObj, setCurrMonthIdx }) {
             </tbody>
           </table>
           {showModal && (
-            <AddEventModal
-              monthInfo={monthInfo}
-              showModal={showModal}
-              setShowModal={setShowModal}
-            />
+            <AddEventModal monthInfo={monthInfo} setShowModal={setShowModal} />
+          )}
+          {showCalendarModal && (
+            <GoogleCalendarModal setShowModal={setShowCalendarModal} />
           )}
         </motion.div>
       </AnimatePresence>

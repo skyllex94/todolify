@@ -6,10 +6,7 @@ export const getTodosAsync = createAsyncThunk("getTodosAsync", async (id) => {
   // Fetch array of todos from DB and return (through res.send() on the backend) a resp value
   try {
     const resp = await axios.get(`/api/user/${id}`);
-    // If everything okay wt response, return the data from the DB
-    if (resp.status === 200) {
-      return resp.data;
-    }
+    if (resp.status === 200) return resp.data;
   } catch (err) {
     console.log(err.message);
   }
@@ -19,7 +16,6 @@ export const addDateAsync = createAsyncThunk(
   "addDateAsync",
   // payload => {month_year, day, user_id}
   async (payload) => {
-    // Return 'here' from MongoDB
     try {
       return await axios.post(`/api/user/date/${payload.user_id}`, {
         month_year: payload.month_year,

@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 const express = require("express");
-const { validationResult } = require("express-validator");
 const router = express.Router();
 const mwAuth = require("../middleware/mwAuth");
 const Todos = require("../schemas/TodoSchema");
@@ -89,7 +88,6 @@ router.post("/verify_recaptcha", async (req, res) => {
     }
   );
 
-  console.log("google_auth_res:", google_auth_res);
   if (!google_auth_res) return { error: "Could not verify reCaptcha" };
 
   const { data } = google_auth_res;

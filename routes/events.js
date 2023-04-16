@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
+const Todos = require("../schemas/TodoSchema");
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CALENDAR_CLIENT_ID,
   process.env.GOOGLE_CALENDAR_CLIENT_SECRET,
-  "%PUBLIC_URL%/"
+  "http://localhost:3000"
 );
 
-// Todos Model being used for storing the events
-const Todos = require("../schemas/TodoSchema");
 const {
   getMonthIdx,
   idxIsValid,
@@ -17,25 +16,69 @@ const {
   getUserTodoList,
 } = require("./helper_funcs");
 
-const ref_token =
-  "1//01SO3bpiIVI4eCgYIARAAGAESNwF-L9IrDUyANsyGmh5drXsVhy_Q-lyQvvFaKTz666HgTcIe5YMXdxsuRudPrtQmTHFH1jfgXPw";
+// @route   POST /api/events/check_refresh_token
+// @desc    Check if there is already a refresh token for Google Calendar for curr user
+// @access  Private
+router.post("/check_refresh_token", async (req, res) => {
+  try {
+    const { user_id } = req.body;
+
+    const userTodoList = await Todos.findOne({ user_id });
+    const isRefreshToken = userTodoList.google_calendar_refresh_token;
+
+    if (isRefreshToken === null) res.send({ refreshTokenExist: false });
+    res.send({ refreshTokenExist: true });
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 // @route   POST /api/events/sync_calendar
 // @desc    Sync with Google Calendar API and retrieve all data from there
 // @access  Private
 router.post("/sync_calendar", async (req, res) => {
   try {
-    const { authCodeForToken } = req.body;
+    const { authCodeForToken, user_id } = req.body;
     const { tokens } = await oauth2Client.getToken(authCodeForToken);
+    if (tokens?.code === 400)
+      res.send({
+        status: 400,
+        message: "Error occured why creating the token",
+      });
     oauth2Client.setCredentials(tokens);
 
     // Save refresh token on the database for the auth user
     const { refresh_token } = tokens;
+    console.log("refresh_token:", refresh_token);
 
-    // Start here: Go ahead and create the UI confirmation for when you receive the refresh_token
-    // and make it so you store the ref_token in the database
+    if (!refresh_token)
+      console.log("You should already have a refresh token being stored");
 
-    res.send(tokens);
+    // Find current user in database
+    const userTodoList = await Todos.findOne({ user_id });
+    if (!userTodoList)
+      return res.send({ error: "Could not find user todo list" });
+
+    // Mongoose query for inserting the new month
+    const result = await Todos.updateOne(
+      { user_id },
+      { $set: { google_calendar_refresh_token: refresh_token.toString() } }
+    );
+
+    console.log("result:", result);
+    const { modifiedCount, acknowledged } = result;
+    if (modifiedCount <= 0 || acknowledged === false) {
+      res.send({
+        status: 402,
+        message: "Could not store Google Calendar's refresh token",
+      });
+    }
+
+    res.send({
+      status: 200,
+      message:
+        "Successfully exchanged data and stored the refresh token for the user",
+    });
   } catch (err) {
     console.error(err);
   }
@@ -61,6 +104,9 @@ router.post("/add-event", async (req, res) => {
   const { user_id, event_name, event_time, duration, day, month_year, notes } =
     req.body;
 
+  const userTodoList = await getUserTodoList(user_id);
+  if (!userTodoList) return res.send({ error: "No user todo list found" });
+
   console.log("duration:", duration);
   console.log("event_time:", typeof event_time);
 
@@ -70,11 +116,11 @@ router.post("/add-event", async (req, res) => {
 
   // DateTime format - "1995-12-17T03:24:00"
   const googleStartDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${day}T${splitInitTime[0]}:${splitInitTime[1]}:00`;
-  console.log("splitMonthYear[0]:", splitMonthYear[0]);
 
   // Event oveflowing the current day and going in the next one
   let dayAddup = day;
   let endDateHourTime = parseInt(splitInitTime[0]) + parseInt(duration);
+  if (endDateHourTime <= 9) endDateHourTime = 0 + endDateHourTime.toString();
   if (endDateHourTime >= 24) {
     endDateHourTime %= 24;
     endDateHourTime = 0 + endDateHourTime.toString();
@@ -89,7 +135,13 @@ router.post("/add-event", async (req, res) => {
   console.log("googleEndDate:", googleEndDate);
   console.log("endDate:", new Date(googleEndDate));
 
-  oauth2Client.setCredentials({ refresh_token: ref_token });
+  // Retrieve refresh token from DB
+  const refresh_token = userTodoList?.google_calendar_refresh_token;
+  if (!refresh_token)
+    res.send({ error: "Could not find eny refresh token for the given user." });
+
+  // Set Google Calendar API credentials for the user
+  oauth2Client.setCredentials({ refresh_token });
 
   const calendar = google.calendar("v3");
   const googleEventObj = await calendar.events.insert({
@@ -109,9 +161,6 @@ router.post("/add-event", async (req, res) => {
   console.log("googleEventObj:", googleEventObj);
 
   // Local database calendar event creation
-  const userTodoList = await getUserTodoList(user_id);
-  if (!userTodoList) return res.send({ error: "No user todo list found" });
-
   let newEvent = { event: event_name, done: false, notes };
 
   const monthIdx = getMonthIdx(month_year, userTodoList);

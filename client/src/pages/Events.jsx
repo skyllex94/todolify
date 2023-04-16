@@ -69,8 +69,8 @@ function Events() {
         {loadEvents ? (
           <CalendarMonth
             monthObj={currMonth}
-            setCurrMonth={setCurrMonth}
             setCurrMonthIdx={setCurrMonthIdx}
+            user_id={user_id}
           />
         ) : (
           <div>

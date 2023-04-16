@@ -3,13 +3,26 @@ import axios from "axios";
 
 export const syncWtGoogleCalendar = createAsyncThunk(
   "syncWtGoogleCalendar",
-  async (code) => {
-    console.log("code:", code);
+  async (payload) => {
     try {
       const res = await axios.post("/api/events/sync_calendar", {
-        authCodeForToken: code,
+        authCodeForToken: payload.code,
+        user_id: payload.user_id,
       });
       console.log("res:", res.data);
+    } catch (err) {
+      return err.message;
+    }
+  }
+);
+
+export const checkRefreshToken = createAsyncThunk(
+  "checkRefreshToken",
+  async (user_id) => {
+    try {
+      return await axios.post("/api/events/check_refresh_token", {
+        user_id,
+      });
     } catch (err) {
       return err.message;
     }
