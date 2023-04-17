@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { addEventAsync } from "../../redux/eventsSlice";
 import { saveUserData } from "../../redux/dataSlice";
 
-function AddEventModal({ monthInfo, setShowModal }) {
+function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
   // States
   const [eventName, setEventName] = useState("");
   const [notes, setNotes] = useState("");
@@ -70,6 +70,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
           day,
           month_year,
           notes,
+          linked_calendars: linkedCalendars,
         })
       );
 
@@ -177,7 +178,7 @@ function AddEventModal({ monthInfo, setShowModal }) {
                   type="button"
                   onClick={onSubmit}
                 >
-                  Create Category
+                  Create Event
                 </button>
 
                 <button

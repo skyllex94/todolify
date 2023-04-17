@@ -26,7 +26,7 @@ router.post("/check_refresh_token", async (req, res) => {
     const userTodoList = await Todos.findOne({ user_id });
     const isRefreshToken = userTodoList.google_calendar_refresh_token;
 
-    if (isRefreshToken === null) res.send({ refreshTokenExist: false });
+    if (!isRefreshToken) res.send({ refreshTokenExist: false });
     res.send({ refreshTokenExist: true });
   } catch (err) {
     console.error(err);
@@ -38,8 +38,8 @@ router.post("/check_refresh_token", async (req, res) => {
 // @access  Private
 router.post("/sync_calendar", async (req, res) => {
   try {
-    const { authCodeForToken, user_id } = req.body;
-    const { tokens } = await oauth2Client.getToken(authCodeForToken);
+    const { auth_code, user_id } = req.body;
+    const { tokens } = await oauth2Client.getToken(auth_code);
     if (tokens?.code === 400)
       res.send({
         status: 400,
@@ -49,7 +49,6 @@ router.post("/sync_calendar", async (req, res) => {
 
     // Save refresh token on the database for the auth user
     const { refresh_token } = tokens;
-    console.log("refresh_token:", refresh_token);
 
     if (!refresh_token)
       console.log("You should already have a refresh token being stored");
@@ -101,64 +100,73 @@ router.get("/:user_id", async (req, res) => {
 // @desc    Add an event to a specific day
 // @access  Private
 router.post("/add-event", async (req, res) => {
-  const { user_id, event_name, event_time, duration, day, month_year, notes } =
-    req.body;
+  const {
+    user_id,
+    event_name,
+    event_time,
+    duration,
+    day,
+    month_year,
+    notes,
+    linked_calendars,
+  } = req.body;
 
   const userTodoList = await getUserTodoList(user_id);
   if (!userTodoList) return res.send({ error: "No user todo list found" });
 
-  console.log("duration:", duration);
-  console.log("event_time:", typeof event_time);
-
   // Google Calendar API Call and creation of the event in Google Calendar
-  const splitMonthYear = month_year.split("/");
-  const splitInitTime = event_time.split(":");
+  if (linked_calendars === true) {
+    const splitMonthYear = month_year.split("/");
+    const splitInitTime = event_time.split(":");
 
-  // DateTime format - "1995-12-17T03:24:00"
-  const googleStartDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${day}T${splitInitTime[0]}:${splitInitTime[1]}:00`;
+    // DateTime format - "1995-12-17T03:24:00"
+    const googleStartDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${day}T${splitInitTime[0]}:${splitInitTime[1]}:00`;
 
-  // Event oveflowing the current day and going in the next one
-  let dayAddup = day;
-  let endDateHourTime = parseInt(splitInitTime[0]) + parseInt(duration);
-  if (endDateHourTime <= 9) endDateHourTime = 0 + endDateHourTime.toString();
-  if (endDateHourTime >= 24) {
-    endDateHourTime %= 24;
-    endDateHourTime = 0 + endDateHourTime.toString();
-    dayAddup = parseInt(day) + 1;
+    // Event oveflowing the current day and going in the next one
+    let dayAddup = day;
+    let endDateHourTime = parseInt(splitInitTime[0]) + parseInt(duration);
+    if (endDateHourTime <= 9) endDateHourTime = 0 + endDateHourTime.toString();
+    if (endDateHourTime >= 24) {
+      endDateHourTime %= 24;
+      endDateHourTime = 0 + endDateHourTime.toString();
+      dayAddup = parseInt(day) + 1;
+    }
+
+    const googleEndDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${dayAddup}T${endDateHourTime}:${splitInitTime[1]}:00`;
+
+    console.log("googleStartDate:", googleStartDate);
+    console.log("startDate:", new Date(googleStartDate));
+
+    console.log("googleEndDate:", googleEndDate);
+    console.log("endDate:", new Date(googleEndDate));
+
+    // Retrieve refresh token from DB
+    const refresh_token = userTodoList?.google_calendar_refresh_token;
+    if (!refresh_token)
+      res.send({
+        error: "Could not find eny refresh token for the given user.",
+      });
+
+    // Set Google Calendar API credentials for the user
+    oauth2Client.setCredentials({ refresh_token });
+
+    const calendar = google.calendar("v3");
+    const googleEventObj = await calendar.events.insert({
+      auth: oauth2Client,
+      calendarId: "primary",
+      requestBody: {
+        summary: event_name,
+        description: notes,
+        start: {
+          dateTime: new Date(googleStartDate),
+        },
+        end: {
+          dateTime: new Date(googleEndDate),
+        },
+      },
+    });
+    console.log("googleEventObj:", googleEventObj);
   }
-
-  const googleEndDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${dayAddup}T${endDateHourTime}:${splitInitTime[1]}:00`;
-
-  console.log("googleStartDate:", googleStartDate);
-  console.log("startDate:", new Date(googleStartDate));
-
-  console.log("googleEndDate:", googleEndDate);
-  console.log("endDate:", new Date(googleEndDate));
-
-  // Retrieve refresh token from DB
-  const refresh_token = userTodoList?.google_calendar_refresh_token;
-  if (!refresh_token)
-    res.send({ error: "Could not find eny refresh token for the given user." });
-
-  // Set Google Calendar API credentials for the user
-  oauth2Client.setCredentials({ refresh_token });
-
-  const calendar = google.calendar("v3");
-  const googleEventObj = await calendar.events.insert({
-    auth: oauth2Client,
-    calendarId: "primary",
-    requestBody: {
-      summary: event_name,
-      description: notes,
-      start: {
-        dateTime: new Date(googleStartDate),
-      },
-      end: {
-        dateTime: new Date(googleEndDate),
-      },
-    },
-  });
-  console.log("googleEventObj:", googleEventObj);
 
   // Local database calendar event creation
   let newEvent = { event: event_name, done: false, notes };

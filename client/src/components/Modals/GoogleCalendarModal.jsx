@@ -1,12 +1,53 @@
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { googleLogout } from "@react-oauth/google";
+import { useDispatch } from "react-redux";
+import { linkedCalendars } from "../../redux/settingsSlice";
 
-export default function GoogleCalendarModal({ setShowModal }) {
-  const [labelColor, setLabelColor] = useState(null);
+export default function GoogleCalendarModal({
+  setShowModal,
+  linkedCalendarsLS,
+}) {
+  const [labelColor, setLabelColor] = useState(1);
 
+  const dispatch = useDispatch();
   const closeModalRef = useRef();
 
+  // Trigger removing modal on outside click or escape key pressed
+  useEffect(() => {
+    const closeModal = (e) => {
+      if (e.keyCode === 27) setShowModal(false);
+      if (closeModalRef.current && !closeModalRef.current.contains(e.target))
+        setShowModal(false);
+    };
+
+    window.addEventListener("keydown", closeModal);
+    window.addEventListener("mousedown", closeModal);
+    return () => {
+      window.removeEventListener("keydown", closeModal);
+      window.removeEventListener("mousedown", closeModal);
+    };
+  }, [setShowModal]);
+
   const onSubmit = async (e) => {};
+
+  const unlinkGoogleCalendar = () => {
+    try {
+      googleLogout();
+    } catch (err) {
+      console.error(err);
+    }
+
+    dispatch(linkedCalendars(false));
+    setShowModal(false);
+  };
+
+  const linkGoogleCalendar = () => {
+    setTimeout(() => {
+      dispatch(linkedCalendars(true));
+    }, 1000);
+    setShowModal(false);
+  };
 
   return (
     <div>
@@ -41,7 +82,6 @@ export default function GoogleCalendarModal({ setShowModal }) {
                     className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
                     type="text"
                     autoFocus
-                    value={labelColor}
                     onChange={(e) => setLabelColor(e.target.value)}
                   />
                 </div>
@@ -76,13 +116,39 @@ export default function GoogleCalendarModal({ setShowModal }) {
               </form>
 
               <div className="flex items-center justify-between rounded-b border-t border-solid border-slate-200 p-6">
-                <button
-                  className="mr-1 mb-1 rounded bg-red-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
-                  type="button"
-                  onClick={onSubmit}
-                >
-                  Create Category
-                </button>
+                <div className="flex items-start">
+                  <button
+                    onClick={() => console.log("here we are")}
+                    className="mr-1 mb-1 rounded bg-green-500 
+                px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
+                    type="button"
+                  >
+                    Update
+                  </button>
+                  {linkedCalendarsLS ? (
+                    <button
+                      onClick={unlinkGoogleCalendar}
+                      className="mr-1 mb-1 rounded bg-red-500 
+                      px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                      transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
+                      type="button"
+                    >
+                      Unlink
+                    </button>
+                  ) : (
+                    <button
+                      onClick={linkGoogleCalendar}
+                      className="mr-1 mb-1 rounded bg-green-500 
+                      px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
+                      transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none
+                     active:bg-green-600"
+                      type="button"
+                    >
+                      Connect
+                    </button>
+                  )}
+                </div>
 
                 <button
                   className="bg-white-500 active:bg-white-600 mr-1 mb-1 

@@ -19,6 +19,11 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
   const [monthInfo, setMonthInfo] = useState(null);
   const [syncedCalendar, setSyncedCalendar] = useState(false);
 
+  // Parse result as you get it since it can be from LS
+  const linkedCalendars = useSelector((state) =>
+    JSON.parse(state.settings.linkedCalendars)
+  );
+
   const events = useSelector((state) => state.data);
   const dispatch = useDispatch();
 
@@ -55,9 +60,10 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
   const retrieveGoogleRefreshToken = useCallback(async () => {
     const res = await dispatch(checkRefreshToken(user_id));
     const { data } = res.payload;
+    console.log("data:", data);
 
     // Check result and if there is a refresh token already present in DB
-    if (data?.refreshTokenExist === true) setSyncedCalendar(true);
+    if (data?.refreshTokenExist === true) setSyncedCalendar(() => true);
   }, [dispatch, user_id]);
 
   useEffect(() => {
@@ -109,10 +115,15 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
 
     // Prepare & send payload on the server-side
     const { code } = credentialResponse;
-    const res = await dispatch(syncWtGoogleCalendar({ code, user_id }));
+    const res = await dispatch(
+      syncWtGoogleCalendar({
+        code,
+        user_id,
+      })
+    );
     console.log("res:", res);
 
-    if (res.status === 200) {
+    if (res.payload.data.status === 200) {
       setSyncedCalendar(true);
     }
   };
@@ -147,14 +158,14 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
 
             <div className="flex items-center">
               <div className="mr-3 max-w-md sm:px-0">
-                {syncedCalendar ? (
+                {syncedCalendar && linkedCalendars ? (
                   <button
                     type="button"
                     onClick={() => setShowCalendarModal(true)}
                     className="inline-flex 
-                  w-full items-center justify-between rounded-lg px-5 
-                  text-center text-sm font-medium hover:bg-gray-200
-                  focus:outline-none focus:ring-4 focus:ring-[#911c41]/50"
+                w-full items-center justify-between rounded-lg px-5 
+                text-center text-sm font-medium hover:bg-gray-200
+                focus:outline-none focus:ring-4 focus:ring-[#911c41]/50"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +195,18 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
                     </svg>
                     Syncing...<div></div>
                   </button>
-                ) : (
+                ) : syncedCalendar && !linkedCalendars ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowCalendarModal(true)}
+                    className="inline-flex 
+                  w-full items-center justify-between rounded-lg px-5 
+                  text-center text-sm font-medium hover:bg-gray-200
+                  focus:outline-none focus:ring-4 focus:ring-[#911c41]/50"
+                  >
+                    Syncing Paused<div></div>
+                  </button>
+                ) : !syncedCalendar && linkedCalendars ? (
                   <button
                     type="button"
                     onClick={() => googleOAuth()}
@@ -209,6 +231,35 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
                       256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 
                       94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 
                       140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                      />
+                    </svg>
+                    Sync with Google Calendar<div></div>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => googleOAuth()}
+                    className="inline-flex 
+              w-full items-center justify-between rounded-lg px-5 
+              text-center text-sm font-medium hover:bg-gray-200
+              focus:outline-none focus:ring-4 focus:ring-[#911c41]/50"
+                  >
+                    <svg
+                      className="mr-2 h-4 "
+                      aria-hidden="true"
+                      focusable="false"
+                      data-prefix="fab"
+                      data-icon="google"
+                      role="img"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 488 512"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 
+                  256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 
+                  94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 
+                  140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
                       />
                     </svg>
                     Sync with Google Calendar<div></div>
@@ -304,10 +355,17 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
             </tbody>
           </table>
           {showModal && (
-            <AddEventModal monthInfo={monthInfo} setShowModal={setShowModal} />
+            <AddEventModal
+              monthInfo={monthInfo}
+              setShowModal={setShowModal}
+              linkedCalendars={linkedCalendars}
+            />
           )}
           {showCalendarModal && (
-            <GoogleCalendarModal setShowModal={setShowCalendarModal} />
+            <GoogleCalendarModal
+              setShowModal={setShowCalendarModal}
+              linkedCalendarsLS={linkedCalendars}
+            />
           )}
         </motion.div>
       </AnimatePresence>

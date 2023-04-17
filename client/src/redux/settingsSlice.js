@@ -78,10 +78,10 @@ export const settingsSlice = createSlice({
     userConfig: {},
     changeCategoryDoneIcon: false,
     searchForTask: "",
+    linkedCalendars: localStorage.getItem("linkedCalendars") || true,
   },
   reducers: {
     openSideMenu: (state, action) => {
-      // TODO: Make sure the side menu updates on click in DOM
       // Per Redux docs, make a copy of the state and return the updated value
       return { ...state, isOpenSideMenu: action.payload };
     },
@@ -99,6 +99,10 @@ export const settingsSlice = createSlice({
     },
     searchForTask: (state, action) => {
       return { ...state, searchForTask: action.payload };
+    },
+    linkedCalendars: (state, action) => {
+      localStorage.setItem("linkedCalendars", JSON.stringify(action.payload));
+      return { ...state, linkedCalendars: action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -130,12 +134,12 @@ export const settingsSlice = createSlice({
       return { ...state, userConfig };
     });
 
-    // // Permanently delete the user and all his todos and data
-    // builder.addCase(permanentlyDeleteUserAsync.fulfilled, (state, action) => {
-    //   const { permanentlyDeleted, error } = action.payload.data;
-    //   if (error) return alert(error);
-    //   return { ...state, userConfig };
-    // });
+    //   // Permanently delete the user and all his todos and data
+    //   builder.addCase(permanentlyDeleteUserAsync.fulfilled, (state, action) => {
+    //     const { permanentlyDeleted, error } = action.payload.data;
+    //     if (error) return alert(error);
+    //     return { ...state, userConfig };
+    //   });
   },
 });
 
@@ -146,6 +150,7 @@ export const {
   startFromSunday,
   changeCategoryIconToDone,
   searchForTask,
+  linkedCalendars,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

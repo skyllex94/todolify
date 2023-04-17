@@ -5,11 +5,10 @@ export const syncWtGoogleCalendar = createAsyncThunk(
   "syncWtGoogleCalendar",
   async (payload) => {
     try {
-      const res = await axios.post("/api/events/sync_calendar", {
-        authCodeForToken: payload.code,
+      return await axios.post("/api/events/sync_calendar", {
+        auth_code: payload.code,
         user_id: payload.user_id,
       });
-      console.log("res:", res.data);
     } catch (err) {
       return err.message;
     }
@@ -45,7 +44,7 @@ export const addEventAsync = createAsyncThunk(
   "addEventAsync",
   async (payload) => {
     // payload => {user_id, event_name(string), day(number) month_year(string: "dd/mm/yyyy"), notes
-    // event_time, duration (duration of the event)}
+    // event_time, duration (duration of the event), syncedCalendar(boolean)}
     try {
       return await axios.post("/api/events/add-event", {
         user_id: payload.user_id,
@@ -55,6 +54,7 @@ export const addEventAsync = createAsyncThunk(
         day: payload.day,
         month_year: payload.month_year,
         notes: payload.notes,
+        linked_calendars: payload.linked_calendars,
       });
     } catch (err) {
       return err.message;
