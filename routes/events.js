@@ -113,14 +113,24 @@ router.post("/add-event", async (req, res) => {
 
   const userTodoList = await getUserTodoList(user_id);
   if (!userTodoList) return res.send({ error: "No user todo list found" });
+  let google_event_id = null;
 
   // Google Calendar API Call and creation of the event in Google Calendar
   if (linked_calendars === true) {
     const splitMonthYear = month_year.split("/");
     const splitInitTime = event_time.split(":");
 
+    // Add zero padding to the date when necessary
+    function zeroPad(num) {
+      return ("0" + num).slice(-2);
+    }
+
     // DateTime format - "1995-12-17T03:24:00"
-    const googleStartDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${day}T${splitInitTime[0]}:${splitInitTime[1]}:00`;
+    const googleStartDate = `${splitMonthYear[1]}-${zeroPad(
+      splitMonthYear[0]
+    )}-${zeroPad(day)}T${zeroPad(splitInitTime[0])}:${zeroPad(
+      splitInitTime[1]
+    )}:00`;
 
     // Event oveflowing the current day and going in the next one
     let dayAddup = day;
@@ -132,7 +142,11 @@ router.post("/add-event", async (req, res) => {
       dayAddup = parseInt(day) + 1;
     }
 
-    const googleEndDate = `${splitMonthYear[1]}-${splitMonthYear[0]}-${dayAddup}T${endDateHourTime}:${splitInitTime[1]}:00`;
+    const googleEndDate = `${splitMonthYear[1]}-${zeroPad(
+      splitMonthYear[0]
+    )}-${zeroPad(dayAddup)}T${zeroPad(endDateHourTime)}:${zeroPad(
+      splitInitTime[1]
+    )}:00`;
 
     console.log("googleStartDate:", googleStartDate);
     console.log("startDate:", new Date(googleStartDate));
@@ -144,7 +158,7 @@ router.post("/add-event", async (req, res) => {
     const refresh_token = userTodoList?.google_calendar_refresh_token;
     if (!refresh_token)
       res.send({
-        error: "Could not find eny refresh token for the given user.",
+        error: "Could not find any refresh token for the given user.",
       });
 
     // Set Google Calendar API credentials for the user
@@ -165,11 +179,20 @@ router.post("/add-event", async (req, res) => {
         },
       },
     });
-    console.log("googleEventObj:", googleEventObj);
+
+    // Check if we were not able to create the calendar event
+    const { status, statusText, data } = googleEventObj;
+    if (status !== 200) {
+      res.send({ error: statusText });
+    }
+    google_event_id = await data.id;
   }
 
   // Local database calendar event creation
   let newEvent = { event: event_name, done: false, notes };
+  if (linked_calendars)
+    newEvent = { event: event_name, done: false, notes, google_event_id };
+  console.log("newEvent:", newEvent);
 
   const monthIdx = getMonthIdx(month_year, userTodoList);
   // If there is no month, create a month and day and input the event in it
@@ -252,10 +275,45 @@ router.patch("/update-event", async (req, res) => {
 // @desc    Remove an event from a specific day
 // @access  Private
 router.delete("/remove-event", async (req, res) => {
-  const { user_id, event_id, day_idx, month_idx } = req.body;
+  const { user_id, event_id, day_idx, month_idx, google_event_id } = req.body;
+  console.log("google_event_id:", google_event_id);
+
+  // If event is present in Google Calendar, remove it too
+  if (google_event_id) {
+    const userTodoList = await Todos.findOne({ user_id });
+    // Retrieve refresh token from DB
+    const refresh_token = userTodoList?.google_calendar_refresh_token;
+    if (!refresh_token)
+      res.send({
+        error: "Could not find any refresh token for the given user.",
+      });
+
+    // Set Google Calendar API credentials for the user
+    oauth2Client.setCredentials({ refresh_token });
+
+    try {
+      const calendar = google.calendar("v3");
+      const googleEventObj = await calendar.events.delete({
+        auth: oauth2Client,
+        calendarId: "primary",
+        eventId: google_event_id,
+      });
+
+      // Check if we were not able to create the calendar event
+      const { status, statusText, data } = googleEventObj;
+      console.log("data:", data);
+
+      console.log("status:", status);
+      console.log("statusText:", statusText);
+      if (status !== 200) {
+        res.send({ error: statusText });
+      }
+    } catch (err) {
+      console.log(`Error in deleting Google Calendar Event: ${err} `);
+    }
+  }
 
   const key = "date." + month_idx + ".days." + day_idx + ".events";
-
   const updatedTodoList = await Todos.findOneAndUpdate(
     { user_id },
     { $pull: { [key]: { _id: event_id } } },

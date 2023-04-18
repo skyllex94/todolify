@@ -18,6 +18,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
     id: "",
     idx: null,
     name: "",
+    google_event_id: "",
     notes: "",
   });
   const monthIdx = getMonthIdx(month_year, global);
@@ -26,9 +27,9 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
   const { $D } = day;
   const dispatch = useDispatch();
 
-  function openEventInfo(id, idx, name, notes) {
+  function openEventInfo(id, idx, name, notes, google_event_id) {
+    setEventInfo({ id, idx, name, notes, google_event_id });
     setShowInfoEventModal(true);
-    setEventInfo({ id, idx, name, notes });
   }
 
   function getMonthIdx(month_year, globalState) {
@@ -66,6 +67,8 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       }
     }
   }
+
+  // Start here: Figure out why google_event_id is undefined
 
   return (
     <div
@@ -109,7 +112,13 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                     stiffness: 100,
                   }}
                   onClick={() =>
-                    openEventInfo(curr._id, idx, curr.event, curr.notes)
+                    openEventInfo(
+                      curr._id,
+                      idx,
+                      curr.event,
+                      curr.notes,
+                      curr.google_event_id
+                    )
                   }
                   className="relative flex w-full justify-between rounded border border-red-200 px-2 text-sm font-medium"
                 >

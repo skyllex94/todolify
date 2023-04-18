@@ -60,7 +60,6 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
   const retrieveGoogleRefreshToken = useCallback(async () => {
     const res = await dispatch(checkRefreshToken(user_id));
     const { data } = res.payload;
-    console.log("data:", data);
 
     // Check result and if there is a refresh token already present in DB
     if (data?.refreshTokenExist === true) setSyncedCalendar(() => true);
@@ -121,9 +120,8 @@ function CalendarMonth({ monthObj, setCurrMonthIdx, user_id }) {
         user_id,
       })
     );
-    console.log("res:", res);
 
-    if (res.payload.data.status === 200) {
+    if (res?.payload?.data.status === 200) {
       setSyncedCalendar(true);
     }
   };

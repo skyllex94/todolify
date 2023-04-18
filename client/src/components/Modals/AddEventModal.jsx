@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addEventAsync } from "../../redux/eventsSlice";
 import { saveUserData } from "../../redux/dataSlice";
+import { useDisplayAlert } from "../../hooks/useDisplayAlert";
+import Alert from "../Alert/Alert";
 
 function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
   // States
@@ -11,6 +13,8 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
   const [notes, setNotes] = useState("");
   const [duration, setDuration] = useState(1);
   const [eventTime, setEventTime] = useState("");
+  const { alertState, enableAlert, setEnableAlert, displayAlert } =
+    useDisplayAlert();
 
   const user_id = useSelector((state) => state.auth.user_id);
   const closeModalRef = useRef();
@@ -42,19 +46,33 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
     e.preventDefault();
 
     // Error checks
-    if (eventName === "") return alert("Please write a name for the event.");
+    if (eventName === "") {
+      displayAlert("error", "Please write a name for the event.");
+      return;
+    }
 
-    if (monthInfo === null)
-      return { error: "Error finding the information about the event date" };
+    if (monthInfo === null) {
+      displayAlert(
+        "error",
+        "Error finding the information about the event date"
+      );
+      return;
+    }
 
-    if (($D, $M, $y === null))
-      return { error: "Some month values are missing" };
+    if (($D, $M, $y === null)) {
+      displayAlert("error", "Some month values are missing");
+      return;
+    }
 
-    if (eventTime === "" || eventTime === null)
-      return { error: "The event start time hasn't been set" };
+    if (eventTime === "" || eventTime === null) {
+      displayAlert("error", "The event start time hasn't been set");
+      return;
+    }
 
-    if (duration === null)
-      return { error: "No duration of the task has been placed" };
+    if (duration === null) {
+      displayAlert("error", "No duration of the task has been placed");
+      return;
+    }
 
     const day = parseInt($D);
     const month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
@@ -73,6 +91,13 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
           linked_calendars: linkedCalendars,
         })
       );
+
+      if (res.payload?.error)
+        alert(
+          `Error occured while connecting with Google Calendar: ${
+            res.payload.error || null
+          }`
+        );
 
       if (res.payload.status === 200)
         dispatch(saveUserData(res.payload.data.userTodoList));
@@ -100,6 +125,21 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
                   className="float-right ml-auto bg-transparent p-1 text-xl font-semibold text-black opacity-5"
                   onClick={() => setShowModal(false)}
                 />
+              </div>
+
+              <div className="px-2">
+                <AnimatePresence>
+                  {enableAlert && (
+                    <Alert
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      type={alertState.type}
+                      message={alertState.message}
+                      setEnableAlert={setEnableAlert}
+                    />
+                  )}
+                </AnimatePresence>
               </div>
 
               <form className="p-8" onSubmit={onSubmit}>

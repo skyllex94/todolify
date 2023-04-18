@@ -5,7 +5,7 @@ import { saveUserData } from "../../redux/dataSlice";
 import { removeEventAsync, updateEventAsync } from "../../redux/eventsSlice";
 
 function UpdateEventModal({
-  eventInfo, // id, idx, name and notes
+  eventInfo, // id, idx, name, notes, google_event_id
   day_idx,
   day,
   month_idx,
@@ -14,6 +14,8 @@ function UpdateEventModal({
 }) {
   const [update, setUpdate] = useState(false);
   const event_id = eventInfo.id;
+  const google_event_id = eventInfo.google_event_id;
+  console.log("google_event_id:", google_event_id);
   const event_idx = eventInfo.idx;
   const [eventName, setEventName] = useState(eventInfo.name);
   const [eventNotes, setEventNotes] = useState(eventInfo.notes);
@@ -72,11 +74,14 @@ function UpdateEventModal({
             day_idx,
             month_idx,
             event_id,
+            google_event_id,
           })
         );
 
-        if (res.type === "removeEventAsync/fulfilled")
+        if (res.type === "removeEventAsync/fulfilled") {
+          dispatch(saveUserData(res.payload.data.userTodoList));
           setShowInfoEventModal(false);
+        }
       } catch (err) {
         alert(err.message);
       }
