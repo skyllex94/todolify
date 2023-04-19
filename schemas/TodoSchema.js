@@ -55,6 +55,7 @@ const TodoSchema = new mongoose.Schema({
               event: { type: String },
               done: { type: Boolean },
               notes: { type: String },
+              google_event_id: { type: String },
             },
           ],
         },

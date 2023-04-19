@@ -13,10 +13,8 @@ function UpdateEventModal({
   setShowInfoEventModal,
 }) {
   const [update, setUpdate] = useState(false);
-  const event_id = eventInfo.id;
-  const google_event_id = eventInfo.google_event_id;
-  console.log("google_event_id:", google_event_id);
-  const event_idx = eventInfo.idx;
+  const { id: event_id, idx: event_idx, google_event_id } = eventInfo;
+
   const [eventName, setEventName] = useState(eventInfo.name);
   const [eventNotes, setEventNotes] = useState(eventInfo.notes);
   const user_id = useSelector((state) => state.auth.user_id);

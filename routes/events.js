@@ -190,8 +190,7 @@ router.post("/add-event", async (req, res) => {
 
   // Local database calendar event creation
   let newEvent = { event: event_name, done: false, notes };
-  if (linked_calendars)
-    newEvent = { event: event_name, done: false, notes, google_event_id };
+  if (linked_calendars) newEvent = { ...newEvent, google_event_id };
   console.log("newEvent:", newEvent);
 
   const monthIdx = getMonthIdx(month_year, userTodoList);
@@ -278,13 +277,14 @@ router.delete("/remove-event", async (req, res) => {
   const { user_id, event_id, day_idx, month_idx, google_event_id } = req.body;
   console.log("google_event_id:", google_event_id);
 
-  // If event is present in Google Calendar, remove it too
+  // Remove event if present in Google Calendar
   if (google_event_id) {
     const userTodoList = await Todos.findOne({ user_id });
     // Retrieve refresh token from DB
     const refresh_token = userTodoList?.google_calendar_refresh_token;
     if (!refresh_token)
       res.send({
+        userTodoList,
         error: "Could not find any refresh token for the given user.",
       });
 
@@ -300,19 +300,17 @@ router.delete("/remove-event", async (req, res) => {
       });
 
       // Check if we were not able to create the calendar event
-      const { status, statusText, data } = googleEventObj;
-      console.log("data:", data);
+      const { status, statusText } = googleEventObj;
 
-      console.log("status:", status);
-      console.log("statusText:", statusText);
-      if (status !== 200) {
-        res.send({ error: statusText });
+      if (status < 200 && status > 300) {
+        res.send({ userTodoList, error: statusText });
       }
     } catch (err) {
       console.log(`Error in deleting Google Calendar Event: ${err} `);
     }
   }
 
+  // Remove from local calendar
   const key = "date." + month_idx + ".days." + day_idx + ".events";
   const updatedTodoList = await Todos.findOneAndUpdate(
     { user_id },

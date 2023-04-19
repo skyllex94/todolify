@@ -44,7 +44,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
     );
   }
 
-  async function removeEvent(event_id) {
+  async function removeEvent(event_id, google_event_id) {
     if ((monthIdx, dayIdx === null))
       return alert("Mistake fetching month and/or day index");
 
@@ -58,6 +58,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
             day_idx: dayIdx,
             month_idx: monthIdx,
             event_id,
+            google_event_id,
           })
         );
         if (res.payload.status === 200)
@@ -67,8 +68,6 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
       }
     }
   }
-
-  // Start here: Figure out why google_event_id is undefined
 
   return (
     <div
@@ -127,7 +126,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                   </div>
                 </motion.button>
                 <div
-                  onClick={() => removeEvent(curr._id)}
+                  onClick={() => removeEvent(curr._id, curr.google_event_id)}
                   className="cursor-pointer text-gray-700"
                 >
                   <GrFormClose />

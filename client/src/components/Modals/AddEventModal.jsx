@@ -13,6 +13,7 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
   const [notes, setNotes] = useState("");
   const [duration, setDuration] = useState(1);
   const [eventTime, setEventTime] = useState("");
+  const [disableButton, setDisableButton] = useState(false);
   const { alertState, enableAlert, setEnableAlert, displayAlert } =
     useDisplayAlert();
 
@@ -73,6 +74,9 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
       displayAlert("error", "No duration of the task has been placed");
       return;
     }
+
+    // Disable Submit button, so it can not be pressed multiple times
+    setDisableButton(true);
 
     const day = parseInt($D);
     const month_year = ("0" + ($M + 1)).slice(-2) + "/" + $y;
@@ -142,7 +146,7 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
                 </AnimatePresence>
               </div>
 
-              <form className="p-8" onSubmit={onSubmit}>
+              <form className="p-8">
                 <div className="mb-4 flex items-center">
                   <label
                     className="text-md mb-2 mr-3 block font-bold text-gray-700"
@@ -216,6 +220,7 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
                 <button
                   className="mr-1 mb-1 rounded bg-red-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-red-600"
                   type="button"
+                  disabled={disableButton}
                   onClick={onSubmit}
                 >
                   Create Event
