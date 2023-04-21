@@ -114,7 +114,9 @@ router.post("/add-event", async (req, res) => {
 
   const userTodoList = await getUserTodoList(user_id);
   if (!userTodoList) return res.send({ error: "No user todo list found" });
-  let google_event_id = null;
+  let google_event_id = null,
+    google_start_date = null,
+    google_end_date = null;
 
   // Google Calendar API Call and creation of the event in Google Calendar
   if (linked_calendars === true) {
@@ -172,7 +174,7 @@ router.post("/add-event", async (req, res) => {
       requestBody: {
         summary: event_name,
         description: notes,
-        colorId: google_calendar_color,
+        colorId: JSON.parse(google_calendar_color),
         start: {
           dateTime: new Date(googleStartDate),
         },
@@ -184,15 +186,26 @@ router.post("/add-event", async (req, res) => {
 
     // Check if we were not able to create the calendar event
     const { status, statusText, data } = googleEventObj;
+
     if (status !== 200) {
       res.send({ error: statusText });
     }
-    google_event_id = await data.id;
+
+    // Google identifier for updating and removing event
+    google_event_id = data.id;
+    google_start_date = googleStartDate;
+    google_end_date = googleEndDate;
   }
 
   // Local database calendar event creation
   let newEvent = { event: event_name, done: false, notes };
-  if (linked_calendars) newEvent = { ...newEvent, google_event_id };
+  if (linked_calendars)
+    newEvent = {
+      ...newEvent,
+      google_event_id,
+      google_start_date,
+      google_end_date,
+    };
   console.log("newEvent:", newEvent);
 
   const monthIdx = getMonthIdx(month_year, userTodoList);
@@ -249,15 +262,83 @@ router.patch("/toggle-event", async (req, res) => {
 // @desc    Update an event from a specific day
 // @access  Private
 router.patch("/update-event", async (req, res) => {
-  const { user_id, event_idx, event_name, event_notes, day_idx, month_idx } =
-    req.body;
+  const {
+    user_id,
+    event_idx,
+    event_name,
+    event_notes,
+    day_idx,
+    month_idx,
+    google_event_id,
+    google_start_date,
+    google_end_date,
+    linked_calendars,
+  } = req.body;
+
+  console.log(
+    "google_event_id:",
+    google_event_id,
+    google_start_date,
+    google_end_date
+  );
+
+  const userTodoList = await Todos.findOne({ user_id });
+
+  // Google Calendar Updating if the calendars are linked
+  if (google_event_id && linked_calendars) {
+    // Retrieve refresh token from DB
+    const refresh_token = userTodoList?.google_calendar_refresh_token;
+    if (!refresh_token)
+      res.send({
+        userTodoList,
+        error: "Could not find any refresh token for the given user.",
+      });
+
+    // Set Google Calendar API credentials for the user
+    oauth2Client.setCredentials({ refresh_token });
+
+    try {
+      const calendar = google.calendar("v3");
+      const googleEventObj = await calendar.events.update({
+        auth: oauth2Client,
+        calendarId: "primary",
+        eventId: google_event_id,
+        requestBody: {
+          start: {
+            dateTime: new Date(google_start_date),
+          },
+          end: {
+            dateTime: new Date(google_end_date),
+          },
+          summary: event_name,
+          description: event_notes,
+        },
+      });
+
+      // Check if we were not able to create the calendar event
+      const { status, statusText } = googleEventObj;
+
+      if (status < 200 && status > 300) {
+        res.send({ userTodoList, error: statusText });
+      }
+    } catch (err) {
+      console.log(`Error in updating Google Calendar Event: ${err} `);
+    }
+  }
 
   if (month_idx < 0 || day_idx < 0)
     return res.send({
+      userTodoList,
       error: "Could not locate element to update, please try again",
     });
 
-  const updatedEvent = { event: event_name, notes: event_notes };
+  const updatedEvent = {
+    event: event_name,
+    notes: event_notes,
+    google_event_id,
+    google_start_date,
+    google_end_date,
+  };
   const key = "date." + month_idx + ".days." + day_idx + ".events." + event_idx;
 
   const updatedEvents = await Todos.findOneAndUpdate(
@@ -276,11 +357,18 @@ router.patch("/update-event", async (req, res) => {
 // @desc    Remove an event from a specific day
 // @access  Private
 router.delete("/remove-event", async (req, res) => {
-  const { user_id, event_id, day_idx, month_idx, google_event_id } = req.body;
+  const {
+    user_id,
+    event_id,
+    day_idx,
+    month_idx,
+    google_event_id,
+    linked_calendars,
+  } = req.body;
   console.log("google_event_id:", google_event_id);
 
   // Remove event if present in Google Calendar
-  if (google_event_id) {
+  if (google_event_id && linked_calendars) {
     const userTodoList = await Todos.findOne({ user_id });
     // Retrieve refresh token from DB
     const refresh_token = userTodoList?.google_calendar_refresh_token;

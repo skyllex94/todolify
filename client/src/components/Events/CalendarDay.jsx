@@ -13,13 +13,18 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
   const [showEventInfoModal, setShowInfoEventModal] = useState(false);
   const user_id = useSelector((state) => state.auth.user_id);
   const global = useSelector((state) => state.data);
+  const linked_calendars = useSelector((state) =>
+    JSON.parse(state.settings.linkedCalendars)
+  );
 
   const [eventInfo, setEventInfo] = useState({
     id: "",
     idx: null,
     name: "",
-    google_event_id: "",
     notes: "",
+    google_event_id: "",
+    google_start_date: "",
+    google_end_date: "",
   });
   const monthIdx = getMonthIdx(month_year, global);
   const dayIdx = getDayIdx(day.$D, monthIdx, global);
@@ -27,8 +32,24 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
   const { $D } = day;
   const dispatch = useDispatch();
 
-  function openEventInfo(id, idx, name, notes, google_event_id) {
-    setEventInfo({ id, idx, name, notes, google_event_id });
+  function openEventInfo(
+    id,
+    idx,
+    name,
+    notes,
+    google_event_id,
+    google_start_date,
+    google_end_date
+  ) {
+    setEventInfo({
+      id,
+      idx,
+      name,
+      notes,
+      google_event_id,
+      google_start_date,
+      google_end_date,
+    });
     setShowInfoEventModal(true);
   }
 
@@ -59,6 +80,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
             month_idx: monthIdx,
             event_id,
             google_event_id,
+            linked_calendars,
           })
         );
         if (res.payload.status === 200)
@@ -116,7 +138,9 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
                       idx,
                       curr.event,
                       curr.notes,
-                      curr.google_event_id
+                      curr.google_event_id,
+                      curr.google_start_date,
+                      curr.google_end_date
                     )
                   }
                   className="relative flex w-full justify-between rounded border border-red-200 px-2 text-sm font-medium"

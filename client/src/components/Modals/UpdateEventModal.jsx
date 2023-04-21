@@ -5,7 +5,7 @@ import { saveUserData } from "../../redux/dataSlice";
 import { removeEventAsync, updateEventAsync } from "../../redux/eventsSlice";
 
 function UpdateEventModal({
-  eventInfo, // id, idx, name, notes, google_event_id
+  eventInfo, // id, idx, name, notes, google_event_id, google_start_date, google_end_date
   day_idx,
   day,
   month_idx,
@@ -13,11 +13,20 @@ function UpdateEventModal({
   setShowInfoEventModal,
 }) {
   const [update, setUpdate] = useState(false);
-  const { id: event_id, idx: event_idx, google_event_id } = eventInfo;
+  const {
+    id: event_id,
+    idx: event_idx,
+    google_event_id,
+    google_start_date,
+    google_end_date,
+  } = eventInfo;
 
   const [eventName, setEventName] = useState(eventInfo.name);
   const [eventNotes, setEventNotes] = useState(eventInfo.notes);
   const user_id = useSelector((state) => state.auth.user_id);
+  const linked_calendars = useSelector(
+    (state) => state.settings.linkedCalendars
+  );
 
   const closeModalRef = useRef();
   const dispatch = useDispatch();
@@ -50,6 +59,10 @@ function UpdateEventModal({
           event_notes: eventNotes,
           day_idx,
           month_idx,
+          google_event_id,
+          google_start_date,
+          google_end_date,
+          linked_calendars,
         })
       );
 
@@ -73,6 +86,7 @@ function UpdateEventModal({
             month_idx,
             event_id,
             google_event_id,
+            linked_calendars,
           })
         );
 

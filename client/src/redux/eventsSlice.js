@@ -93,6 +93,10 @@ export const updateEventAsync = createAsyncThunk(
         event_notes: payload.event_notes,
         day_idx: payload.day_idx,
         month_idx: payload.month_idx,
+        google_event_id: payload.google_event_id,
+        google_start_date: payload.google_start_date,
+        google_end_date: payload.google_end_date,
+        linked_calendars: payload.linked_calendars,
       });
     } catch (err) {
       return err.message;
@@ -104,7 +108,6 @@ export const removeEventAsync = createAsyncThunk(
   "removeEventAsync",
   async (payload) => {
     // payload => {user_id, day_idx, month_idx, event_id, google_event_id}
-    console.log("payload.google_event_id:", payload.google_event_id);
     try {
       return await axios.delete("/api/events/remove-event", {
         headers: {
@@ -116,6 +119,7 @@ export const removeEventAsync = createAsyncThunk(
           month_idx: payload.month_idx,
           event_id: payload.event_id,
           google_event_id: payload.google_event_id,
+          linked_calendars: payload.linked_calendars,
         },
       });
     } catch (err) {
