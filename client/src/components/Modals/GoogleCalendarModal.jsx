@@ -1,17 +1,22 @@
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import { googleLogout } from "@react-oauth/google";
-import { useDispatch } from "react-redux";
-import { linkedCalendars } from "../../redux/settingsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  googleCalendarColor,
+  linkedCalendars,
+} from "../../redux/settingsSlice";
 
 export default function GoogleCalendarModal({
   setShowModal,
   linkedCalendarsLS,
 }) {
-  const [labelColor, setLabelColor] = useState(1);
-
   const dispatch = useDispatch();
   const closeModalRef = useRef();
+  const calendarColorId = useSelector((state) =>
+    JSON.parse(state.settings.googleCalendarColor)
+  );
+  const [labelColor, setLabelColor] = useState(calendarColorId);
 
   // Trigger removing modal on outside click or escape key pressed
   useEffect(() => {
@@ -29,7 +34,11 @@ export default function GoogleCalendarModal({
     };
   }, [setShowModal]);
 
-  const onSubmit = async (e) => {};
+  // Confirm selection and update global variable
+  const onSubmit = () => {
+    dispatch(googleCalendarColor(labelColor));
+    setShowModal(false);
+  };
 
   const unlinkGoogleCalendar = () => {
     try {
@@ -70,31 +79,7 @@ export default function GoogleCalendarModal({
                 />
               </div>
 
-              <form className="p-8" onSubmit={onSubmit}>
-                <div className="mb-4 flex items-center">
-                  <label
-                    className="text-md mb-2 mr-3 block font-bold text-gray-700"
-                    htmlFor="category_name"
-                  >
-                    Label Color
-                  </label>
-                  <input
-                    className="focus:shadow-outline mb-3 w-full appearance-none rounded border border-gray-500 py-2 px-3 text-gray-700 shadow focus:outline-none"
-                    type="text"
-                    autoFocus
-                    onChange={(e) => setLabelColor(e.target.value)}
-                  />
-                </div>
-
-                <div className="mb-4 flex items-center">
-                  <label
-                    className="text-md mb-2 mr-3 block font-bold text-gray-700"
-                    htmlFor="category_name"
-                  >
-                    Time:
-                  </label>
-                </div>
-
+              <form className="p-8">
                 <div className="mb-4 flex items-center">
                   <label
                     className="text-md mb-2 mr-3 block font-bold text-gray-700"
@@ -108,9 +93,12 @@ export default function GoogleCalendarModal({
                     value={labelColor}
                     onChange={(e) => setLabelColor(e.target.value)}
                   >
-                    <option value={1}>Red</option>
-                    <option value={2}>Blue</option>
-                    <option value={3}>Yellow</option>
+                    <option value={0}>Default</option>
+                    <option value={1}>Blue</option>
+                    <option value={2}>Green</option>
+                    <option value={4}>Red</option>
+                    <option value={5}>Yellow</option>
+                    <option value={7}>Тurquoise</option>
                   </select>
                 </div>
               </form>
@@ -118,7 +106,7 @@ export default function GoogleCalendarModal({
               <div className="flex items-center justify-between rounded-b border-t border-solid border-slate-200 p-6">
                 <div className="flex items-start">
                   <button
-                    onClick={() => console.log("here we are")}
+                    onClick={() => onSubmit()}
                     className="mr-1 mb-1 rounded bg-green-500 
                 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none 
                 transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"

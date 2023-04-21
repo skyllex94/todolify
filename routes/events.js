@@ -109,6 +109,7 @@ router.post("/add-event", async (req, res) => {
     month_year,
     notes,
     linked_calendars,
+    google_calendar_color,
   } = req.body;
 
   const userTodoList = await getUserTodoList(user_id);
@@ -171,6 +172,7 @@ router.post("/add-event", async (req, res) => {
       requestBody: {
         summary: event_name,
         description: notes,
+        colorId: google_calendar_color,
         start: {
           dateTime: new Date(googleStartDate),
         },

@@ -18,6 +18,9 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
     useDisplayAlert();
 
   const user_id = useSelector((state) => state.auth.user_id);
+  const google_calendar_color = useSelector(
+    (state) => state.settings.googleCalendarColor
+  );
   const closeModalRef = useRef();
 
   // Actions and Destructuring
@@ -93,6 +96,7 @@ function AddEventModal({ monthInfo, setShowModal, linkedCalendars }) {
           month_year,
           notes,
           linked_calendars: linkedCalendars,
+          google_calendar_color,
         })
       );
 

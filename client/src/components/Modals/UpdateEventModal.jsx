@@ -152,7 +152,7 @@ function UpdateEventModal({
                         className="text-md mb-2 mr-3 block font-bold text-gray-700"
                         htmlFor="category_name"
                       >
-                        Date: {day.$D}/{month_year}
+                        Date: {day.$D}/{month_year},
                       </label>
                     </div>
                     <div className="border p-6">

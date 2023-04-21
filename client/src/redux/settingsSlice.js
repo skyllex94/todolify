@@ -79,6 +79,7 @@ export const settingsSlice = createSlice({
     changeCategoryDoneIcon: false,
     searchForTask: "",
     linkedCalendars: localStorage.getItem("linkedCalendars") || true,
+    googleCalendarColor: localStorage.getItem("google_calendar_color") || 0,
   },
   reducers: {
     openSideMenu: (state, action) => {
@@ -103,6 +104,13 @@ export const settingsSlice = createSlice({
     linkedCalendars: (state, action) => {
       localStorage.setItem("linkedCalendars", JSON.stringify(action.payload));
       return { ...state, linkedCalendars: action.payload };
+    },
+    googleCalendarColor: (state, action) => {
+      localStorage.setItem(
+        "google_calendar_color",
+        JSON.stringify(action.payload)
+      );
+      return { ...state, googleCalendarColor: action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -151,6 +159,7 @@ export const {
   changeCategoryIconToDone,
   searchForTask,
   linkedCalendars,
+  googleCalendarColor,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

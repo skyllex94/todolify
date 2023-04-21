@@ -44,7 +44,7 @@ export const addEventAsync = createAsyncThunk(
   "addEventAsync",
   async (payload) => {
     // payload => {user_id, event_name(string), day(number) month_year(string: "dd/mm/yyyy"), notes
-    // event_time, duration (duration of the event), linked_calendars(boolean)}
+    // event_time, duration (duration of the event), linked_calendars(boolean), google_calendar_color}
     try {
       return await axios.post("/api/events/add-event", {
         user_id: payload.user_id,
@@ -55,6 +55,7 @@ export const addEventAsync = createAsyncThunk(
         month_year: payload.month_year,
         notes: payload.notes,
         linked_calendars: payload.linked_calendars,
+        google_calendar_color: payload.google_calendar_color,
       });
     } catch (err) {
       return err.message;
