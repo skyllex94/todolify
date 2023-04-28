@@ -25,10 +25,10 @@ function DeleteTask({ user_id, category_id, day, month_year, dayWtData, id }) {
 
   return (
     <button
-      className="delete_button absolute hidden group-hover:inline"
+      // className="delete_button absolute hidden group-hover:inline"
       onClick={() => handleDeleteTask()}
     >
-      <GrFormClose />
+      Delete
     </button>
   );
 }

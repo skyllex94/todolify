@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import DeleteTask from "./DeleteTask";
 import EditTask from "./EditTask";
 import EnableEditTask from "./EnableEditTask";
 import NotificationsModal from "../Modals/NotificationsModal";
 import ToggleTask from "./ToggleTask";
+
+import { Dropdown } from "flowbite-react";
+import {
+  MdDriveFileRenameOutline,
+  MdNotificationsNone,
+  MdDeleteOutline,
+} from "react-icons/md";
 
 const TaskItem = ({
   user_id,
@@ -23,8 +30,34 @@ const TaskItem = ({
     setShowModal(true);
   };
 
+  const taskOptions = (
+    <div className="task-options text-white">
+      <Dropdown inline>
+        <Dropdown.Item icon={MdDriveFileRenameOutline}>
+          <EnableEditTask setEnableEdit={setEnableEdit} />
+        </Dropdown.Item>
+        <Dropdown.Item
+          icon={MdNotificationsNone}
+          onClick={openNotificationsModal}
+        >
+          Reminder
+        </Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item icon={MdDeleteOutline}>
+          <DeleteTask
+            user_id={user_id}
+            category_id={category_id}
+            id={id}
+            day={day}
+            month_year={month_year}
+          />
+        </Dropdown.Item>
+      </Dropdown>
+    </div>
+  );
+
   return (
-    <React.Fragment>
+    <Fragment>
       <div className="flex items-center justify-center text-left">
         <ToggleTask
           user_id={user_id}
@@ -47,31 +80,16 @@ const TaskItem = ({
             setEnableEdit={setEnableEdit}
           />
         ) : (
-          <button className="task_button" onClick={openNotificationsModal}>
-            {task}
-          </button>
+          task
         )}
       </div>
 
-      <div>
-        <div className="bg_buttons_hover absolute mx-3 hidden bg-white text-white group-hover:inline">
-          I
-        </div>
-
-        <EnableEditTask setEnableEdit={setEnableEdit} />
-        <DeleteTask
-          user_id={user_id}
-          category_id={category_id}
-          id={id}
-          day={day}
-          month_year={month_year}
-        />
-      </div>
+      {taskOptions}
 
       {showModal && (
         <NotificationsModal setShowModal={setShowModal} task={task} />
       )}
-    </React.Fragment>
+    </Fragment>
   );
 };
 

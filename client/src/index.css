@@ -121,16 +121,6 @@ code {
   margin-left: 30px;
 }
 
-.task_button {
-  all: unset;
-  cursor: pointer;
-}
-
-.task_button:hover {
-  word-break: break-all;
-  overflow: hidden;
-}
-
 .rename_button {
   right: 20px;
   top: 3px;
@@ -147,6 +137,10 @@ code {
   padding-top: 10px;
   right: -20px;
   top: -5px;
+}
+
+.task-options:hover {
+  color: black;
 }
 
 /* Check box css modules */
