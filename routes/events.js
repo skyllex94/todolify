@@ -167,39 +167,57 @@ router.post("/add-event", async (req, res) => {
     // Set Google Calendar API credentials for the user
     oauth2Client.setCredentials({ refresh_token });
 
-    const calendar = google.calendar("v3");
-    const googleEventObj = await calendar.events.insert({
-      auth: oauth2Client,
-      calendarId: "primary",
-      requestBody: {
-        summary: event_name,
-        description: notes,
-        colorId: JSON.parse(google_calendar_color),
-        start: {
-          dateTime: new Date(googleStartDate),
+    try {
+      const calendar = google.calendar("v3");
+      const googleEventObj = await calendar.events.insert({
+        auth: oauth2Client,
+        calendarId: "primary",
+        requestBody: {
+          summary: event_name,
+          description: notes,
+          colorId: JSON.parse(google_calendar_color),
+          start: {
+            dateTime: new Date(googleStartDate),
+          },
+          end: {
+            dateTime: new Date(googleEndDate),
+          },
         },
-        end: {
-          dateTime: new Date(googleEndDate),
-        },
-      },
-    });
+      });
 
-    // Check if we were not able to create the calendar event
-    const { status, statusText, data } = googleEventObj;
+      // Check if we were not able to create the calendar event
+      const { status, statusText, data } = googleEventObj;
 
-    if (status !== 200) {
-      res.send({ error: statusText });
+      if (status < 200 && status > 300) {
+        res.send({ userTodoList, error: statusText });
+      }
+
+      // Google identifier for updating and removing event
+      google_event_id = data.id;
+      google_start_date = googleStartDate;
+      google_end_date = googleEndDate;
+    } catch (err) {
+      console.log(`Error with the Google Service: ${err}`);
+
+      if (err.toString().includes("invalid_grant") === true) {
+        const removed_expired_token = await Todos.findOneAndUpdate(
+          { user_id },
+          { $set: { google_calendar_refresh_token: null } },
+          { new: true }
+        );
+        res.send({
+          userTodoList: removed_expired_token,
+          error:
+            "The granted access to your Google Calendar has expired, please sign-in again",
+        });
+      }
+      res.send({ userTodoList, error: err });
     }
-
-    // Google identifier for updating and removing event
-    google_event_id = data.id;
-    google_start_date = googleStartDate;
-    google_end_date = googleEndDate;
   }
 
   // Local database calendar event creation
   let newEvent = { event: event_name, done: false, notes };
-  if (linked_calendars)
+  if (linked_calendars && google_event_id)
     newEvent = {
       ...newEvent,
       google_event_id,
@@ -397,6 +415,20 @@ router.delete("/remove-event", async (req, res) => {
       }
     } catch (err) {
       console.log(`Error in deleting Google Calendar Event: ${err} `);
+
+      if (err.toString().includes("invalid_grant") === true) {
+        const removed_expired_token = await Todos.findOneAndUpdate(
+          { user_id },
+          { $set: { google_calendar_refresh_token: null } },
+          { new: true }
+        );
+        res.send({ userTodoList: removed_expired_token, error: err });
+      }
+      res.send({
+        userTodoList,
+        error:
+          "The granted access to your Google Calendar has expired, please sign-in your Google Calendar again",
+      });
     }
   }
 

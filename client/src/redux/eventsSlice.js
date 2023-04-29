@@ -146,10 +146,9 @@ export const eventsSlice = createSlice({
     builder.addCase(addEventAsync.fulfilled, (_, action) => {
       // Make sure you return the correct state
       const { userTodoList, error } = action.payload.data;
-      if (error === "undefined") {
-        alert(error);
-        return;
-      }
+      console.log("error:", error);
+      if (error) alert(error);
+
       return userTodoList;
     });
 

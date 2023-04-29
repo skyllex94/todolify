@@ -58,7 +58,7 @@ const TaskItem = ({
 
   return (
     <Fragment>
-      <div className="flex items-center justify-center text-left">
+      <div className="flex items-center justify-between text-left">
         <ToggleTask
           user_id={user_id}
           category_index={category_index}

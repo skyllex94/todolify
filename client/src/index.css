@@ -139,7 +139,11 @@ code {
   top: -5px;
 }
 
-.task-options:hover {
+.task_bg:hover > .task-options {
+  color: black;
+}
+
+.goals:hover > .goals-options {
   color: black;
 }
 

@@ -1,11 +1,10 @@
 import React from "react";
-import { AiOutlineEdit } from "react-icons/ai";
-import { GrFormClose } from "react-icons/gr";
-import { SlOptionsVertical } from "react-icons/sl";
 import { useDispatch } from "react-redux";
 import { saveUserData } from "../../redux/dataSlice";
 import { removeGoalAsync } from "../../redux/goalsSlice";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+
+import { Dropdown } from "flowbite-react";
+import { MdDeleteOutline, MdDriveFileRenameOutline } from "react-icons/md";
 
 function GoalsOptions({
   user_id,
@@ -26,42 +25,24 @@ function GoalsOptions({
       dispatch(saveUserData(res.payload.data.userData));
   };
 
-  const popover = (
-    <div className="mt-2 mr-1 rounded border-2 border-solid border-red-600 bg-white p-2">
-      <Popover id="popover-positioned-top">
-        <Popover.Body>
-          <button
-            className="flex w-full items-center justify-between p-1 hover:bg-gray-100"
-            onClick={() => setEnableRename(!enableRename)}
-          >
-            <p>Rename Goal</p>
-            <AiOutlineEdit className="ml-3" />
-          </button>
-          <button
-            className="flex w-full items-center justify-between p-1 hover:bg-gray-100"
-            onClick={() => removeYearlyGoal(curr._id)}
-          >
-            <p>Delete Goal</p>
-            <GrFormClose className="right ml-3" />
-          </button>
-        </Popover.Body>
-      </Popover>
-    </div>
-  );
-
   return (
-    <div>
-      <OverlayTrigger
-        trigger="click"
-        key="bottom"
-        rootClose
-        placement="bottom-end"
-        overlay={popover}
-      >
-        <button>
-          <SlOptionsVertical />
-        </button>
-      </OverlayTrigger>
+    <div className="goals-options text-white">
+      <Dropdown inline>
+        <Dropdown.Item
+          icon={MdDriveFileRenameOutline}
+          onClick={() => setEnableRename(!enableRename)}
+        >
+          Rename
+        </Dropdown.Item>
+
+        <Dropdown.Divider />
+        <Dropdown.Item
+          icon={MdDeleteOutline}
+          onClick={() => removeYearlyGoal(curr._id)}
+        >
+          Delete
+        </Dropdown.Item>
+      </Dropdown>
     </div>
   );
 }

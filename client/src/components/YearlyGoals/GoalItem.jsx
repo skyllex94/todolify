@@ -50,7 +50,7 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
   };
 
   return (
-    <div className="group mb-2 inline flex items-center justify-between pl-2 ">
+    <div className="goals mb-2 flex items-center justify-between pl-2">
       {enableRename ? (
         <div className="ml-10 flex items-center">
           <form onSubmit={renameYearlyGoal}>
@@ -82,16 +82,14 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
         </div>
       )}
 
-      <div className="hidden group-hover:block">
-        <GoalsOptions
-          user_id={user_id}
-          year_idx={year_idx}
-          curr={curr}
-          enableRename={enableRename}
-          setEnableRename={setEnableRename}
-          localData={localData}
-        />
-      </div>
+      <GoalsOptions
+        user_id={user_id}
+        year_idx={year_idx}
+        curr={curr}
+        enableRename={enableRename}
+        setEnableRename={setEnableRename}
+        localData={localData}
+      />
     </div>
   );
 }

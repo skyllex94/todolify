@@ -1,5 +1,4 @@
 import React from "react";
-import { GrFormClose } from "react-icons/gr";
 import { useDispatch } from "react-redux";
 import { deleteTaskAsync } from "../../redux/todosSlice";
 

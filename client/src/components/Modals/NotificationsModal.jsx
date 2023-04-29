@@ -161,6 +161,13 @@ export default function NotificationsModal({ setShowModal, task }) {
             </AnimatePresence>
 
             <form className="p-5">
+              <label
+                className="text-md mb-2 mr-3 block font-bold text-gray-700"
+                htmlFor="reminderDay"
+              >
+                Task: "{task}"
+              </label>
+
               <div className="flex items-center justify-between border p-6">
                 <label
                   className="text-md mb-2 mr-3 block font-bold text-gray-700"
