@@ -147,6 +147,11 @@ code {
   color: black;
 }
 
+.weeks-list:hover > .weeks-dot {
+  background-color: #6d223e;
+  color: #fff;
+}
+
 /* Check box css modules */
 
 .checkmark {

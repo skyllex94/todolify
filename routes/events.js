@@ -167,6 +167,7 @@ router.post("/add-event", async (req, res) => {
     // Set Google Calendar API credentials for the user
     oauth2Client.setCredentials({ refresh_token });
 
+    // Send the event to Google Calendar API
     try {
       const calendar = google.calendar("v3");
       const googleEventObj = await calendar.events.insert({
@@ -340,7 +341,21 @@ router.patch("/update-event", async (req, res) => {
         res.send({ userTodoList, error: statusText });
       }
     } catch (err) {
-      console.log(`Error in updating Google Calendar Event: ${err} `);
+      console.log(`Error with the Google Service: ${err}`);
+
+      if (err.toString().includes("invalid_grant") === true) {
+        const removed_expired_token = await Todos.findOneAndUpdate(
+          { user_id },
+          { $set: { google_calendar_refresh_token: null } },
+          { new: true }
+        );
+        res.send({
+          userTodoList: removed_expired_token,
+          error:
+            "The granted access to your Google Calendar has expired, please sign-in again",
+        });
+      }
+      res.send({ userTodoList, error: err });
     }
   }
 

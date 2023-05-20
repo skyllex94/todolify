@@ -79,6 +79,10 @@ function Main() {
     return date.day + "/" + date.month_year;
   }
 
+  function backToCurrWeek() {
+    setDateIdx((prev) => 0);
+  }
+
   const loadPreviousWeek = () => {
     setDateIdx(dateIdx - 7);
   };
@@ -136,7 +140,7 @@ function Main() {
 
                 <div
                   style={{ width: "0.4rem", height: "0.4rem" }}
-                  className={`mr-5 rounded-full bg-gray-500`}
+                  className="weeks-dot mr-5 rounded-full bg-gray-500"
                 />
                 <motion.div
                   layout
@@ -146,7 +150,9 @@ function Main() {
                       : `block`
                   } `}
                 >
-                  {getWeek(dateIdx)} - {getWeek(dateIdx + 6)}
+                  <button className="weeks-list" onClick={backToCurrWeek}>
+                    {getWeek(dateIdx)} - {getWeek(dateIdx + 6)}
+                  </button>
                 </motion.div>
 
                 <motion.button
@@ -176,7 +182,6 @@ function Main() {
                 >
                   Focus on Today
                 </motion.button>
-                {/* <button onClick={query}>Query</button> */}
               </div>
             </div>
             <AnimatePresence mode="wait">
