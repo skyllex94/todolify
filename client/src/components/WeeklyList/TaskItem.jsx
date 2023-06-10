@@ -1,7 +1,5 @@
 import React, { useState, Fragment } from "react";
-import DeleteTask from "./DeleteTask";
 import EditTask from "./EditTask";
-import EnableEditTask from "./EnableEditTask";
 import NotificationsModal from "../Modals/NotificationsModal";
 import ToggleTask from "./ToggleTask";
 
@@ -11,6 +9,8 @@ import {
   MdNotificationsNone,
   MdDeleteOutline,
 } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { deleteTaskAsync } from "../../redux/todosSlice";
 
 const TaskItem = ({
   user_id,
@@ -26,6 +26,24 @@ const TaskItem = ({
   const [enableEdit, setEnableEdit] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const handleDeleteTask = async () => {
+    try {
+      dispatch(
+        deleteTaskAsync({
+          user_id,
+          category_id,
+          day,
+          month_year,
+          id,
+        })
+      );
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   const openNotificationsModal = () => {
     setShowModal(true);
   };
@@ -33,8 +51,11 @@ const TaskItem = ({
   const taskOptions = (
     <div className="task-options text-white">
       <Dropdown inline>
-        <Dropdown.Item icon={MdDriveFileRenameOutline}>
-          <EnableEditTask setEnableEdit={setEnableEdit} />
+        <Dropdown.Item
+          onClick={() => setEnableEdit((prevState) => !prevState)}
+          icon={MdDriveFileRenameOutline}
+        >
+          Rename
         </Dropdown.Item>
         <Dropdown.Item
           icon={MdNotificationsNone}
@@ -43,14 +64,11 @@ const TaskItem = ({
           Reminder
         </Dropdown.Item>
         <Dropdown.Divider />
-        <Dropdown.Item icon={MdDeleteOutline}>
-          <DeleteTask
-            user_id={user_id}
-            category_id={category_id}
-            id={id}
-            day={day}
-            month_year={month_year}
-          />
+        <Dropdown.Item
+          onClick={() => handleDeleteTask()}
+          icon={MdDeleteOutline}
+        >
+          Delete
         </Dropdown.Item>
       </Dropdown>
     </div>
