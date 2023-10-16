@@ -1,6 +1,5 @@
 import React from "react";
 import { AiOutlineEdit } from "react-icons/ai";
-import { GrFormClose } from "react-icons/gr";
 import { SlOptionsVertical } from "react-icons/sl";
 
 import { OverlayTrigger, Popover } from "react-bootstrap";

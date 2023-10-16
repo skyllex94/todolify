@@ -2,7 +2,7 @@ import Header from "./Header";
 import TodoList from "../components/WeeklyList/TodoList";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getTodosAsync } from "../redux/todosSlice";
 import { getDate } from "../utils/functions";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
@@ -14,7 +14,7 @@ import SideMenu from "../components/SideMenu/SideMenu";
 import { saveUserData } from "../redux/dataSlice";
 // var _ = require("lodash");
 
-function Main() {
+export default function Main() {
   const navigate = useNavigate();
   const user_id = useSelector((state) => state.auth.user_id);
 
@@ -24,11 +24,6 @@ function Main() {
   const [focusToday, setFocusToday] = useState(false);
 
   const dispatch = useDispatch();
-
-  function handleShowInstModal() {
-    if (document.URL.toString().includes("/new")) return true;
-    return true;
-  }
 
   const showEventsInTodoList = useSelector(
     (state) => state.settings.showEventsInTodoList
@@ -49,6 +44,19 @@ function Main() {
 
   const weeklyTodoList = week;
 
+  const [isTabVisible, setIsTabVisible] = useState(true);
+
+  const handleVisibilityChange = useCallback(() => {
+    setIsTabVisible(document.visibilityState === "visible");
+  }, []);
+
+  // Check if the tab is active and see if there are any updates needed
+  useEffect(() => {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [handleVisibilityChange]);
+
   useEffect(() => {
     // Async function triggered when page loaded to call a GET request
     // to specific user & fetch the todoList object of that user
@@ -66,8 +74,8 @@ function Main() {
       return respFromDB;
     };
 
-    getUserTodoList(user_id).catch(console.error);
-  }, [user_id, dispatch]);
+    if (isTabVisible) getUserTodoList(user_id).catch(console.error);
+  }, [user_id, dispatch, isTabVisible]);
 
   useEffect(() => {
     // If there's no JWT passed from App.js, navigate to landing page
@@ -294,5 +302,3 @@ function Main() {
     </React.Fragment>
   );
 }
-
-export default Main;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toggleTaskAsync } from "../../redux/todosSlice";
@@ -14,6 +14,11 @@ function ToggleTask({
 }) {
   const dispatch = useDispatch();
   const [toggleChecked, setToggleChecked] = useState(done);
+
+  // Update checkmark if state changed
+  useEffect(() => {
+    setToggleChecked(done);
+  }, [done]);
 
   const toggleCompletedTask = async () => {
     dispatch(
