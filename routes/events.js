@@ -43,14 +43,15 @@ router.post("/sync_calendar", async (req, res) => {
     if (tokens?.code === 400)
       res.send({
         status: 400,
-        message: "Error occured why creating the token",
+        message: "Error occured while creating the token",
       });
     oauth2Client.setCredentials(tokens);
 
     // Save refresh token on the database for the auth user
     const { refresh_token } = tokens;
+    console.log("refresh_token FROM SYNC:", refresh_token);
 
-    if (!refresh_token)
+    if (refresh_token !== null || refresh_token !== undefined)
       console.log("You should already have a refresh token being stored");
 
     // Find current user in database
@@ -119,9 +120,15 @@ router.post("/add-event", async (req, res) => {
     google_end_date = null;
 
   // Google Calendar API Call and creation of the event in Google Calendar
-  if (linked_calendars === true) {
+
+  const refresh_token = userTodoList?.google_calendar_refresh_token;
+
+  // Check if linked_calendar is true in LS + DB has refresh token
+  if (linked_calendars === true && refresh_token) {
     const splitMonthYear = month_year.split("/");
     const splitInitTime = event_time.split(":");
+
+    console.log("WE ARE IN LINKED CALENDARS");
 
     // Add zero padding to the date when necessary
     function zeroPad(num) {
@@ -158,11 +165,13 @@ router.post("/add-event", async (req, res) => {
     console.log("endDate:", new Date(googleEndDate));
 
     // Retrieve refresh token from DB
-    const refresh_token = userTodoList?.google_calendar_refresh_token;
-    if (!refresh_token)
+
+    if (refresh_token === null) {
       res.send({
+        userTodoList,
         error: "Could not find any refresh token for the given user.",
       });
+    }
 
     // Set Google Calendar API credentials for the user
     oauth2Client.setCredentials({ refresh_token });
@@ -253,6 +262,7 @@ router.post("/add-event", async (req, res) => {
 
   userTodoList.date[monthIdx].days[dayIdx]?.events.push(newEvent);
   await userTodoList.save();
+  console.log("WE ARE TO THE END");
 
   res.send({ userTodoList });
 });
