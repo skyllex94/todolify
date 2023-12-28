@@ -34,7 +34,7 @@ export const addYearAsync = createAsyncThunk(
       return await axios.post(`/api/goals/add-year`, {
         user_id: payload.user_id,
         new_year: payload.new_year,
-        local_data: payload.local_data,
+        goals: payload.goals,
       });
     } catch (error) {
       return error.message;
@@ -88,7 +88,6 @@ export const removeYearAsync = createAsyncThunk(
         data: {
           user_id: payload.user_id,
           year_id: payload.year_id,
-          local_data: payload.local_data,
         },
       });
     } catch (error) {

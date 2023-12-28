@@ -36,15 +36,10 @@ router.post("/add-goal", async (req, res) => {
 // @desc    Add a new year to the goals array
 // @access  Private
 router.post("/add-year", async (req, res) => {
-  const user_id = req.body.user_id;
-  const new_year = req.body.new_year;
-  const local_data = req.body.local_data;
+  const { user_id, new_year } = req.body;
 
-  if (!user_id || !new_year || !local_data)
-    return res.send({
-      error: "Missing essential values for query",
-      userData: local_data,
-    });
+  if (!user_id || !new_year)
+    return res.send({ error: "Missing essential values for query" });
 
   const new_year_obj = { year: new_year, list: [] };
 
@@ -110,15 +105,10 @@ router.patch("/rename-goal", async (req, res) => {
 // @desc    Remove a yearly goal from the current year
 // @access  Private
 router.delete("/remove-year", async (req, res) => {
-  const user_id = req.body.user_id;
-  const year_id = req.body.year_id;
-  const local_data = req.body.local_data;
+  const { user_id, year_id } = req.body;
 
-  if (user_id === null || year_id === null || local_data === null)
-    return res.send({
-      userData: local_data,
-      error: "Essential values missing",
-    });
+  if (user_id === null || year_id === null)
+    return res.send({ error: "Essential values missing" });
 
   const userData = await Todos.findOneAndUpdate(
     { user_id },

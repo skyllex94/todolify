@@ -7,7 +7,7 @@ import GoalsList from "../components/YearlyGoals/GoalsList";
 import { useDispatch, useSelector } from "react-redux";
 import { getGoalsAsync } from "../redux/goalsSlice";
 import { saveUserData } from "../redux/dataSlice";
-import UpdateNewYear from "../components/YearlyGoals/UpdateNewYear";
+import NewYear from "../components/YearlyGoals/UpdateNewYear";
 import { useHorizontalScroll } from "../hooks/horizontalScroll";
 
 function Goals() {
@@ -53,7 +53,7 @@ function Goals() {
             <React.Fragment>
               <GoalsList user_id={user_id} />
               <div className="pt-28">
-                <UpdateNewYear user_id={user_id} />
+                <NewYear user_id={user_id} />
               </div>
             </React.Fragment>
           ) : (
