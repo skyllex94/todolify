@@ -82,13 +82,9 @@ router.patch("/rename-goal", async (req, res) => {
   const year_idx = req.body.year_idx;
   const goal_idx = req.body.goal_idx;
   const renamed_goal = req.body.renamed_goal;
-  const local_data = req.body.local_data;
 
   if (user_id === null || year_idx === null || renamed_goal === null)
-    return res.send({
-      userData: local_data,
-      error: "Essential values missing",
-    });
+    return res.send({ error: "Essential values missing" });
 
   const key = "goals." + year_idx + ".list." + goal_idx + ".goal";
 

@@ -68,7 +68,6 @@ export const renameGoalAsync = createAsyncThunk(
         year_idx: payload.year_idx,
         goal_idx: payload.goal_idx,
         renamed_goal: payload.renamed_goal,
-        local_data: payload.local_data,
       });
     } catch (error) {
       return error.message;

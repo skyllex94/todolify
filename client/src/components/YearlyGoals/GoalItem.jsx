@@ -21,7 +21,6 @@ function GoalItem({ user_id, curr, year_idx, goal_idx, localData }) {
         year_idx,
         goal_idx,
         renamed_goal: renamedValue,
-        local_data: localData,
       })
     );
     if (res.payload.status === 200)
