@@ -115,7 +115,7 @@ function CalendarDay({ day, events, month_year, addEventModal }) {
         {events &&
           events.map((curr, idx) => {
             return (
-              <div className="mb-1 flex items-center text-gray-500" key={idx}>
+              <div className="flex items-center text-gray-500" key={idx}>
                 <motion.button
                   initial={{ scale: 1 }}
                   whileHover={{

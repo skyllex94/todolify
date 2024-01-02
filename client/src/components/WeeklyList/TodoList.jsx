@@ -21,7 +21,7 @@ const TodoList = ({
           </h3>
           {todos.map((curr, index) => {
             return (
-              <div key={index} className="mb-1 flex">
+              <div key={index} className="flex">
                 <div className="brackets min-w-[93%]">
                   <CategoryItem
                     user_id={user_id}
