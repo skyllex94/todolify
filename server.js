@@ -44,6 +44,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 
 // Define Routes
+app.get("/health", (req, res) => res.status(200).send("ok"));
 app.use("/users", require("./routes/users"));
 app.use("/api/user", require("./routes/auth"));
 app.use("/api/user", require("./routes/todos"));
