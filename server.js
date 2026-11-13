@@ -52,14 +52,22 @@ app.use("/api/events", require("./routes/events"));
 app.use("/api/goals", require("./routes/goals"));
 app.use("/api/settings", require("./routes/settings"));
 
-// Serve static assets in production
-if (process.env.NODE_ENV === "production") {
+// Serve static assets in production (or whenever client/build exists -
+// Railway doesn't always set NODE_ENV unless you set it in Variables)
+const buildPath = path.join(__dirname, "client", "build");
+const fs = require("fs");
+if (fs.existsSync(path.join(buildPath, "index.html"))) {
+  console.log(`Serving frontend from ${buildPath} (NODE_ENV=${process.env.NODE_ENV})`);
   // Set static folder
-  app.use(express.static("client/build"));
+  app.use(express.static(buildPath));
   // Serve the static assets wt index.html as the beginning route
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    res.sendFile(path.resolve(buildPath, "index.html"));
   });
+} else {
+  console.log(
+    `WARNING: client/build/index.html not found (NODE_ENV=${process.env.NODE_ENV}). Frontend will not be served. Did 'npm run build' run?`
+  );
 }
 
 const PORT = process.env.PORT || 5000;
