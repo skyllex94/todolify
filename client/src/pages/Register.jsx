@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./Header";
 // HTTP Requests
@@ -6,13 +6,12 @@ import axios from "axios";
 import image from "../assets/reg.jpg";
 // Redux
 import { useDispatch } from "react-redux";
-import { storeJWT, verifyRecaptcha } from "../redux/authSlice";
+import { storeJWT } from "../redux/authSlice";
 import { decodeJWT } from "../utils/functions";
 import Alert from "../components/Alert/Alert";
 
 import { useDisplayAlert } from "../hooks/useDisplayAlert";
 import { useSignupData } from "../hooks/useSignupData";
-import ReCAPTCHA from "react-google-recaptcha";
 
 import { AnimatePresence } from "framer-motion";
 
@@ -20,7 +19,6 @@ function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [verifiedRecaptcha, setVerifiedRecaptcha] = useState(false);
   const { formData, onChange } = useSignupData();
   const { name, email, password, repeat_password } = formData;
   const { alertState, enableAlert, setEnableAlert, displayAlert } =
@@ -41,11 +39,6 @@ function Register() {
 
     if (password !== repeat_password) {
       displayAlert("error", "Passwords do not match");
-      return;
-    }
-
-    if (verifiedRecaptcha === false) {
-      displayAlert("error", "Please verify reCAPTCHA");
       return;
     }
 
@@ -76,17 +69,6 @@ function Register() {
       }
       displayAlert(err.name, err.message, err.response.status);
     }
-  };
-
-  const recaptchaResult = async (token) => {
-    const res = await dispatch(verifyRecaptcha(token));
-
-    if (res.error) {
-      displayAlert("error", res.error);
-      return;
-    }
-    if (res.verificationResult === false) return;
-    setVerifiedRecaptcha(true);
   };
 
   return (
@@ -200,13 +182,6 @@ function Register() {
                   type="password"
                 />
               </div>
-              <div className="mt-5 flex items-center justify-center">
-                <ReCAPTCHA
-                  sitekey="6Lf4-9QkAAAAAJtMG1ZtBwzeo0FEMUFeNKQfhsJo"
-                  onChange={recaptchaResult}
-                />
-              </div>
-
               <div className="mt-5">
                 <button
                   type="submit"

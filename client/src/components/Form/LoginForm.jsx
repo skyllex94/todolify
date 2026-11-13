@@ -1,14 +1,13 @@
 import axios from "axios";
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useDisplayAlert } from "../../hooks/useDisplayAlert";
 import { useFormData } from "../../hooks/useFormData";
 
-import { storeJWT, verifyRecaptcha } from "../../redux/authSlice";
+import { storeJWT } from "../../redux/authSlice";
 import { decodeJWT } from "../../utils/functions";
 import Alert from "../Alert/Alert";
-import ReCAPTCHA from "react-google-recaptcha";
 import { AnimatePresence } from "framer-motion";
 
 function LoginForm() {
@@ -20,7 +19,6 @@ function LoginForm() {
   // Hangling and diplaying alert
   const { alertState, enableAlert, setEnableAlert, displayAlert } =
     useDisplayAlert();
-  const [verifiedRecaptcha, setVerifiedRecaptcha] = useState(false);
 
   // Google OAuth startup
   // useEffect(() => {
@@ -51,11 +49,6 @@ function LoginForm() {
       return;
     }
 
-    if (verifiedRecaptcha === false) {
-      displayAlert("error", "reCaptcha was not verified.");
-      return;
-    }
-
     try {
       // Request to server to check if use exists in DB and send token
       const res = await axios.post("/api/user", formData);
@@ -71,17 +64,6 @@ function LoginForm() {
     } catch (err) {
       displayAlert(err.name, err.message);
     }
-  };
-
-  const recaptchaResult = async (token) => {
-    const res = await dispatch(verifyRecaptcha(token));
-
-    if (res.error) {
-      displayAlert("error", res.error);
-      return;
-    }
-    if (res.verificationResult === false) return;
-    setVerifiedRecaptcha(true);
   };
 
   return (
@@ -137,13 +119,6 @@ function LoginForm() {
             onChange={(e) => onChange(e, "password")}
             className="focus:shadow-outline block w-full rounded 
             border border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 hover:bg-white focus:outline-none"
-          />
-        </div>
-
-        <div className="recaptcha mt-5 flex items-center justify-center">
-          <ReCAPTCHA
-            sitekey="6Lf4-9QkAAAAAJtMG1ZtBwzeo0FEMUFeNKQfhsJo"
-            onChange={recaptchaResult}
           />
         </div>
 
